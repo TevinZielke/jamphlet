@@ -1,0 +1,11 @@
+{
+    "name": "@jamphlet/db",
+    "version": "0.0.0",
+    "dependencies": {
+        "drizzle-orm": "^0.29.1",
+        "postgres": "^3.4.3"
+    },
+    "devDependencies": {
+        "drizzle-kit": "^0.20.6"
+    }
+}

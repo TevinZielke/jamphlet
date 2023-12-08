@@ -1,0 +1,7 @@
+{
+    "name": "@jamphlet/auth",
+    "version": "0.0.0",
+    "dependencies": {
+        "@kinde-oss/kinde-auth-nextjs": "^2.0.13"
+    }
+}
