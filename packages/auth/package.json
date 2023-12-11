@@ -1,7 +1,15 @@
 {
-    "name": "@jamphlet/auth",
-    "version": "0.0.0",
-    "dependencies": {
-        "@kinde-oss/kinde-auth-nextjs": "^2.0.13"
-    }
+  "name": "@jamphlet/auth",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "private": true,
+  "dependencies": {
+    "@kinde-oss/kinde-auth-nextjs": "^2.0.13",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "dotenv-cli": "^7.3.0",
+    "typescript": "^5.2.2"
+  }
 }
