@@ -36,6 +36,13 @@
       "when": 1702355577564,
       "tag": "0004_opposite_kronos",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1702904914781,
+      "tag": "0005_soft_pixie",
+      "breakpoints": true
     }
   ]
 }

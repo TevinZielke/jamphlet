@@ -43,6 +43,7 @@ export const projectRelations = relations(projects, ({ one, many }) => ({
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
+  kindeId: text("kindeId").unique(),
   name: text("name").notNull(),
   email: text("email").unique().notNull(),
 

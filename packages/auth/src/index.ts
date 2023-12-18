@@ -4,6 +4,8 @@ import {
   LogoutLink,
 } from "@kinde-oss/kinde-auth-nextjs/server";
 
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
+
 import * as dotenv from "dotenv";
 
 export async function authenticateUser() {
@@ -23,3 +25,4 @@ export async function getAuthenticatedUser() {
 }
 
 export { LoginLink, LogoutLink };
+export type { KindeUser };

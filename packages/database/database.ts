@@ -8,8 +8,6 @@ dotenv.config();
 const conn = `postgresql://${process.env.DATABASE_USER}:${process.env.DATABASE_PW}@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/${process.env.DATABASE_NAME}`;
 const connectionString = conn || "";
 
-console.log(connectionString);
-
 const client = postgres(connectionString);
 
 export const db = drizzle(client, { schema });
