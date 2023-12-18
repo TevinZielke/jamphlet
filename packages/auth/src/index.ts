@@ -1,4 +1,8 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import {
+  getKindeServerSession,
+  LoginLink,
+  LogoutLink,
+} from "@kinde-oss/kinde-auth-nextjs/server";
 
 import * as dotenv from "dotenv";
 
@@ -7,7 +11,21 @@ export async function authenticateUser() {
 
   dotenv.config();
 
-  console.log(dotenv.config());
-
   return await isAuthenticated();
+}
+
+export async function getAuthenticatedUser() {
+  const { getUser } = getKindeServerSession();
+
+  dotenv.config();
+
+  return await getUser();
+}
+
+export function LoginUser() {
+  return LoginLink;
+}
+
+export function LogoutUser() {
+  return LogoutLink;
 }

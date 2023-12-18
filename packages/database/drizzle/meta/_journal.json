@@ -8,6 +8,34 @@
       "when": 1702125958490,
       "tag": "0000_equal_pandemic",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1702309653650,
+      "tag": "0001_new_the_hunter",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1702325544651,
+      "tag": "0002_married_cassandra_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1702332330401,
+      "tag": "0003_naive_leopardon",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1702355577564,
+      "tag": "0004_opposite_kronos",
+      "breakpoints": true
     }
   ]
 }

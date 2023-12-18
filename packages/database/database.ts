@@ -10,7 +10,6 @@ const connectionString = conn || "";
 
 console.log(connectionString);
 
-// const connectionString = process.env.DATABASE_HOST || "";
 const client = postgres(connectionString);
 
 export const db = drizzle(client, { schema });

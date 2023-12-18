@@ -35,6 +35,9 @@ importers:
       '@jamphlet/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@jamphlet/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@jamphlet/ui':
         specifier: workspace:*
         version: link:../../packages/ui
