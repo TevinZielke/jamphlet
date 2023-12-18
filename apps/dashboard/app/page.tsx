@@ -1,9 +1,8 @@
-import { authenticateUser, LogoutUser } from "@jamphlet/auth";
+import { authenticateUser, LogoutLink } from "@jamphlet/auth";
 
 import styles from "./page.module.css";
 import { redirect } from "next/navigation";
 import { getProjectUsers } from "@jamphlet/database";
-import { Button } from "../../../packages/ui/src/button";
 
 export default async function Page(): Promise<JSX.Element> {
   const isLoggedIn = await authenticateUser();
@@ -22,8 +21,7 @@ export default async function Page(): Promise<JSX.Element> {
         return <span key={id}>{JSON.stringify(pu.users.name)}</span>;
       })}
 
-      {/* <button onClick={LogoutUser}>Log Out</button> */}
-      <Button appName="dashboard">Click</Button>
+      <LogoutLink>Log Out</LogoutLink>
     </main>
   );
 }

@@ -169,19 +169,6 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
-  packages/db:
-    dependencies:
-      drizzle-orm:
-        specifier: ^0.29.1
-        version: 0.29.1(postgres@3.4.3)
-      postgres:
-        specifier: ^3.4.3
-        version: 3.4.3
-    devDependencies:
-      drizzle-kit:
-        specifier: ^0.20.6
-        version: 0.20.6
-
   packages/eslint-config:
     devDependencies:
       '@typescript-eslint/eslint-plugin':

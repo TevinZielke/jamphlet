@@ -22,10 +22,4 @@ export async function getAuthenticatedUser() {
   return await getUser();
 }
 
-export function LoginUser() {
-  return LoginLink;
-}
-
-export function LogoutUser() {
-  return LogoutLink;
-}
+export { LoginLink, LogoutLink };
