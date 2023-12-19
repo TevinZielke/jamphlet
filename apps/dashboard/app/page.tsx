@@ -49,7 +49,7 @@ export default async function Page(): Promise<JSX.Element> {
 
   return (
     <main className={styles.main}>
-      <h1>Hello, welcome to Jamphlet!</h1>
+      <h1>Helloo, welcome to Jamphlet!</h1>
       <div>
         <span>Projects: </span>
         {projects.map((project, i) => {
