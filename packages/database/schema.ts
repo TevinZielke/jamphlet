@@ -52,6 +52,7 @@ export const users = pgTable("users", {
   kindeId: text("kindeId").unique(),
   name: text("name").notNull(),
   email: text("email").unique().notNull(),
+  currentProjectId: integer("current_project_id").references(() => projects.id),
 
   createdAt: timestamp("createdAt", {
     mode: "date",
@@ -63,11 +64,12 @@ export const users = pgTable("users", {
   }).defaultNow(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
   usersOnOrganizations: many(usersOnOrganizations),
   usersOnProjects: many(usersOnProjects),
   clients: many(clients),
   invitations: many(invitations),
+  projects: one(projects),
 }));
 
 export const usersOnOrganizations = pgTable(
