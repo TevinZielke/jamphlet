@@ -50,6 +50,13 @@
       "when": 1702977241948,
       "tag": "0006_fresh_banshee",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1703002941480,
+      "tag": "0007_fresh_starjammers",
+      "breakpoints": true
     }
   ]
 }
