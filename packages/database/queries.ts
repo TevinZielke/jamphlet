@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import {
+  Client,
   Project,
   clients,
   pamphlets,
@@ -58,6 +59,16 @@ export async function getProjectUsers(projectId: number) {
 }
 
 // Clients
+export async function getClientById(
+  clientId: number,
+): Promise<Client | undefined> {
+  const result = db.query.clients.findFirst({
+    where: eq(clients.id, clientId),
+  });
+
+  return result;
+}
+
 export async function getClientsByUserId(userId: number) {
   const result = db.query.clients.findMany({
     where: eq(clients.userId, userId),
@@ -65,6 +76,12 @@ export async function getClientsByUserId(userId: number) {
 
   return result;
 }
+
+// export async function getClientsByProjectId(projectId: number): Promise<Client[] | undefined> {
+//   const result = db.query.clients.findMany({
+//     where: eq(clients)
+//   })
+// }
 
 // Pamphlets
 export async function getPamphlets() {

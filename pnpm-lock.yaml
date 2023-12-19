@@ -41,6 +41,9 @@ importers:
       '@jamphlet/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
       next:
         specifier: ^14.0.3
         version: 14.0.3(react-dom@18.2.0)(react@18.2.0)
@@ -156,6 +159,9 @@ importers:
       '@types/node':
         specifier: ^20.10.4
         version: 20.10.4
+      dotenv-cli:
+        specifier: ^7.3.0
+        version: 7.3.0
       drizzle-kit:
         specifier: ^0.20.6
         version: 0.20.6

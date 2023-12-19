@@ -13,7 +13,7 @@ import {
 export async function addKindeUser(
   newUser: NewUser,
   projectId: number,
-  organizationId: number
+  organizationId: number,
 ) {
   const insertedUsers = await db
     .insert(users)
@@ -38,29 +38,28 @@ export async function addKindeUser(
     organizationId: organizationId,
   };
 
-  await db
+  return await db
     .insert(usersOnOrganizations)
     .values(NewUsersOnOrganizations)
-    .execute();
+    .returning();
+  // .execute();
 
-  const result = await db.query.users.findFirst({
-    where: eq(users.id, userId),
-    columns: {
-      name: true,
-    },
-    with: {
-      usersOnProjects: {
-        columns: {},
-        with: {
-          project: {
-            columns: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  console.log("Result: ", JSON.stringify(result));
+  //   const result = await db.query.users.findFirst({
+  //     where: eq(users.id, userId),
+  //     columns: {
+  //       name: true,
+  //     },
+  //     with: {
+  //       usersOnProjects: {
+  //         columns: {},
+  //         with: {
+  //           project: {
+  //             columns: {
+  //               name: true,
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   });
 }

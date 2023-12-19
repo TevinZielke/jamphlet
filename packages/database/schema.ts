@@ -13,6 +13,11 @@ import {
 
 export const planEnum = pgEnum("plan", ["free", "pro"]);
 export const roleEnum = pgEnum("role", ["basic", "admin"]);
+export const invitationStatusEnum = pgEnum("invitation_status", [
+  "pending",
+  "accepted",
+  "declined",
+]);
 
 export const organizations = pgTable("organizations", {
   id: serial("id").primaryKey(),
@@ -20,7 +25,7 @@ export const organizations = pgTable("organizations", {
   plan: planEnum("plan").default("free"),
 });
 
-export const organizationRelations = relations(organizations, ({ many }) => ({
+export const organizationsRelations = relations(organizations, ({ many }) => ({
   usersOnOrganizations: many(usersOnOrganizations),
   projects: many(projects),
 }));
@@ -33,12 +38,13 @@ export const projects = pgTable("projects", {
     .references(() => organizations.id),
 });
 
-export const projectRelations = relations(projects, ({ one, many }) => ({
+export const projectsRelations = relations(projects, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [projects.organizationId],
     references: [organizations.id],
   }),
   usersOnProjects: many(usersOnProjects),
+  clientsOnProjects: many(clientsOnProjects),
 }));
 
 export const users = pgTable("users", {
@@ -57,10 +63,11 @@ export const users = pgTable("users", {
   }).defaultNow(),
 });
 
-export const userRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   usersOnOrganizations: many(usersOnOrganizations),
   usersOnProjects: many(usersOnProjects),
   clients: many(clients),
+  invitations: many(invitations),
 }));
 
 export const usersOnOrganizations = pgTable(
@@ -81,7 +88,7 @@ export const usersOnOrganizations = pgTable(
         columns: [table.userId, table.organizationId],
       }),
     };
-  }
+  },
 );
 
 export const usersOnOrganizationsRelations = relations(
@@ -95,12 +102,12 @@ export const usersOnOrganizationsRelations = relations(
       fields: [usersOnOrganizations.organizationId],
       references: [organizations.id],
     }),
-  })
+  }),
 );
 export const usersOnProjects = pgTable(
   "users_projects",
   {
-    id: serial("id").primaryKey(),
+    id: serial("id"),
     userId: integer("user_id")
       .notNull()
       .references(() => users.id),
@@ -113,7 +120,7 @@ export const usersOnProjects = pgTable(
     pk: primaryKey({
       columns: [table.userId, table.projectId],
     }),
-  })
+  }),
 );
 
 export const usersOnProjectsRelations = relations(
@@ -127,8 +134,34 @@ export const usersOnProjectsRelations = relations(
       fields: [usersOnProjects.projectId],
       references: [projects.id],
     }),
-  })
+  }),
 );
+
+export const invitations = pgTable("invitations", {
+  id: serial("id").primaryKey(),
+  inviterId: integer("inviter_id")
+    .notNull()
+    .references(() => users.id),
+  inviteeEmail: text("invitee_email").notNull(),
+  token: text("token"),
+  status: invitationStatusEnum("status").notNull().default("pending"),
+
+  createdAt: timestamp("createdAt", {
+    mode: "date",
+    withTimezone: true,
+  }).defaultNow(),
+  lastModified: timestamp("lastModified", {
+    mode: "date",
+    withTimezone: true,
+  }),
+});
+
+export const invitationsRelations = relations(invitations, ({ one }) => ({
+  inviter: one(users, {
+    fields: [invitations.inviterId],
+    references: [users.id],
+  }),
+}));
 
 export const clients = pgTable("clients", {
   id: serial("id").primaryKey(),
@@ -148,13 +181,46 @@ export const clients = pgTable("clients", {
   }).defaultNow(),
 });
 
-export const clientRelations = relations(clients, ({ one, many }) => ({
+export const clientsRelations = relations(clients, ({ one, many }) => ({
   user: one(users, {
     fields: [clients.userId],
     references: [users.id],
   }),
   pamphlets: many(pamphlets),
+  clientsOnProjects: many(clientsOnProjects),
 }));
+
+export const clientsOnProjects = pgTable(
+  "clients_projects",
+  {
+    id: serial("id"),
+    clientId: integer("client_id")
+      .notNull()
+      .references(() => clients.id),
+    projectId: integer("project_id")
+      .notNull()
+      .references(() => projects.id),
+  },
+  (table) => ({
+    pk: primaryKey({
+      columns: [table.clientId, table.projectId],
+    }),
+  }),
+);
+
+export const clientsOnProjectsRelations = relations(
+  clientsOnProjects,
+  ({ one }) => ({
+    client: one(clients, {
+      fields: [clientsOnProjects.clientId],
+      references: [clients.id],
+    }),
+    project: one(projects, {
+      fields: [clientsOnProjects.projectId],
+      references: [projects.id],
+    }),
+  }),
+);
 
 export const items = pgTable("items", {
   id: serial("id").primaryKey(),
@@ -174,12 +240,12 @@ export const items = pgTable("items", {
   }).defaultNow(),
 });
 
-export const itemRelations = relations(items, ({ one, many }) => ({
+export const itemsRelations = relations(items, ({ one, many }) => ({
   project: one(projects, {
     fields: [items.projectId],
     references: [projects.id],
   }),
-  pamphletItems: many(itemsOnPamphlets),
+  itemsOnPamphlets: many(itemsOnPamphlets),
 }));
 
 export const pamphlets = pgTable("pamphlets", {
@@ -191,7 +257,7 @@ export const pamphlets = pgTable("pamphlets", {
     .notNull()
     .references(() => clients.id),
   personalMessage: text("personalMessage").default(
-    "Welcome to your bespoke Jamphlet!"
+    "Welcome to your bespoke Jamphlet!",
   ),
 
   createdAt: timestamp("createdAt", {
@@ -204,7 +270,7 @@ export const pamphlets = pgTable("pamphlets", {
   }).defaultNow(),
 });
 
-export const pamphletRelations = relations(pamphlets, ({ one, many }) => ({
+export const pamphletsRelations = relations(pamphlets, ({ one, many }) => ({
   user: one(users, {
     fields: [pamphlets.userId],
     references: [users.id],
@@ -213,7 +279,7 @@ export const pamphletRelations = relations(pamphlets, ({ one, many }) => ({
     fields: [pamphlets.clientId],
     references: [clients.id],
   }),
-  itemPamphlets: many(itemsOnPamphlets),
+  itemsOnPamphlets: many(itemsOnPamphlets),
 }));
 
 export const itemsOnPamphlets = pgTable(
@@ -247,7 +313,7 @@ export const itemsOnPamphlets = pgTable(
         columns: [table.pamphletId, table.itemId],
       }),
     };
-  }
+  },
 );
 
 export const itemsOnPamphletsRelations = relations(
@@ -261,5 +327,5 @@ export const itemsOnPamphletsRelations = relations(
       fields: [itemsOnPamphlets.pamphletId],
       references: [pamphlets.id],
     }),
-  })
+  }),
 );
