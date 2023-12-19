@@ -6,9 +6,9 @@ module.exports = {
       process.env.KINDE_SITE_URL ?? `https://${process.env.VERCEL_URL}`,
     KINDE_POST_LOGOUT_REDIRECT_URL:
       process.env.KINDE_POST_LOGOUT_REDIRECT_URL ??
-      `https://${process.env.VERCEL_URL}`,
+      `https://${process.env.VERCEL_URL}/login`,
     KINDE_POST_LOGIN_REDIRECT_URL:
       process.env.KINDE_POST_LOGIN_REDIRECT_URL ??
-      `https://${process.env.VERCEL_URL}/dashboard`,
+      `https://${process.env.VERCEL_URL}`,
   },
 };
