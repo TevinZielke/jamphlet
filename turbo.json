@@ -2,7 +2,9 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "globalEnv": [
-    "NEXT_PUBLIC_DATABASE_NAME",
+    "KINDE_SITE_URL",
+    "KINDE_POST_LOGOUT_REDIRECT_URL",
+    "KINDE_POST_LOGIN_REDIRECT_URL",
     "KINDE_ISSUER_URL",
     "KINDE_CLIENT_ID",
     "KINDE_CLIENT_SECRET",
