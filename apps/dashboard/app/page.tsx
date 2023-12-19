@@ -21,6 +21,9 @@ export default async function Page(): Promise<JSX.Element> {
   const isLoggedIn = await authenticateUser();
 
   if (!isLoggedIn) {
+    console.log("not logged in");
+    console.log(process.env.KINDE_SITE_URL);
+
     redirect("/api/auth/login");
   }
 
