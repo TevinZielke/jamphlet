@@ -21,39 +21,38 @@ export default async function Page(): Promise<JSX.Element> {
   const isLoggedIn = await authenticateUser();
 
   if (!isLoggedIn) {
-    console.log("not logged in");
-    console.log(process.env.KINDE_SITE_URL);
-
     redirect("/api/auth/login");
   }
 
   const user = await getAuthenticatedUser();
-  if (!user || user == null || !user.id || !user.email) {
-    throw new Error("Authentication failed for: " + user);
-  }
+  console.log("user: ", user);
 
-  const dbUser = await getUserByKindeId(user.id);
+  // if (!user || user == null || !user.id || !user.email) {
+  //   throw new Error("Authentication failed for: " + user);
+  // }
 
-  if (!dbUser) {
-    const newUser: NewUser = {
-      kindeId: user.id,
-      name: user.given_name + " " + user.family_name,
-      email: user.email,
-    };
-    addKindeUser(newUser, projectId, organizationId);
-  }
+  // const dbUser = await getUserByKindeId(user.id);
 
-  if (!dbUser?.id) {
-    throw new Error("Error fetching dbUser.");
-  }
+  // if (!dbUser) {
+  //   const newUser: NewUser = {
+  //     kindeId: user.id,
+  //     name: user.given_name + " " + user.family_name,
+  //     email: user.email,
+  //   };
+  //   addKindeUser(newUser, projectId, organizationId);
+  // }
 
-  const projects = await getProjectsByUserId(dbUser?.id);
-  const clients = await getClientsByUserId(3);
+  // if (!dbUser?.id) {
+  //   throw new Error("Error fetching dbUser.");
+  // }
+
+  // const projects = await getProjectsByUserId(dbUser?.id);
+  // const clients = await getClientsByUserId(3);
 
   return (
     <main className={styles.main}>
       <h1>Helloo, welcome to Jamphlet!</h1>
-      <div>
+      {/* <div>
         <span>Projects: </span>
         {projects.map((project, i) => {
           return <span key={i}>{JSON.stringify(project.name)}</span>;
@@ -64,7 +63,7 @@ export default async function Page(): Promise<JSX.Element> {
         {clients.map((client, i) => {
           return <span key={i}>{JSON.stringify(client.name)}</span>;
         })}
-      </div>
+      </div> */}
       <LogoutLink>Log Out</LogoutLink>
     </main>
   );
