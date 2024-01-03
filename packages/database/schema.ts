@@ -9,6 +9,7 @@ import {
   boolean,
   primaryKey,
   varchar,
+  index,
 } from "drizzle-orm/pg-core";
 
 export const planEnum = pgEnum("plan", ["free", "pro"]);
@@ -165,23 +166,31 @@ export const invitationsRelations = relations(invitations, ({ one }) => ({
   }),
 }));
 
-export const clients = pgTable("clients", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  userId: integer("user_id")
-    .notNull()
-    .references(() => users.id),
-  notes: text("notes"),
-  createdAt: timestamp("createdAt", {
-    mode: "date",
-    withTimezone: true,
-  }).defaultNow(),
-  lastModified: timestamp("lastModified", {
-    mode: "date",
-    withTimezone: true,
-  }).defaultNow(),
-});
+export const clients = pgTable(
+  "clients",
+  {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id),
+    notes: text("notes"),
+    createdAt: timestamp("createdAt", {
+      mode: "date",
+      withTimezone: true,
+    }).defaultNow(),
+    lastModified: timestamp("lastModified", {
+      mode: "date",
+      withTimezone: true,
+    }).defaultNow(),
+  },
+  (table) => {
+    return {
+      userIdIndex: index("clientsAuthUserIdIdx").on(table.userId),
+    };
+  }
+);
 
 export const clientsRelations = relations(clients, ({ one, many }) => ({
   user: one(users, {

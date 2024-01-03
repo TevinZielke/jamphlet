@@ -1,11 +1,9 @@
+import { redirect } from "next/navigation";
 import {
   authenticateUser,
   getAuthenticatedUser,
   LogoutLink,
 } from "@jamphlet/auth";
-
-import styles from "./page.module.css";
-import { redirect } from "next/navigation";
 import {
   addKindeUser,
   getClientsByUserId,
@@ -13,6 +11,8 @@ import {
   getUserByKindeId,
   NewUser,
 } from "@jamphlet/database";
+import { Navigation } from "@/components/navigation";
+import styles from "./page.module.css";
 
 const projectId = 1;
 const organizationId = 1;
@@ -51,6 +51,8 @@ export default async function Page(): Promise<JSX.Element> {
 
   return (
     <main className={styles.main}>
+      <Navigation />
+
       <h1>Helloo, welcome to Jamphlet!</h1>
       <div>
         <span>Projects: </span>

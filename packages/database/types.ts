@@ -1,6 +1,7 @@
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import {
   clients,
+  invitations,
   items,
   organizations,
   pamphlets,
@@ -10,11 +11,16 @@ import {
   usersOnProjects,
 } from "./schema";
 
+export { invitationStatusEnum as InvitationStatus } from "./schema";
+
 export type Organization = InferSelectModel<typeof organizations>;
 export type NewOrganization = InferInsertModel<typeof organizations>;
 
 export type Project = InferSelectModel<typeof projects>;
 export type NewProject = InferInsertModel<typeof projects>;
+
+export type Invitation = InferSelectModel<typeof invitations>;
+export type NewInvitation = InferInsertModel<typeof invitations>;
 
 export type User = InferSelectModel<typeof users>;
 export type NewUser = InferInsertModel<typeof users>;

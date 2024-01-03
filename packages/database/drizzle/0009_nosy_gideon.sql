@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "clientsAuthUserIdIdx" ON "clients" ("user_id");
