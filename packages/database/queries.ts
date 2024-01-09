@@ -60,7 +60,7 @@ export async function getProjectUsers(projectId: number) {
 
 // Clients
 export async function getClientById(
-  clientId: number,
+  clientId: number
 ): Promise<Client | undefined> {
   const result = db.query.clients.findFirst({
     where: eq(clients.id, clientId),

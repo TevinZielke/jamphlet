@@ -8,12 +8,16 @@ import {
   NewUsersOnProjects,
   NewUsersOnOrganizations,
   usersOnOrganizations,
+  NewInvitation,
+  Invitation,
+  invitations,
+  InvitationStatus,
 } from "..";
 
 export async function addKindeUser(
   newUser: NewUser,
   projectId: number,
-  organizationId: number,
+  organizationId: number
 ) {
   const insertedUsers = await db
     .insert(users)
@@ -63,3 +67,14 @@ export async function addKindeUser(
   //     },
   //   });
 }
+
+export async function createInvitation(newInvitation: NewInvitation) {
+  const result = db.insert(invitations).values(newInvitation).returning();
+
+  return result;
+}
+
+// export async function updateInvitation(invitationId: number, newStatus: string) {
+//   const updatedInvitation: { updatedId: number }[] = await db.update(invitations).set({ status: newStatus}).where( eq(invitations.id, invitationId)).returning({ updatedId: invitations.id })
+//   return updatedInvitation;
+//  }

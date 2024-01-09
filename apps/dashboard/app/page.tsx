@@ -1,11 +1,11 @@
+// "use server";
+import { redirect } from "next/navigation";
+
 import {
   authenticateUser,
   getAuthenticatedUser,
   LogoutLink,
 } from "@jamphlet/auth";
-
-import styles from "./page.module.css";
-import { redirect } from "next/navigation";
 import {
   addKindeUser,
   getClientsByUserId,
@@ -13,6 +13,14 @@ import {
   getUserByKindeId,
   NewUser,
 } from "@jamphlet/database";
+import { Navigation } from "@/components/navigation";
+import styles from "./page.module.css";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+  useQuery,
+} from "@tanstack/react-query";
 
 const projectId = 1;
 const organizationId = 1;
@@ -25,7 +33,6 @@ export default async function Page(): Promise<JSX.Element> {
   }
 
   const user = await getAuthenticatedUser();
-  console.log("user: ", user);
 
   if (!user || user == null || !user.id || !user.email) {
     throw new Error("Authentication failed for: " + user);
@@ -46,25 +53,26 @@ export default async function Page(): Promise<JSX.Element> {
     throw new Error("Error fetching dbUser.");
   }
 
-  const projects = await getProjectsByUserId(dbUser?.id);
-  const clients = await getClientsByUserId(3);
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["projects"],
+    queryFn: () => getProjectsByUserId(dbUser.id),
+  });
+
+  await queryClient.prefetchQuery({
+    queryKey: ["clients"],
+    queryFn: () => getClientsByUserId(3),
+  });
 
   return (
-    <main className={styles.main}>
-      <h1>Helloo, welcome to Jamphlet!</h1>
-      <div>
-        <span>Projects: </span>
-        {projects.map((project, i) => {
-          return <span key={i}>{JSON.stringify(project.name)}</span>;
-        })}
-      </div>
-      <div>
-        <span>Clients: </span>
-        {clients.map((client, i) => {
-          return <span key={i}>{JSON.stringify(client.name)}</span>;
-        })}
-      </div>
-      <LogoutLink>Log Out</LogoutLink>
-    </main>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <main className={styles.main}>
+        <h1>Helloo, welcome to Jamphlet!</h1>
+        <Navigation />
+
+        <LogoutLink>Log Out</LogoutLink>
+      </main>
+    </HydrationBoundary>
   );
 }
