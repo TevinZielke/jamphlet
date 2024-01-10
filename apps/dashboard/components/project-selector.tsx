@@ -8,16 +8,15 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 
 export function ProjectSelector() {
-  const userId = 1;
+  const testUserId = 3;
   const { data } = useQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjectsByUserId(userId),
+    queryKey: ["projects", testUserId],
+    queryFn: () => getProjectsByUserId(testUserId),
   });
 
   const lastVisitedProject = data ? data?.at(0)?.name : "Select a project";
@@ -29,7 +28,6 @@ export function ProjectSelector() {
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Projects</SelectLabel>
           {data?.map((project) => (
             <SelectItem key={project.id} value={project.name}>
               {project.name}

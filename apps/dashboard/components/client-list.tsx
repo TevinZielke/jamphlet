@@ -7,11 +7,11 @@ import { columns } from "./clientTable/columns";
 import { DataTable } from "./clientTable/data-table";
 
 export function ClientList() {
-  const userId = 3;
+  const testUserId = 3;
 
   const { data } = useQuery({
-    queryKey: ["clients"],
-    queryFn: () => getClientsByUserId(userId),
+    queryKey: ["clients", testUserId],
+    queryFn: () => getClientsByUserId(testUserId),
   });
 
   if (!data) return null;
