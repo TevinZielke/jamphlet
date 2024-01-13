@@ -1,24 +1,37 @@
 "use client";
 
-import { getClientsByUserId } from "@jamphlet/database";
+import { getClientsWithPamphletsByUserId } from "@jamphlet/database";
 import { useQuery } from "@tanstack/react-query";
-
-import { columns } from "./clientTable/columns";
-import { DataTable } from "./clientTable/data-table";
+import { ScrollArea } from "./ui/scroll-area";
+import { useClient, useSetClient } from "lib/use-client";
 
 export function ClientList() {
+  const [clientAtom, setClientAtom] = useClient();
+
   const testUserId = 3;
 
   const { data } = useQuery({
-    queryKey: ["clients", testUserId],
-    queryFn: () => getClientsByUserId(testUserId),
+    queryKey: ["clientsWithPamphlets", testUserId],
+    queryFn: () => getClientsWithPamphletsByUserId(testUserId),
   });
 
   if (!data) return null;
   return (
     <div>
       Client List
-      <DataTable columns={columns} data={data} />
+      <ScrollArea>
+        {data.map((client) => (
+          <div
+            key={client.id}
+            className=" bg-red-600"
+            onClick={() => setClientAtom(client.id)}
+          >
+            <p>
+              Name: {client.name}, Id: {client.id}
+            </p>
+          </div>
+        ))}
+      </ScrollArea>
     </div>
   );
 }

@@ -7,8 +7,8 @@ import {
 } from "@jamphlet/auth";
 import {
   addKindeUser,
-  getClientById,
   getClientsByUserId,
+  getClientsWithPamphletsByUserId,
   getPamphletByClientId,
   getProjectsByUserId,
   getUserByKindeId,
@@ -66,9 +66,8 @@ export default async function Page(): Promise<JSX.Element> {
   }
 
   const queryClient = new QueryClient();
-
   const testUserId = 3;
-  const testClientId = 7;
+  // const testClientId = 8;
 
   await queryClient.prefetchQuery({
     queryKey: ["user", kindeUser.id],
@@ -80,19 +79,25 @@ export default async function Page(): Promise<JSX.Element> {
     queryFn: () => getProjectsByUserId(testUserId),
   });
 
-  await queryClient.prefetchQuery({
-    queryKey: ["clients", testUserId],
-    queryFn: () => getClientsByUserId(testUserId),
-  });
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["clients", testUserId],
+  //   queryFn: () => getClientsByUserId(testUserId),
+  // });
 
-  await queryClient.prefetchQuery({
-    queryKey: ["client", testClientId],
-    queryFn: () => getClientById(testClientId),
-  });
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["client", testClientId],
+  //   queryFn: () => getClientById(testClientId),
+  // });
 
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["pamphlet", testClientId],
+  //   queryFn: () => getPamphletByClientId(testClientId),
+  // });
+
+  // -> infinite query
   await queryClient.prefetchQuery({
-    queryKey: ["pamphlet", testClientId],
-    queryFn: () => getPamphletByClientId(testClientId),
+    queryKey: ["clientsWithPamphlets", testUserId],
+    queryFn: () => getClientsWithPamphletsByUserId(testUserId),
   });
 
   return (
@@ -104,7 +109,6 @@ export default async function Page(): Promise<JSX.Element> {
         >
           <ResizablePanel defaultSize={20}>
             <div className="flex flex-col h-full items-center justify-center">
-              {/* <span className="font-semibold">Sidebar</span> */}
               <div className="flex h-[52px] items-center justify-center px-2">
                 <ProjectSelector />
               </div>

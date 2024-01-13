@@ -107,3 +107,23 @@ export async function getPamphletByClientId(clientId: number) {
 
   return result;
 }
+
+// Clients
+export async function getClientsWithPamphletsByUserId(userId: number) {
+  const result = db.query.clients.findMany({
+    where: eq(clients.userId, userId),
+    with: {
+      pamphlets: {
+        with: {
+          itemsOnPamphlets: {
+            with: {
+              item: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return result;
+}

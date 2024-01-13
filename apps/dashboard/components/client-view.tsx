@@ -1,38 +1,45 @@
 "use client";
 
-import { getClientById, getPamphletByClientId } from "@jamphlet/database";
+import { getClientsWithPamphletsByUserId } from "@jamphlet/database";
 import { useQuery } from "@tanstack/react-query";
+import { useClient } from "lib/use-client";
 
 export function ClientView() {
-  const clientId = 7;
+  const testUserId = 3;
+  const [clientId] = useClient();
 
-  const { data: clientData } = useQuery({
-    queryKey: ["client", clientId],
-    queryFn: () => getClientById(clientId),
+  const { data } = useQuery({
+    queryKey: ["clientsWithPamphlets", testUserId],
+    queryFn: () => getClientsWithPamphletsByUserId(testUserId),
   });
 
-  const { data: pamphletData } = useQuery({
-    queryKey: ["pamphlet", clientId],
-    queryFn: () => getPamphletByClientId(clientId),
-  });
+  const client = data?.find((c) => c.id === clientId);
+  const pamphlet = client?.pamphlets.at(0);
 
   return (
-    <div className=" flex-col">
-      <div>
-        <h2>{clientData?.name}</h2>
-        <p>{clientData?.email}</p>
-      </div>
-      <div>
-        <p>Personal message: {pamphletData?.personalMessage}</p>
-        <div>
-          <span>Selected residences:</span>
-          {pamphletData?.itemsOnPamphlets.map((item) => (
-            <p key={item.itemId}>
-              {item.item.name}: {item.comment}
-            </p>
-          ))}
+    <>
+      {clientId === 0 ? (
+        <div>No Client selected.</div>
+      ) : (
+        <div className=" flex-col">
+          <div>
+            <h2>Client Name: {client?.name}</h2>
+            <p>Client Email: {client?.email}</p>
+            <p>Client Id: {client?.id}</p>
+          </div>
+          <div>
+            <p>Personal message: {pamphlet?.personalMessage}</p>
+            <div>
+              <span>Selected residences:</span>
+              {pamphlet?.itemsOnPamphlets.map((iop) => (
+                <p key={iop.itemId}>
+                  {iop.item.name}: {iop.comment}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
