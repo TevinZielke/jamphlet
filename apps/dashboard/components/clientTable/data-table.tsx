@@ -64,6 +64,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { ClientForm } from "../client-form";
 
 // export type Client = {
 //   id: string;
@@ -195,7 +204,7 @@ export function DataTable(input: any) {
           }}
           className="max-w-sm"
         />
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
               <TooltipProvider>
@@ -293,11 +302,25 @@ export function DataTable(input: any) {
                 </DropdownMenuPortal>
               </DropdownMenuSub>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Plus className="mr-2 h-4 w-4" />
-                <span>New Client</span>
-                <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-              </DropdownMenuItem>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    <span>New Client</span>
+                    <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create new client</DialogTitle>
+                    <DialogDescription>
+                      Add a new client to your list. You can still make changes
+                      later.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ClientForm />
+                </DialogContent>
+              </Dialog>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>

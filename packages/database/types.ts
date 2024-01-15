@@ -1,4 +1,6 @@
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { z } from "zod";
 import {
   clients,
   invitations,
@@ -35,8 +37,19 @@ export type NewUsersOnOrganizations = InferInsertModel<
 export type UsersOnProjects = InferSelectModel<typeof usersOnProjects>;
 export type NewUsersOnProjects = InferInsertModel<typeof usersOnProjects>;
 
+/**
+ * Client
+ */
 export type Client = InferSelectModel<typeof clients>;
 export type NewClient = InferInsertModel<typeof clients>;
+export const insertClientSchema = createInsertSchema(clients, {
+  name: z.string().min(1, { message: "Name must be at least one character." }),
+  email: z.string().email(),
+  notes: z
+    .string()
+    .max(500, { message: "Note can't be longer than 500 characters." }),
+  // .optional(),
+});
 
 export type Item = InferSelectModel<typeof items>;
 export type NewItem = InferInsertModel<typeof items>;

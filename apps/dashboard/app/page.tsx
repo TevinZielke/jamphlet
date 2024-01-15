@@ -31,9 +31,7 @@ import { ClientList } from "@/components/client-list";
 import { ClientView } from "@/components/client-view";
 import { ProjectSelector } from "@/components/project-selector";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
-import { Search } from "lucide-react";
+import getQueryClient from "lib/getQueryClient";
 
 const projectId = 1;
 const organizationId = 1;
@@ -68,8 +66,10 @@ export default async function Page(): Promise<JSX.Element> {
     throw new Error("Error fetching dbUser.");
   }
 
+  // const queryClient = getQueryClient();
   const queryClient = new QueryClient();
-  const testUserId = 2;
+
+  const testUserId = dbUser.id;
   // const testClientId = 8;
 
   await queryClient.prefetchQuery({
@@ -118,7 +118,6 @@ export default async function Page(): Promise<JSX.Element> {
             <Navigation />
             <Separator />
             <LogoutLink>Log Out</LogoutLink>
-            {/* </div> */}
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={33} minSize={25} maxSize={50}>
@@ -132,7 +131,7 @@ export default async function Page(): Promise<JSX.Element> {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={55} minSize={40} maxSize={60}>
-            <div className="flex h-full items-center justify-center p-6">
+            <div className="h-full p-2">
               <ClientView />
             </div>
           </ResizablePanel>

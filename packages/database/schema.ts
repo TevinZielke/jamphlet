@@ -175,7 +175,7 @@ export const clients = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => users.id),
-    notes: text("notes"),
+    notes: text("notes").notNull().default(""),
     createdAt: timestamp("createdAt", {
       mode: "date",
       withTimezone: true,
