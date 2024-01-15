@@ -1,8 +1,10 @@
 import { eq } from "drizzle-orm";
 import {
   Client,
+  Pamphlet,
   Project,
   clients,
+  items,
   pamphlets,
   users,
   usersOnOrganizations,
@@ -89,4 +91,39 @@ export async function getPamphlets() {
     .select()
     .from(users)
     .leftJoin(pamphlets, eq(users.id, pamphlets.userId));
+}
+
+export async function getPamphletByClientId(clientId: number) {
+  const result = db.query.pamphlets.findFirst({
+    where: eq(pamphlets.clientId, clientId),
+    with: {
+      itemsOnPamphlets: {
+        with: {
+          item: true,
+        },
+      },
+    },
+  });
+
+  return result;
+}
+
+// Clients
+export async function getClientsWithPamphletsByUserId(userId: number) {
+  const result = db.query.clients.findMany({
+    where: eq(clients.userId, userId),
+    with: {
+      pamphlets: {
+        with: {
+          itemsOnPamphlets: {
+            with: {
+              item: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return result;
 }

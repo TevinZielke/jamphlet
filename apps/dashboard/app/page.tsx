@@ -1,4 +1,3 @@
-// "use server";
 import { redirect } from "next/navigation";
 
 import {
@@ -9,6 +8,8 @@ import {
 import {
   addKindeUser,
   getClientsByUserId,
+  getClientsWithPamphletsByUserId,
+  getPamphletByClientId,
   getProjectsByUserId,
   getUserByKindeId,
   NewUser,
@@ -19,32 +20,46 @@ import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
-  useQuery,
 } from "@tanstack/react-query";
+import { unstable_noStore as noStore } from "next/cache";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import { ClientList } from "@/components/client-list";
+import { ClientView } from "@/components/client-view";
+import { ProjectSelector } from "@/components/project-selector";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import { Search } from "lucide-react";
 
 const projectId = 1;
 const organizationId = 1;
 
 export default async function Page(): Promise<JSX.Element> {
+  noStore();
+
   const isLoggedIn = await authenticateUser();
 
   if (!isLoggedIn) {
     redirect("/api/auth/login");
   }
 
-  const user = await getAuthenticatedUser();
+  const kindeUser = await getAuthenticatedUser();
 
-  if (!user || user == null || !user.id || !user.email) {
-    throw new Error("Authentication failed for: " + user);
+  if (!kindeUser || kindeUser == null || !kindeUser.id || !kindeUser.email) {
+    throw new Error("Authentication failed for: " + kindeUser);
   }
 
-  const dbUser = await getUserByKindeId(user.id);
+  const dbUser = await getUserByKindeId(kindeUser.id);
 
   if (!dbUser) {
     const newUser: NewUser = {
-      kindeId: user.id,
-      name: user.given_name + " " + user.family_name,
-      email: user.email,
+      kindeId: kindeUser.id,
+      name: kindeUser.given_name + " " + kindeUser.family_name,
+      email: kindeUser.email,
     };
     addKindeUser(newUser, projectId, organizationId);
   }
@@ -54,24 +69,74 @@ export default async function Page(): Promise<JSX.Element> {
   }
 
   const queryClient = new QueryClient();
+  const testUserId = 2;
+  // const testClientId = 8;
 
   await queryClient.prefetchQuery({
-    queryKey: ["projects"],
-    queryFn: () => getProjectsByUserId(dbUser.id),
+    queryKey: ["user", kindeUser.id],
+    queryFn: () => getUserByKindeId(kindeUser.id),
   });
 
   await queryClient.prefetchQuery({
-    queryKey: ["clients"],
-    queryFn: () => getClientsByUserId(3),
+    queryKey: ["projects", testUserId],
+    queryFn: () => getProjectsByUserId(testUserId),
+  });
+
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["clients", testUserId],
+  //   queryFn: () => getClientsByUserId(testUserId),
+  // });
+
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["client", testClientId],
+  //   queryFn: () => getClientById(testClientId),
+  // });
+
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["pamphlet", testClientId],
+  //   queryFn: () => getPamphletByClientId(testClientId),
+  // });
+
+  // -> infinite query
+  await queryClient.prefetchQuery({
+    queryKey: ["clientsWithPamphlets", testUserId],
+    queryFn: () => getClientsWithPamphletsByUserId(testUserId),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <main className={styles.main}>
-        <h1>Helloo, welcome to Jamphlet!</h1>
-        <Navigation />
-
-        <LogoutLink>Log Out</LogoutLink>
+        <ResizablePanelGroup
+          direction="horizontal"
+          className=" min-h-full w-full rounded-lg border"
+        >
+          <ResizablePanel defaultSize={12} minSize={10} maxSize={20}>
+            <div className="flex h-[52px] items-center justify-center px-2">
+              <ProjectSelector />
+            </div>
+            <Separator />
+            <Navigation />
+            <Separator />
+            <LogoutLink>Log Out</LogoutLink>
+            {/* </div> */}
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={33} minSize={25} maxSize={50}>
+            <div className="flex flex-col items-start px-4 py-2">
+              <h1 className="text-xl font-bold">Clients</h1>
+            </div>
+            <Separator />
+            <div className=" p-4">
+              <ClientList />
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={55} minSize={40} maxSize={60}>
+            <div className="flex h-full items-center justify-center p-6">
+              <ClientView />
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </main>
     </HydrationBoundary>
   );
