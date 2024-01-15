@@ -197,18 +197,18 @@ export function DataTable(input: any) {
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline">
+            <Button variant="outline">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
                     <MoreHorizontal />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Options</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Options</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuGroup>
@@ -405,7 +405,7 @@ export function DataTable(input: any) {
          * Render clients as cards
          */
         <ScrollArea>
-          <div className="flex flex-col gap-2 p-4 pt-0">
+          <div className="flex flex-col gap-2">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
                 return (
