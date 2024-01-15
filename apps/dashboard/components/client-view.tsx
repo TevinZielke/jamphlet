@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useClient } from "lib/use-client";
 
 export function ClientView() {
-  const testUserId = 3;
+  const testUserId = 2;
   const [clientId] = useClient();
 
   const { data } = useQuery({

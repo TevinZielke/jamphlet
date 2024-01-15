@@ -5,6 +5,6 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const client = postgres(process.env.DATABASE_CONNECTION_STRING || "");
+const client = postgres(process.env.DATABASE_CONNECTION_POOL_STRING || "");
 
 export const db = drizzle(client, { schema });

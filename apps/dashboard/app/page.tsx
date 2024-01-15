@@ -31,6 +31,9 @@ import { ClientList } from "@/components/client-list";
 import { ClientView } from "@/components/client-view";
 import { ProjectSelector } from "@/components/project-selector";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@radix-ui/react-tabs";
+import { Search } from "lucide-react";
 
 const projectId = 1;
 const organizationId = 1;
@@ -66,7 +69,7 @@ export default async function Page(): Promise<JSX.Element> {
   }
 
   const queryClient = new QueryClient();
-  const testUserId = 3;
+  const testUserId = 2;
   // const testClientId = 8;
 
   await queryClient.prefetchQuery({
@@ -105,27 +108,30 @@ export default async function Page(): Promise<JSX.Element> {
       <main className={styles.main}>
         <ResizablePanelGroup
           direction="horizontal"
-          className="min-h-[600px] h-full w-full rounded-lg border"
+          className=" min-h-full w-full rounded-lg border"
         >
-          <ResizablePanel defaultSize={20}>
-            <div className="flex flex-col h-full items-center justify-center">
-              <div className="flex h-[52px] items-center justify-center px-2">
-                <ProjectSelector />
-              </div>
-              <Separator />
-              <Navigation />
-              <Separator />
-              <LogoutLink>Log Out</LogoutLink>
+          <ResizablePanel defaultSize={12} minSize={10} maxSize={20}>
+            <div className="flex h-[52px] items-center justify-center px-2">
+              <ProjectSelector />
             </div>
+            <Separator />
+            <Navigation />
+            <Separator />
+            <LogoutLink>Log Out</LogoutLink>
+            {/* </div> */}
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={30}>
-            <div className="flex h-full items-center justify-center p-6">
+          <ResizablePanel defaultSize={33} minSize={25} maxSize={50}>
+            <div className="flex flex-col items-start px-4 py-2">
+              <h1 className="text-xl font-bold">Clients</h1>
+            </div>
+            <Separator />
+            <div className=" p-4">
               <ClientList />
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={50}>
+          <ResizablePanel defaultSize={55} minSize={40} maxSize={60}>
             <div className="flex h-full items-center justify-center p-6">
               <ClientView />
             </div>
