@@ -1,28 +1,13 @@
-"use client";
-
-import { getClientsWithPamphletsByUserId } from "@jamphlet/database";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getClients,
+  getClientsWithPamphletsByUserId,
+} from "@jamphlet/database";
 import { DataTable } from "./clientTable/data-table";
 
-export function ClientList() {
+export async function ClientList() {
   const testUserId = 4;
-
-  const queryClient = useQueryClient();
-
-  const { data } = useQuery({
-    queryKey: ["clientsWithPamphlets", testUserId],
-    queryFn: () => getClientsWithPamphletsByUserId(testUserId),
-  });
-
-  function invalidate() {
-    queryClient.invalidateQueries();
-  }
+  const data = await getClients(testUserId);
 
   if (!data) return null;
-  return (
-    <>
-      <button onClick={() => invalidate()}>Invalidate</button>
-      <DataTable data={data} />
-    </>
-  );
+  return <DataTable data={data} />;
 }

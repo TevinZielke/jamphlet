@@ -16,6 +16,8 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import getQueryClient from "lib/getQueryClient";
+import { revalidatePath } from "next/cache";
 
 // function onSubmit(values: z.infer<typeof insertClientSchema>) {
 //   console.log("Values: ", values);
@@ -39,23 +41,10 @@ export function ClientForm() {
     mode: "onChange",
   });
 
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: (input: NewClient) => {
-      return addClient(input);
-    },
-    onSuccess: async () => {
-      console.log("Success");
-      queryClient.invalidateQueries({ queryKey: ["clientsWithPamphlets", 4] });
-    },
-  });
-
   const onSubmit = (values: z.infer<typeof insertClientSchema>) => {
     console.log("onSubmit", values);
     const newClient: NewClient = values;
-
-    mutation.mutate(newClient);
+    addClient(newClient);
   };
 
   return (

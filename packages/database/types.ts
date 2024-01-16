@@ -12,6 +12,7 @@ import {
   usersOnOrganizations,
   usersOnProjects,
 } from "./schema";
+import { getClientsWithPamphletsByUserId } from ".";
 
 export { invitationStatusEnum as InvitationStatus } from "./schema";
 
@@ -50,6 +51,9 @@ export const insertClientSchema = createInsertSchema(clients, {
     .max(500, { message: "Note can't be longer than 500 characters." }),
   // .optional(),
 });
+export type ClientsWithPamphlet = Awaited<
+  ReturnType<typeof getClientsWithPamphletsByUserId>
+>;
 
 export type Item = InferSelectModel<typeof items>;
 export type NewItem = InferInsertModel<typeof items>;

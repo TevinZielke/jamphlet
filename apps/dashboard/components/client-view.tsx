@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { insertClientSchema } from "@jamphlet/database";
+import { ClientsWithPamphlet, insertClientSchema } from "@jamphlet/database";
 
 import { getClientsWithPamphletsByUserId } from "@jamphlet/database";
 import { useQuery } from "@tanstack/react-query";
@@ -11,17 +11,25 @@ import { useClient } from "lib/use-client";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 
-export function ClientView() {
+type ClientViewProps = {
+  data: ClientsWithPamphlet | null;
+};
+
+export function ClientView({ data }: ClientViewProps) {
   const testUserId = 4;
   const [clientId] = useClient();
 
-  const { data } = useQuery({
-    queryKey: ["clientsWithPamphlets", testUserId],
-    queryFn: () => getClientsWithPamphletsByUserId(testUserId),
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["clientsWithPamphlets", testUserId],
+  //   queryFn: () => getClientsWithPamphletsByUserId(testUserId),
+  // });
+
+  console.log("CW: ", data);
 
   const client = data?.find((c) => c.id === clientId);
   const pamphlet = client?.pamphlets.at(0);
+
+  if (!data) return null;
 
   return (
     <>

@@ -22,10 +22,11 @@ export function ClientPreview(inputData: any) {
 
   const testUserId = 2;
 
-  const { data } = useQuery({
-    queryKey: ["clientsWithPamphlets", testUserId],
-    queryFn: () => getClientsWithPamphletsByUserId(testUserId),
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["clientsWithPamphlets", testUserId],
+  //   queryFn: () => getClientsWithPamphletsByUserId(testUserId),
+  // });
+  const data = client;
 
   if (!data) return null;
   return (

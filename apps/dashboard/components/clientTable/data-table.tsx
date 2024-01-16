@@ -55,7 +55,7 @@ import {
 } from "@/components/ui/table";
 import { ClientPreview } from "../client-preview";
 import { ScrollArea } from "../ui/scroll-area";
-import { Client } from "@jamphlet/database";
+import { Client, getClientsWithPamphletsByUserId } from "@jamphlet/database";
 import { useClient } from "lib/use-client";
 import { cn } from "lib/utils";
 import {
@@ -73,6 +73,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { ClientForm } from "../client-form";
+import { useQuery } from "@tanstack/react-query";
 
 // export type Client = {
 //   id: string;
@@ -155,6 +156,10 @@ export const columns: ColumnDef<Client>[] = [
 export function DataTable(input: any) {
   const [clientAtom, setClientAtom] = useClient();
   const data = input.data;
+  if (!data) return null;
+
+  // const data = d.data
+
   const [sortingMode, setSortingMode] = React.useState("Name ASC");
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
