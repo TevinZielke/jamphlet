@@ -1,7 +1,7 @@
 "use client";
 import { ClientsWithPamphlet, deleteClient } from "@jamphlet/database";
 
-import { useClient } from "lib/use-client";
+import { useClientAtom } from "lib/use-client";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { DeleteDialog } from "./delete-dialog";
@@ -15,7 +15,7 @@ type ClientViewProps = {
 };
 
 export function ClientView({ data }: ClientViewProps) {
-  const [clientId, setClientId] = useClient();
+  const [clientId, setClientId] = useClientAtom();
 
   const confirm = async () => {
     const res = await deleteClient(clientId);
@@ -92,6 +92,7 @@ export function ClientView({ data }: ClientViewProps) {
           </div>
           <div>
             <PamphletForm clientId={clientId} />
+            {/* <PamphletForm client={}/> */}
           </div>
           <div>
             <Image alt="test" src={imaageUrl} width={400} height={300} />

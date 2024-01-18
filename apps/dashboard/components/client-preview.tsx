@@ -2,7 +2,7 @@
 
 import { getClientsWithPamphletsByUserId } from "@jamphlet/database";
 import { useQuery } from "@tanstack/react-query";
-import { useClient, useSetClient } from "lib/use-client";
+import { useClientAtom } from "lib/use-client";
 import { cn } from "lib/utils";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 
@@ -18,7 +18,7 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 // TODO: change type
 export function ClientPreview(inputData: any) {
   const client = inputData.client;
-  const [clientAtom, setClientAtom] = useClient();
+  const [clientAtom, setClientAtom] = useClientAtom();
 
   if (!client) return null;
   return (

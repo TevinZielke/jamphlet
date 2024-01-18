@@ -30,7 +30,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "./ui/dialog";
-import { useClient } from "lib/use-client";
+import { useClientAtom } from "lib/use-client";
 
 export function ClientFormDialog() {
   return (
@@ -63,13 +63,14 @@ export function ClientForm() {
     mode: "onChange",
   });
 
-  const [clientAtom, setClientAtom] = useClient();
+  const [clientAtom, setClientAtom] = useClientAtom();
 
   const onSubmit = async (values: z.infer<typeof insertClientSchema>) => {
     const newClient: NewClient = values;
     const insertedClient = await addClient(newClient);
     const icid = insertedClient.at(0)?.insertedId;
     icid && addPamphlet(4, icid).then(() => setClientAtom(icid));
+    console.log("Client atom after submit", clientAtom);
   };
 
   return (

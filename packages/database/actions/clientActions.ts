@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 import {
+  Client,
   NewClient,
   NewPamphlet,
   clients,
@@ -10,7 +11,8 @@ import {
   getClientsWithPamphletsByUserId,
   pamphlets,
 } from "..";
-import { eq } from "drizzle-orm/sql";
+import { eq, sql } from "drizzle-orm/sql";
+import { timestamp } from "drizzle-orm/pg-core";
 
 /**
  * GET
@@ -77,14 +79,72 @@ export async function addPamphlet(userId: number, clientId: number) {
 }
 
 export async function updatePamphlet(newPamphlet: NewPamphlet) {
-  const insertedPamphlet = await db
-    .update(pamphlets)
-    .set(newPamphlet)
-    .where(eq(pamphlets.clientId, newPamphlet.clientId))
-    .returning({
-      updatedId: pamphlets.clientId,
-    });
+  console.log("newPamphletAction", newPamphlet);
+
+  const updatedRecord = await db.transaction(async (tx) => {
+    await tx
+      .update(pamphlets)
+      .set(newPamphlet)
+      .where(eq(pamphlets.clientId, newPamphlet.clientId));
+
+    const [client] = await tx
+      .update(clients)
+      .set({
+        lastModified: new Date(),
+      })
+      .where(eq(clients.id, newPamphlet.clientId))
+      .returning({ upatedId: clients.id });
+
+    return client?.upatedId;
+  });
+
   revalidatePath("/");
 
-  return insertedPamphlet;
+  return updatedRecord;
 }
+// const insertedPamphlet = await db
+//   .update(pamphlets)
+//   .set(newPamphlet)
+//   .where(eq(pamphlets.clientId, newPamphlet.clientId))
+//   .returning({
+//     updatedId: pamphlets.clientId,
+//   });
+
+/**
+ * Keep as upserting ref
+ */
+// export async function upsertPamphlet(newPamphlet: NewPamphlet) {
+//   console.log("upsertPamphletAction: ", newPamphlet);
+//   // const upsertedPamphlet = await db
+//   //   .insert(pamphlets)
+//   //   .values(newPamphlet)
+//   //   .onConflictDoUpdate({
+//   //     target: pamphlets.clientId,
+//   //     set: { ...newPamphlet },
+//   //     // where: sql`${pamphlets.clientId} = ${newPamphlet.clientId}`,
+//   //   })
+//   //   .returning({
+//   //     updatedId: pamphlets.clientId,
+//   //   });
+
+//   const upsertedRecord = await db.transaction(async (tx) => {
+//     await tx.insert(pamphlets).values(newPamphlet).onConflictDoUpdate({
+//       target: pamphlets.clientId,
+//       set: newPamphlet,
+//     });
+
+//     const [client] = await tx
+//       .update(clients)
+//       .set({
+//         lastModified: new Date(),
+//       })
+//       .where(eq(clients.id, newPamphlet.clientId))
+//       .returning({ updatedClient: clients.name });
+
+//     return client?.updatedClient;
+//   });
+
+//   revalidatePath("/");
+
+//   return upsertedRecord;
+// }

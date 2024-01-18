@@ -1,0 +1,1 @@
+ALTER TABLE "pamphlets" ADD CONSTRAINT "pamphlets_client_id_unique" UNIQUE("client_id");

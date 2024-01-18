@@ -266,6 +266,7 @@ export const pamphlets = pgTable("pamphlets", {
     .references(() => users.id),
   clientId: integer("client_id")
     .notNull()
+    .unique()
     .references(() => clients.id),
   personalMessage: text("personalMessage").default(
     "Welcome to your bespoke Jamphlet!"

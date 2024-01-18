@@ -55,8 +55,12 @@ import {
 } from "@/components/ui/table";
 import { ClientPreview } from "../client-preview";
 import { ScrollArea } from "../ui/scroll-area";
-import { Client, getClientsWithPamphletsByUserId } from "@jamphlet/database";
-import { useClient } from "lib/use-client";
+import {
+  Client,
+  getClientsWithPamphletsByUserId,
+  insertPamphletSchema,
+} from "@jamphlet/database";
+import { useClientAtom } from "lib/use-client";
 import { cn } from "lib/utils";
 import {
   Tooltip,
@@ -73,7 +77,6 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { ClientForm } from "../client-form";
-import { useQuery } from "@tanstack/react-query";
 
 // export type Client = {
 //   id: string;
@@ -97,6 +100,60 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 export const hiddenColumns = ["lastModified"];
 
+// export const columns: ColumnDef<Client>[] = [
+//   {
+//     accessorKey: "name",
+//     header: "Name",
+//     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+//     filterFn: fuzzyFilter,
+//   },
+//   {
+//     accessorKey: "email",
+//     header: "Email",
+//     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+//     filterFn: fuzzyFilter,
+//   },
+//   {
+//     accessorKey: "lastModified",
+//     header: "Last Modified",
+//     cell: ({ row }) => (
+//       <div className="lowercase">{row.getValue("lastModified")}</div>
+//     ),
+//     filterFn: fuzzyFilter,
+//     enableHiding: true,
+//   },
+//   {
+//     id: "actions",
+//     enableHiding: false,
+//     cell: ({ row }) => {
+//       const client = row.original;
+
+//       return (
+//         <DropdownMenu>
+//           <DropdownMenuTrigger asChild>
+//             <Button variant="ghost" className="h-8 w-8 p-0">
+//               <span className="sr-only">Open menu</span>
+//               <MoreHorizontal className="h-4 w-4" />
+//             </Button>
+//           </DropdownMenuTrigger>
+//           <DropdownMenuContent align="end">
+//             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+//             <DropdownMenuItem
+//               onClick={() =>
+//                 navigator.clipboard.writeText(client.id.toString())
+//               }
+//             >
+//               Copy client ID
+//             </DropdownMenuItem>
+//             <DropdownMenuSeparator />
+//             <DropdownMenuItem>View client</DropdownMenuItem>
+//             <DropdownMenuItem>Delete client</DropdownMenuItem>
+//           </DropdownMenuContent>
+//         </DropdownMenu>
+//       );
+//     },
+//   },
+// ];
 export const columns: ColumnDef<Client>[] = [
   {
     accessorKey: "name",
@@ -154,7 +211,7 @@ export const columns: ColumnDef<Client>[] = [
 
 // Type
 export function DataTable(input: any) {
-  const [clientAtom, setClientAtom] = useClient();
+  const [clientAtom, setClientAtom] = useClientAtom();
   const data = input.data;
   if (!data) return null;
 

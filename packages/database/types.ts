@@ -60,7 +60,7 @@ export type NewItem = InferInsertModel<typeof items>;
 
 export type Pamphlet = InferSelectModel<typeof pamphlets>;
 export type NewPamphlet = InferInsertModel<typeof pamphlets>;
-export const insertedPamphletSchema = createInsertSchema(pamphlets, {
+export const insertPamphletSchema = createInsertSchema(pamphlets, {
   // personalMessage: z
   //   .string()
   //   .max(500, { message: "Personal message must be 500 characters or fewer." }),

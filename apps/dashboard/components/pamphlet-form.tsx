@@ -2,9 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Client,
   NewPamphlet,
-  insertedPamphletSchema,
+  Pamphlet,
+  insertPamphletSchema,
+  //   updateClient,
   updatePamphlet,
+  //   upsertPamphlet,
 } from "@jamphlet/database";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,32 +24,64 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 type PamphletFormProps = {
   clientId: number;
 };
 
+// type ClientsWithPamphlet = {
+//     client: Client;
+//     pamphlet: Pamphlet;
+// }
+
 export function PamphletForm({ clientId }: PamphletFormProps) {
   console.log(clientId);
 
-  const form = useForm<z.infer<typeof insertedPamphletSchema>>({
-    resolver: zodResolver(insertedPamphletSchema),
+  const form = useForm<z.infer<typeof insertPamphletSchema>>({
+    resolver: zodResolver(insertPamphletSchema),
     defaultValues: {
       clientId: clientId,
       userId: 4,
       personalMessage: "",
     },
-    mode: "onChange",
+    mode: "onBlur",
+    reValidateMode: "onChange",
   });
 
-  const onSubmit = async (values: z.infer<typeof insertedPamphletSchema>) => {
-    const newPamphlet: NewPamphlet = values;
+  const onSubmit = async (values: z.infer<typeof insertPamphletSchema>) => {
+    const newPamphlet: NewPamphlet = {
+      userId: 4,
+      clientId: clientId,
+      personalMessage: values.personalMessage,
+    };
+    console.log("newPamphlet", newPamphlet);
     const insertedPamphlet = await updatePamphlet(newPamphlet);
+    // const insertedPamphlet = await upsertPamphlet(newPamphlet);
+    // await updateClient;
     toast("Jamphlet successfully updated.", {
-      description: `Jamphlet for ${insertedPamphlet.at(0)
-        ?.updatedId} is now up to date.`,
+      description: `Jamphlet for ${insertedPamphlet} is now up to date.`,
     });
   };
+
+  useEffect(() => {
+    form.reset({
+      userId: 4,
+      clientId: clientId,
+      personalMessage: "",
+    });
+  }, [clientId]);
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      form.reset({
+        userId: 4,
+        clientId: clientId,
+        personalMessage: "",
+      });
+    }
+    console.log("formState", form.formState);
+  }, [form.formState]);
 
   return (
     <Form {...form}>
