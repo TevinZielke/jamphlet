@@ -20,15 +20,7 @@ export function ClientPreview(inputData: any) {
   const client = inputData.client;
   const [clientAtom, setClientAtom] = useClient();
 
-  const testUserId = 2;
-
-  // const { data } = useQuery({
-  //   queryKey: ["clientsWithPamphlets", testUserId],
-  //   queryFn: () => getClientsWithPamphletsByUserId(testUserId),
-  // });
-  const data = client;
-
-  if (!data) return null;
+  if (!client) return null;
   return (
     <div>
       <button

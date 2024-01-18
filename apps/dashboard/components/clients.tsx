@@ -1,5 +1,7 @@
-import { getClients } from "@jamphlet/database";
-import { ClientList } from "./client-list";
+import {
+  getClients,
+  getClientsWithPamphletsByUserId,
+} from "@jamphlet/database";
 import { ClientView } from "./client-view";
 import {
   ResizableHandle,
@@ -8,32 +10,39 @@ import {
 } from "./ui/resizable";
 import { Separator } from "./ui/separator";
 import { DataTable } from "./clientTable/data-table";
-import { ScrollArea } from "./ui/scroll-area";
 
-const testUserId = 4;
-const data = await getClients(testUserId);
+type ClientsProps = {
+  userId: number;
+};
 
-export function Clients() {
+// const testUserId = 4;
+
+// const data = await getClients(testUserId);
+export async function Clients({ userId }: ClientsProps) {
+  const data = await getClientsWithPamphletsByUserId(userId);
   return (
     <ResizablePanelGroup
       direction="horizontal"
-      className=" min-h-full w-full rounded-lg border"
-      // className=" min-h-full w-full"
+      // className=" min-h-full w-full rounded-lg border"
+      className=" min-h-full w-full"
     >
-      <ResizablePanel defaultSize={25} minSize={20} maxSize={50}>
-        <div className="flex flex-col items-start px-4 py-2">
+      <ResizablePanel
+        defaultSize={35}
+        minSize={20}
+        maxSize={50}
+        className=" flex flex-col"
+      >
+        <div className="items-start px-4 py-2">
           <h1 className="text-xl font-bold">Clients</h1>
         </div>
         <Separator />
-        <div className=" p-4 h-full">
-          <ScrollArea className=" h-screen">
-            <DataTable data={data} />
-          </ScrollArea>
+        <div className=" flex-auto flex flex-col p-4">
+          <DataTable data={data} />
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={65} minSize={50} maxSize={80}>
-        <div className="h-full p-2">
+        <div className="h-full w-full p-2">
           <ClientView data={data} />
         </div>
       </ResizablePanel>

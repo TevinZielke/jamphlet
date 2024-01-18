@@ -1,7 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { NewClient, addClient, insertClientSchema } from "@jamphlet/database";
+import {
+  NewClient,
+  addClient,
+  addPamphlet,
+  insertClientSchema,
+} from "@jamphlet/database";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -15,19 +20,36 @@ import {
 } from "./ui/form";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import getQueryClient from "lib/getQueryClient";
-import { revalidatePath } from "next/cache";
+import {
+  DialogHeader,
+  DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "./ui/dialog";
+import { useClient } from "lib/use-client";
 
-// function onSubmit(values: z.infer<typeof insertClientSchema>) {
-//   console.log("Values: ", values);
-
-//   const mutation = useMutation({
-//     mutationFn: (input) => {
-//       return addClient(input);
-//     },
-//   });
-// }
+export function ClientFormDialog() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">create a new one</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create client</DialogTitle>
+          <DialogDescription>
+            Add a new client to your list. You can still make changes later.
+          </DialogDescription>
+        </DialogHeader>
+        <ClientForm />
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export function ClientForm() {
   const form = useForm<z.infer<typeof insertClientSchema>>({
@@ -41,10 +63,13 @@ export function ClientForm() {
     mode: "onChange",
   });
 
-  const onSubmit = (values: z.infer<typeof insertClientSchema>) => {
-    console.log("onSubmit", values);
+  const [clientAtom, setClientAtom] = useClient();
+
+  const onSubmit = async (values: z.infer<typeof insertClientSchema>) => {
     const newClient: NewClient = values;
-    addClient(newClient);
+    const insertedClient = await addClient(newClient);
+    const icid = insertedClient.at(0)?.insertedId;
+    icid && addPamphlet(4, icid).then(() => setClientAtom(icid));
   };
 
   return (
@@ -97,7 +122,11 @@ export function ClientForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="submit">Submit</Button>
+          </DialogClose>
+        </DialogFooter>
       </form>
     </Form>
   );
