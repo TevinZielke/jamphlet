@@ -1,6 +1,6 @@
 "use server";
 
-import { createServerClientAction } from "storage";
+import { createServerClientAction } from "../storage";
 
 const bucketName = "images";
 
