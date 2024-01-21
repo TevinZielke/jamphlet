@@ -2,7 +2,6 @@
 
 import { createServerClientAction } from "../storage";
 
-const supabase = createServerClientAction();
 const bucketName = "images";
 
 export type ImageUploadProps = {
@@ -11,6 +10,8 @@ export type ImageUploadProps = {
 };
 
 export async function uploadImage(formData: FormData): Promise<string> {
+  const supabase = createServerClientAction();
+
   const image = formData.get("image") as File;
   const path = formData.get("path") as string;
 
@@ -26,6 +27,8 @@ export async function uploadImage(formData: FormData): Promise<string> {
 }
 
 export async function getImageURL(filePath: string) {
+  const supabase = createServerClientAction();
+
   const publicUrl = (await supabase).storage
     .from(bucketName)
     .getPublicUrl(filePath);
@@ -34,6 +37,8 @@ export async function getImageURL(filePath: string) {
 }
 
 export async function createSignedUrlAndUploadAction(formData: FormData) {
+  const supabase = createServerClientAction();
+
   const file = formData.get("image") as File;
   const path = formData.get("path") as string;
 
@@ -50,6 +55,8 @@ export async function createSignedUrlAndUploadAction(formData: FormData) {
 }
 
 export async function uploadAction(path: string, token: string, file: File) {
+  const supabase = createServerClientAction();
+
   const { data, error } = await (await supabase).storage
     .from(bucketName)
     .uploadToSignedUrl(path, token, file);

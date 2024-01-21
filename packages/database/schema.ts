@@ -268,9 +268,9 @@ export const pamphlets = pgTable("pamphlets", {
     .notNull()
     .unique()
     .references(() => clients.id),
-  personalMessage: text("personalMessage").default(
-    "Welcome to your bespoke Jamphlet!"
-  ),
+  personalMessage: text("personalMessage")
+    .notNull()
+    .default("Welcome to your bespoke Jamphlet!"),
 
   createdAt: timestamp("createdAt", {
     mode: "date",

@@ -6,9 +6,9 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const cookieStore = cookies();
-
 export async function createServerClientAction() {
+  const cookieStore = cookies();
+
   const supabase = createServerClient(
     process.env.DATABASE_URL!,
     process.env.SUPABASE_KEY!,
