@@ -2,13 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Client,
   NewPamphlet,
-  Pamphlet,
   insertPamphletSchema,
-  //   updateClient,
   updatePamphlet,
-  //   upsertPamphlet,
 } from "@jamphlet/database";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -55,10 +51,8 @@ export function PamphletForm({ clientId }: PamphletFormProps) {
       clientId: clientId,
       personalMessage: values.personalMessage,
     };
-    console.log("newPamphlet", newPamphlet);
     const insertedPamphlet = await updatePamphlet(newPamphlet);
-    // const insertedPamphlet = await upsertPamphlet(newPamphlet);
-    // await updateClient;
+
     toast("Jamphlet successfully updated.", {
       description: `Jamphlet for ${insertedPamphlet} is now up to date.`,
     });
