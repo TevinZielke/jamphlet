@@ -1,5 +1,5 @@
 "use server";
-
+import type {} from "@supabase/supabase-js";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import * as dotenv from "dotenv";
