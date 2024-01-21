@@ -65,3 +65,7 @@ export const insertPamphletSchema = createInsertSchema(pamphlets, {
   //   .string()
   //   .max(500, { message: "Personal message must be 500 characters or fewer." }),
 });
+
+/**
+ * Images
+ */

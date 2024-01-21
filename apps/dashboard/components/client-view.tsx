@@ -1,5 +1,9 @@
 "use client";
-import { ClientsWithPamphlet, deleteClient } from "@jamphlet/database";
+import {
+  ClientsWithPamphlet,
+  deleteClient,
+  getImageURL,
+} from "@jamphlet/database";
 
 import { useClientAtom } from "lib/use-client";
 import { Separator } from "./ui/separator";
@@ -9,12 +13,15 @@ import { toast } from "sonner";
 import { ClientFormDialog } from "./client-form";
 import Image from "next/image";
 import { PamphletForm } from "./pamphlet-form";
+import { ImageForm } from "./image-form";
+import { ScrollArea } from "./ui/scroll-area";
 
 type ClientViewProps = {
   data: ClientsWithPamphlet | null;
+  imageURL: string;
 };
 
-export function ClientView({ data }: ClientViewProps) {
+export function ClientView({ data, imageURL }: ClientViewProps) {
   const [clientId, setClientId] = useClientAtom();
 
   const confirm = async () => {
@@ -34,12 +41,12 @@ export function ClientView({ data }: ClientViewProps) {
   const client = data?.find((c) => c.id === clientId);
   const pamphlet = client?.pamphlets.at(0);
 
-  const imaageUrl =
-    "https://skoadbwgytopxdzofxgm.supabase.co/storage/v1/object/public/images/images/project_1/item_1/floorplan_1.jpg?t=2024-01-17T20%3A22%3A42.901Z";
+  // const imaageUrl =
+  //   "https://skoadbwgytopxdzofxgm.supabase.co/storage/v1/object/public/images/images/project_1/item_1/floorplan_1.jpg?t=2024-01-17T20%3A22%3A42.901Z";
 
   if (!data) return null;
   return (
-    <>
+    <ScrollArea className=" h-full">
       {clientId === 0 ? (
         <div className=" flex place-content-center items-center h-full">
           <div>
@@ -77,28 +84,33 @@ export function ClientView({ data }: ClientViewProps) {
           </div>
 
           <Separator />
-          <div className=" flex-col">
-            <div>
-              <p>Personal message: {pamphlet?.personalMessage}</p>
+          <div className=" p-2">
+            {/* <div className=" flex-col">
               <div>
-                <span>Selected residences:</span>
-                {pamphlet?.itemsOnPamphlets.map((iop) => (
-                  <p key={iop.itemId}>
-                    {iop.item.name}: {iop.comment}
-                  </p>
-                ))}
+                <p>Personal message: {pamphlet?.personalMessage}</p>
+                <div>
+                  <span>Selected residences:</span>
+                  {pamphlet?.itemsOnPamphlets.map((iop) => (
+                    <p key={iop.itemId}>
+                      {iop.item.name}: {iop.comment}
+                    </p>
+                  ))}
+                </div>
               </div>
+            </div> */}
+            <div>
+              <PamphletForm clientId={clientId} />
+              {/* <PamphletForm client={}/> */}
             </div>
-          </div>
-          <div>
-            <PamphletForm clientId={clientId} />
-            {/* <PamphletForm client={}/> */}
-          </div>
-          <div>
-            <Image alt="test" src={imaageUrl} width={400} height={300} />
+            <div>
+              <ImageForm clientId={clientId} />
+            </div>
+            <div>
+              <Image alt="test" src={imageURL} width={400} height={300} />
+            </div>
           </div>
         </div>
       )}
-    </>
+    </ScrollArea>
   );
 }

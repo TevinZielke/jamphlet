@@ -3,6 +3,7 @@ import { Provider as JotaiProvider } from "jotai";
 import {
   getClients,
   getClientsWithPamphletsByUserId,
+  getImageURL,
 } from "@jamphlet/database";
 import { ClientView } from "./client-view";
 import {
@@ -20,8 +21,12 @@ type ClientsProps = {
 // const testUserId = 4;
 
 // const data = await getClients(testUserId);
+
 export async function Clients({ userId }: ClientsProps) {
   const data = await getClientsWithPamphletsByUserId(userId);
+  const imageURL = await getImageURL("/images/project_1/item_1/floorplan.jpg");
+
+  if (!imageURL) return null;
   return (
     <JotaiProvider>
       <ResizablePanelGroup
@@ -46,7 +51,7 @@ export async function Clients({ userId }: ClientsProps) {
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={65} minSize={50} maxSize={80}>
           <div className="h-full w-full p-2">
-            <ClientView data={data} />
+            <ClientView data={data} imageURL={imageURL.data.publicUrl} />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

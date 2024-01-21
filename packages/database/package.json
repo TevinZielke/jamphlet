@@ -20,6 +20,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.0.10",
+    "@supabase/supabase-js": "^2.39.3",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.29.1",
     "drizzle-zod": "^0.5.1",
