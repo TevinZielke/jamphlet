@@ -175,7 +175,7 @@ export const clients = pgTable(
     userId: integer("user_id")
       .notNull()
       .references(() => users.id),
-    notes: text("notes"),
+    notes: text("notes").notNull().default(""),
     createdAt: timestamp("createdAt", {
       mode: "date",
       withTimezone: true,
@@ -266,10 +266,11 @@ export const pamphlets = pgTable("pamphlets", {
     .references(() => users.id),
   clientId: integer("client_id")
     .notNull()
+    .unique()
     .references(() => clients.id),
-  personalMessage: text("personalMessage").default(
-    "Welcome to your bespoke Jamphlet!"
-  ),
+  personalMessage: text("personalMessage")
+    .notNull()
+    .default("Welcome to your bespoke Jamphlet!"),
 
   createdAt: timestamp("createdAt", {
     mode: "date",

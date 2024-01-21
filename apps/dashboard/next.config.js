@@ -14,6 +14,20 @@ module.exports = {
     return config;
   },
   transpilePackages: ["@jamphlet/ui"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "skoadbwgytopxdzofxgm.supabase.co",
+        port: "",
+      },
+    ],
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   // env: {
   //   KINDE_SITE_URL:
   //     process.env.KINDE_SITE_URL ?? `https://${process.env.VERCEL_URL}`,

@@ -7,13 +7,13 @@ import { useHydrateAtoms } from "jotai/utils";
 //   selected: Client["id"];
 // };
 
-const configAtom = atom(0);
-useHydrateAtoms([[configAtom, 0]]);
+// const configAtom = atom(0);
+// useHydrateAtoms([[configAtom, 0]]);
 
-export function useUser() {
-  return useAtom(configAtom);
-}
+// export function useUser() {
+//   return useAtom(configAtom);
+// }
 
-export function useSetUser() {
-  return useSetAtom(configAtom);
-}
+// export function useSetUser() {
+//   return useSetAtom(configAtom);
+// }
