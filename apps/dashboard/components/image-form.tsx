@@ -1,20 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  NewPamphlet,
-  insertPamphletSchema,
-  updatePamphlet,
-  ImageUploadProps,
-  uploadImage,
-  createSignedUrlAndUploadAction,
-} from "@jamphlet/database";
+import { createSignedUrlAndUploadAction } from "@jamphlet/database";
 import { useForm } from "react-hook-form";
 import { ZodType, z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -167,15 +159,9 @@ export function ImageForm({ clientId }: ImageFormProps) {
   //   };
   const onSubmit = async (values: z.infer<typeof ImageFormSchema>) => {
     console.log("Input", values);
-    // console.log("onSubmit: ", values.image);
-    // const file = values;
 
     const itemId = 1;
     const projectId = 1;
-
-    // toast("Image successfully uploaded.", {
-    //     description: `${insertedImage}`,
-    // });
 
     input.map(async (image) => {
       console.log("Submitting: ", image);
@@ -306,7 +292,6 @@ export function ImageForm({ clientId }: ImageFormProps) {
                     type="file"
                     accept="image/png , image/jpg , image/jpeg , image/webp"
                     multiple
-                    //   onChange={(e) => setFile(e.target.files?.[0])}
                     onChange={handleChange}
                   />
                 </FormControl>
