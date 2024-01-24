@@ -1,19 +1,33 @@
+"use client";
+
+import { useMenuAtom } from "lib/use-menu";
+import { Button } from "./ui/button";
+
 const navLinks = [
   {
     id: 1,
     name: "Clients",
+    value: "clients",
   },
   {
     id: 2,
     name: "Items",
+    value: "items",
   },
 ];
 
 export function Navigation() {
+  const [menuAtom, setMenuAtom] = useMenuAtom();
   return (
-    <div>
+    <div className=" flex flex-col p-2 gap-2">
       {navLinks.map((link) => (
-        <p key={link.id}>{link.name}</p>
+        <Button
+          key={link.id}
+          variant={menuAtom === link.value ? "default" : "outline"}
+          onClick={() => setMenuAtom(link.value)}
+        >
+          {link.name}
+        </Button>
       ))}
     </div>
   );

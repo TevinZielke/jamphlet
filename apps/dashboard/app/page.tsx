@@ -15,10 +15,16 @@ import {
 } from "@/components/ui/resizable";
 import { ProjectSelector } from "@/components/project-selector";
 import { Separator } from "@/components/ui/separator";
-import { Clients } from "@/components/clients";
+import { ClientsMenu } from "@/components/clients-menu";
+import { ItemsMenu } from "@/components/items-menu";
+import { useMenuAtom } from "lib/use-menu";
 
 const projectId = 1;
 const organizationId = 1;
+
+type Menu = {
+  mode: "items" | "clients";
+};
 
 export default async function Page(): Promise<JSX.Element> {
   // noStore();
@@ -50,6 +56,9 @@ export default async function Page(): Promise<JSX.Element> {
     throw new Error("Error fetching dbUser.");
   }
   // const testUserId = dbUser.id;
+  const menuMode: Menu = {
+    mode: "clients",
+  };
 
   return (
     <main className={styles.main}>
@@ -68,7 +77,11 @@ export default async function Page(): Promise<JSX.Element> {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={88} minSize={80} maxSize={90}>
-          <Clients userId={dbUser.id} />
+          {menuMode.mode === "clients" ? (
+            <ClientsMenu userId={dbUser.id} />
+          ) : (
+            <ItemsMenu projectId={projectId} />
+          )}
         </ResizablePanel>
       </ResizablePanelGroup>
     </main>

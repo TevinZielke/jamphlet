@@ -12,7 +12,7 @@ import {
   usersOnOrganizations,
   usersOnProjects,
 } from "./schema";
-import { getClientsWithPamphletsByUserId } from ".";
+import { getClientsWithPamphletsByUserId, getItemsByProjectId } from ".";
 
 export { invitationStatusEnum as InvitationStatus } from "./schema";
 
@@ -54,9 +54,13 @@ export const insertClientSchema = createInsertSchema(clients, {
 export type ClientsWithPamphlet = Awaited<
   ReturnType<typeof getClientsWithPamphletsByUserId>
 >;
+export type ClientWithPamphlet = Array<ClientsWithPamphlet>[0][0];
 
 export type Item = InferSelectModel<typeof items>;
 export type NewItem = InferInsertModel<typeof items>;
+
+export type ItemsWithImages = Awaited<ReturnType<typeof getItemsByProjectId>>;
+export type ItemWithImages = Array<ItemsWithImages>[0][0];
 
 export type Pamphlet = InferSelectModel<typeof pamphlets>;
 export type NewPamphlet = InferInsertModel<typeof pamphlets>;

@@ -57,8 +57,11 @@ import { ClientPreview } from "../client-preview";
 import { ScrollArea } from "../ui/scroll-area";
 import {
   Client,
-  getClientsWithPamphletsByUserId,
-  insertPamphletSchema,
+  ClientWithPamphlet,
+  ClientsWithPamphlet,
+  Item,
+  ItemWithImages,
+  ItemsWithImages,
 } from "@jamphlet/database";
 import { useClientAtom } from "lib/use-client";
 import { cn } from "lib/utils";
@@ -77,6 +80,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { ClientForm } from "../client-form";
+import { ItemPreview } from "../item-preview";
 
 // export type Client = {
 //   id: string;
@@ -154,7 +158,7 @@ export const hiddenColumns = ["lastModified"];
 //     },
 //   },
 // ];
-export const columns: ColumnDef<Client>[] = [
+export const clientColumns: ColumnDef<Client>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -208,11 +212,69 @@ export const columns: ColumnDef<Client>[] = [
     },
   },
 ];
+export const itemColumns: ColumnDef<Item>[] = [
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    filterFn: fuzzyFilter,
+  },
+  {
+    accessorKey: "code",
+    header: "Code",
+    cell: ({ row }) => <div className="lowercase">{row.getValue("code")}</div>,
+    filterFn: fuzzyFilter,
+  },
+  {
+    accessorKey: "lastModified",
+    header: "Last Modified",
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("lastModified")}</div>
+    ),
+    filterFn: fuzzyFilter,
+    enableHiding: true,
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const item = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(item.id.toString())}
+            >
+              Copy item ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>View item</DropdownMenuItem>
+            <DropdownMenuItem>Delete item</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+];
+
+type DataTableProps = {
+  input: ClientsWithPamphlet | ItemsWithImages;
+  menuMode: "clients" | "items";
+};
 
 // Type
-export function DataTable(input: any) {
+export function DataTable({ input, menuMode }: DataTableProps) {
   const [clientAtom, setClientAtom] = useClientAtom();
-  const data = input.data;
+  const data = input;
+  console.log("Data: ", data, "MenuMode: ", menuMode);
   if (!data) return null;
 
   // const data = d.data
@@ -235,6 +297,11 @@ export function DataTable(input: any) {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const [viewMode, setViewMode] = React.useState("cards");
+  // const [menuMode] = React.useState("clients");
+
+  const columns = menuMode === "clients" ? clientColumns : itemColumns;
+
+  console.log("menuMode:", menuMode);
 
   const table = useReactTable({
     data,
@@ -264,6 +331,8 @@ export function DataTable(input: any) {
       },
     },
   });
+
+  if (!table) return null;
 
   return (
     <div className=" flex flex-col justify-between h-full max-h-full">
@@ -463,11 +532,21 @@ export function DataTable(input: any) {
             <div className="flex flex-col gap-2">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => {
-                  return (
-                    <div key={row.id}>
-                      <ClientPreview client={row.original} />
-                    </div>
-                  );
+                  if (menuMode === "clients") {
+                    const data: ClientWithPamphlet = row.original;
+                    return (
+                      <div key={row.id}>
+                        <ClientPreview inputData={data} />
+                      </div>
+                    );
+                  } else {
+                    const data: ItemWithImages = row.original;
+                    return (
+                      <div key={row.id}>
+                        <ItemPreview inputData={data} />
+                      </div>
+                    );
+                  }
                 })
               ) : (
                 <TableRow>

@@ -18,9 +18,9 @@ import { toast } from "sonner";
 import { ChangeEvent, useEffect, useReducer, useState, DragEvent } from "react";
 import { ImageUpload } from "./image-upload";
 
-type ImageFormProps = {
-  clientId: number;
-};
+// type ImageFormProps = {
+//   clientId: number;
+// };
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -82,8 +82,7 @@ type State = FileWithUrl[];
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {}
 
-export function ImageForm({ clientId }: ImageFormProps) {
-  console.log(clientId);
+export function ImageForm() {
   const fileAmountLimit = 5;
 
   const [imageFile, setFile] = useState<File>();
@@ -139,24 +138,6 @@ export function ImageForm({ clientId }: ImageFormProps) {
     },
   });
 
-  //   const onSubmit = async (values: z.infer<typeof ImageFormSchema>) => {
-  //     console.log("onSubmit: ", values.image);
-  //     const file = values;
-
-  //     const itemId = 1;
-  //     const projectId = 1;
-  //     const imagePath = `images/project_${projectId}/item_${itemId}/${imageFile?.name}`;
-
-  //     const form = new FormData();
-  //     form.append("image", imageFile!);
-  //     form.append("path", imagePath);
-
-  //     const insertedImage = await uploadImage(form);
-
-  //     toast("Image successfully uploaded.", {
-  //       description: `${insertedImage}`,
-  //     });
-  //   };
   const onSubmit = async (values: z.infer<typeof ImageFormSchema>) => {
     console.log("Input", values);
 
@@ -165,7 +146,7 @@ export function ImageForm({ clientId }: ImageFormProps) {
 
     input.map(async (image) => {
       console.log("Submitting: ", image);
-      const imagePath = `images/project_${projectId}/item_${itemId}/${image?.name}`;
+      const imagePath = `images/${projectId}/${itemId}/${image?.name}`;
       const form = new FormData();
       form.append("image", image.file);
       form.append("path", imagePath);

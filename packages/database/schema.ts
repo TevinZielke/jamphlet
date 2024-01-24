@@ -46,6 +46,7 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
   }),
   usersOnProjects: many(usersOnProjects),
   clientsOnProjects: many(clientsOnProjects),
+  projectImages: many(projectImages),
 }));
 
 export const users = pgTable("users", {
@@ -257,6 +258,24 @@ export const itemsRelations = relations(items, ({ one, many }) => ({
     references: [projects.id],
   }),
   itemsOnPamphlets: many(itemsOnPamphlets),
+  itemImages: many(itemImages),
+}));
+
+export const itemImages = pgTable("item_images", {
+  id: serial("id").primaryKey(),
+  publicUrl: text("public_url"),
+  path: text("path"),
+  alt: text("alt"),
+  itemId: integer("item_id")
+    .notNull()
+    .references(() => items.id),
+});
+
+export const itemImagesRelations = relations(itemImages, ({ one }) => ({
+  item: one(items, {
+    fields: [itemImages.itemId],
+    references: [items.id],
+  }),
 }));
 
 export const pamphlets = pgTable("pamphlets", {
@@ -341,3 +360,20 @@ export const itemsOnPamphletsRelations = relations(
     }),
   })
 );
+
+export const projectImages = pgTable("project_images", {
+  id: serial("id").primaryKey(),
+  publicUrl: text("public_url"),
+  path: text("path"),
+  alt: text("alt"),
+  projectId: integer("project_id")
+    .notNull()
+    .references(() => projects.id),
+});
+
+export const projectImagesRelations = relations(projectImages, ({ one }) => ({
+  project: one(projects, {
+    fields: [projectImages.projectId],
+    references: [projects.id],
+  }),
+}));

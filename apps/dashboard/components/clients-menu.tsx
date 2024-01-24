@@ -1,6 +1,7 @@
 import { Provider as JotaiProvider } from "jotai";
 
 import {
+  ClientsWithPamphlet,
   getClients,
   getClientsWithPamphletsByUserId,
   getImageURL,
@@ -18,13 +19,10 @@ type ClientsProps = {
   userId: number;
 };
 
-// const testUserId = 4;
-
-// const data = await getClients(testUserId);
-
-export async function Clients({ userId }: ClientsProps) {
-  const data = await getClientsWithPamphletsByUserId(userId);
-  const imageURL = await getImageURL("/images/project_1/item_1/floorplan.jpg");
+export async function ClientsMenu({ userId }: ClientsProps) {
+  const data: ClientsWithPamphlet =
+    await getClientsWithPamphletsByUserId(userId);
+  const imageURL = await getImageURL("/1/1/floorplan_1.jpg");
 
   if (!imageURL) return null;
   return (
@@ -45,13 +43,13 @@ export async function Clients({ userId }: ClientsProps) {
           </div>
           <Separator />
           <div className=" flex-auto flex flex-col p-4">
-            <DataTable data={data} />
+            <DataTable input={data} menuMode="clients" />
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={65} minSize={50} maxSize={80}>
           <div className="h-full w-full p-2">
-            <ClientView data={data} imageURL={imageURL.data.publicUrl} />
+            <ClientView data={data} />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

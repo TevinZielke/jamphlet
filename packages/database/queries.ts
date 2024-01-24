@@ -108,7 +108,9 @@ export async function getPamphletByClientId(clientId: number) {
   return result;
 }
 
-// Clients
+/**
+ * Clients
+ */
 export async function getClientsWithPamphletsByUserId(userId: number) {
   const result = db.query.clients.findMany({
     where: eq(clients.userId, userId),
@@ -122,6 +124,20 @@ export async function getClientsWithPamphletsByUserId(userId: number) {
           },
         },
       },
+    },
+  });
+
+  return result;
+}
+
+/**
+ * Items
+ */
+export async function getItemsByProjectId(projectId: number) {
+  const result = db.query.items.findMany({
+    where: eq(items.projectId, projectId),
+    with: {
+      itemImages: true,
     },
   });
 

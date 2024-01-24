@@ -1,9 +1,5 @@
 "use client";
-import {
-  ClientsWithPamphlet,
-  deleteClient,
-  getImageURL,
-} from "@jamphlet/database";
+import { ClientsWithPamphlet, deleteClient } from "@jamphlet/database";
 
 import { useClientAtom } from "lib/use-client";
 import { Separator } from "./ui/separator";
@@ -11,17 +7,15 @@ import { Button } from "./ui/button";
 import { DeleteDialog } from "./delete-dialog";
 import { toast } from "sonner";
 import { ClientFormDialog } from "./client-form";
-import Image from "next/image";
 import { PamphletForm } from "./pamphlet-form";
 import { ImageForm } from "./image-form";
 import { ScrollArea } from "./ui/scroll-area";
 
 type ClientViewProps = {
   data: ClientsWithPamphlet | null;
-  imageURL: string;
 };
 
-export function ClientView({ data, imageURL }: ClientViewProps) {
+export function ClientView({ data }: ClientViewProps) {
   const [clientId, setClientId] = useClientAtom();
 
   const confirm = async () => {
@@ -39,17 +33,13 @@ export function ClientView({ data, imageURL }: ClientViewProps) {
   };
 
   const client = data?.find((c) => c.id === clientId);
-  const pamphlet = client?.pamphlets.at(0);
-
-  // const imaageUrl =
-  //   "https://skoadbwgytopxdzofxgm.supabase.co/storage/v1/object/public/images/images/project_1/item_1/floorplan_1.jpg?t=2024-01-17T20%3A22%3A42.901Z";
 
   if (!data) return null;
   return (
     <ScrollArea className=" h-full">
       {clientId === 0 ? (
         <div className=" flex place-content-center items-center h-full">
-          <div>
+          <div className=" h-full">
             <p>No Client selected.</p>
             <p>
               Select one from the left or <ClientFormDialog />
@@ -103,10 +93,7 @@ export function ClientView({ data, imageURL }: ClientViewProps) {
               {/* <PamphletForm client={}/> */}
             </div>
             <div>
-              <ImageForm clientId={clientId} />
-            </div>
-            <div>
-              <Image alt="test" src={imageURL} width={400} height={300} />
+              <ImageForm />
             </div>
           </div>
         </div>
