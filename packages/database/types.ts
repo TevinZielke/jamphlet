@@ -56,8 +56,13 @@ export type ClientsWithPamphlet = Awaited<
 >;
 export type ClientWithPamphlet = Array<ClientsWithPamphlet>[0][0];
 
+/* Item */
 export type Item = InferSelectModel<typeof items>;
 export type NewItem = InferInsertModel<typeof items>;
+export const insertItemSchema = createInsertSchema(items, {
+  name: z.string().min(1, { message: "Name must be at least one character." }),
+  code: z.string().min(1, { message: "Code must be at least one character." }),
+});
 
 export type ItemsWithImages = Awaited<ReturnType<typeof getItemsByProjectId>>;
 export type ItemWithImages = Array<ItemsWithImages>[0][0];
@@ -69,7 +74,3 @@ export const insertPamphletSchema = createInsertSchema(pamphlets, {
   //   .string()
   //   .max(500, { message: "Personal message must be 500 characters or fewer." }),
 });
-
-/**
- * Images
- */

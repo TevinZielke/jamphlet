@@ -14,6 +14,16 @@ const navLinks = [
     name: "Items",
     value: "items",
   },
+  {
+    id: 3,
+    name: "Project",
+    value: "project",
+  },
+  {
+    id: 4,
+    name: "Organization",
+    value: "organization",
+  },
 ];
 
 export function Navigation() {

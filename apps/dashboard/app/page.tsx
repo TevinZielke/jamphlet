@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { ClientsMenu } from "@/components/clients-menu";
 import { ItemsMenu } from "@/components/items-menu";
 import { useMenuAtom } from "lib/use-menu";
+import { Button } from "@/components/ui/button";
 
 const projectId = 1;
 const organizationId = 1;
@@ -57,7 +58,7 @@ export default async function Page(): Promise<JSX.Element> {
   }
   // const testUserId = dbUser.id;
   const menuMode: Menu = {
-    mode: "clients",
+    mode: "items",
   };
 
   return (
@@ -73,7 +74,9 @@ export default async function Page(): Promise<JSX.Element> {
           <Separator />
           <Navigation />
           <Separator />
-          <LogoutLink>Log Out</LogoutLink>
+          <Button variant="secondary">
+            <LogoutLink>Log Out</LogoutLink>
+          </Button>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={88} minSize={80} maxSize={90}>
