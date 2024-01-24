@@ -1,7 +1,7 @@
-export default async function ClientPage() {
+export default async function ItemsPage() {
   return (
     <main className=" flex flex-col justify-between items-center h-lvh">
-      No client selected.
+      No item selected.
     </main>
   );
 }

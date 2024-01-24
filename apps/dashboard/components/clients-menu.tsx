@@ -13,7 +13,7 @@ import {
   ResizablePanelGroup,
 } from "./ui/resizable";
 import { Separator } from "./ui/separator";
-import { DataTable } from "./clientTable/data-table";
+import { ClientTable } from "./clientTable/data-table";
 
 type ClientsProps = {
   userId: number;
@@ -43,7 +43,7 @@ export async function ClientsMenu({ userId }: ClientsProps) {
           </div>
           <Separator />
           <div className=" flex-auto flex flex-col p-4">
-            <DataTable input={data} menuMode="clients" />
+            {/* <ClientTable  /> */}
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />

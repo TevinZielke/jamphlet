@@ -143,3 +143,22 @@ export async function getItemsByProjectId(projectId: number) {
 
   return result;
 }
+
+export async function getItems(projectId: number) {
+  const result = db.query.items.findMany({
+    where: eq(items.projectId, projectId),
+  });
+
+  return result;
+}
+
+export async function getItemById(itemId: number) {
+  const result = await db.query.items.findFirst({
+    where: eq(items.id, itemId),
+    with: {
+      itemImages: true,
+    },
+  });
+
+  return result;
+}

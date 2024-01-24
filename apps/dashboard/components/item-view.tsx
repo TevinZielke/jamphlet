@@ -1,5 +1,5 @@
 "use client";
-import { ItemsWithImages } from "@jamphlet/database";
+import { getItemById } from "@jamphlet/database";
 
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
@@ -9,15 +9,15 @@ import { ClientFormDialog } from "./client-form";
 import Image from "next/image";
 import { ImageForm } from "./image-form";
 import { ScrollArea } from "./ui/scroll-area";
-import { useItemAtom } from "lib/use-item";
+import { useQuery } from "@tanstack/react-query";
 
 type ItemViewProps = {
-  data: ItemsWithImages | null;
+  // data: ItemsWithImages | null;
+  // data: ItemWithImages | null;
+  itemId: number;
 };
 
-export function ItemView({ data }: ItemViewProps) {
-  const [itemAtom, setClientAtom] = useItemAtom();
-
+export function ItemView({ itemId }: ItemViewProps) {
   //   const confirm = async () => {
   //     // const res = await deleteClient(itemAtom);
   //     //Toast
@@ -32,61 +32,55 @@ export function ItemView({ data }: ItemViewProps) {
   //     setClientAtom(0);
   //   };
 
-  const item = data?.find((c) => c.id === itemAtom);
+  // const item = data?.find((c) => c.id === itemAtom);
 
-  if (!data) return null;
+  const { data: item } = useQuery({
+    queryKey: ["item", itemId],
+    queryFn: () => getItemById(itemId),
+  });
+
+  // if (!data) return null;
   return (
     <ScrollArea className=" h-full">
-      {itemAtom === 0 ? (
-        <div className=" flex place-content-center items-center h-full">
+      <div>
+        <div className="flex flex-row justify-between px-2 py-2">
           <div>
-            <p>No Client selected.</p>
-            <p>
-              Select one from the left or <ClientFormDialog />
-            </p>
+            <h2 className=" text-3xl font-bold">{item?.name}</h2>
+            <p>{item?.code}</p>
+            <p>{item?.createdAt?.toLocaleString()}</p>
+          </div>
+          <div className=" flex gap-2">
+            <Button variant="link">Visit Jamphlet</Button>
+            <Button variant="secondary">Edit</Button>
+            <DeleteDialog handleConfirm={confirm}>
+              <Button variant="destructive">Delete</Button>
+            </DeleteDialog>
+            <Button>Share</Button>
           </div>
         </div>
-      ) : (
-        <div>
-          <div className="flex flex-row justify-between px-2 py-2">
-            <div>
-              <h2 className=" text-3xl font-bold">{item?.name}</h2>
-              <p>{item?.code}</p>
-              <p>{item?.createdAt?.toLocaleString()}</p>
-            </div>
-            <div className=" flex gap-2">
-              <Button variant="link">Visit Jamphlet</Button>
-              <Button variant="secondary">Edit</Button>
-              <DeleteDialog handleConfirm={confirm}>
-                <Button variant="destructive">Delete</Button>
-              </DeleteDialog>
-              <Button>Share</Button>
-            </div>
+
+        <Separator />
+        <div className=" p-2">
+          <div>
+            {item?.itemImages.map((itemImage) => {
+              return (
+                <div>
+                  <Image
+                    src={itemImage.publicUrl!}
+                    width={100}
+                    height={100}
+                    alt={itemImage.alt!}
+                  />
+                </div>
+              );
+            })}
           </div>
 
-          <Separator />
-          <div className=" p-2">
-            <div>
-              {item?.itemImages.map((itemImage) => {
-                return (
-                  <div>
-                    <Image
-                      src={itemImage.publicUrl!}
-                      width={100}
-                      height={100}
-                      alt={itemImage.alt!}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-
-            <div>
-              <ImageForm />
-            </div>
+          <div>
+            <ImageForm />
           </div>
         </div>
-      )}
+      </div>
     </ScrollArea>
   );
 }

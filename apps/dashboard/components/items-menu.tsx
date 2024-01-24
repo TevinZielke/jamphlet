@@ -8,11 +8,11 @@ import {
 } from "./ui/resizable";
 import { Separator } from "./ui/separator";
 import { DataTable } from "./clientTable/data-table";
-import { ItemPreview } from "./item-preview";
 import { ItemView } from "./item-view";
 
 type ItemsMenuProps = {
   projectId: number;
+  children: React.ReactNode;
 };
 
 // type Item = {
@@ -34,8 +34,8 @@ type ItemsMenuProps = {
 
 // const data = await getClients(testUserId);
 
-export async function ItemsMenu({ projectId }: ItemsMenuProps) {
-  const data: ItemsWithImages = await getItemsByProjectId(projectId);
+export async function ItemsMenu({ projectId, children }: ItemsMenuProps) {
+  // const data: ItemsWithImages = await getItemsByProjectId(projectId);
 
   if (!data) return null;
 
@@ -63,7 +63,8 @@ export async function ItemsMenu({ projectId }: ItemsMenuProps) {
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={65} minSize={50} maxSize={80}>
           <div className="h-full w-full p-2">
-            <ItemView data={data} />
+            {/* <ItemView data={data} /> */}
+            {children}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

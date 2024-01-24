@@ -1,5 +1,9 @@
 "use client";
-import { ClientsWithPamphlet, deleteClient } from "@jamphlet/database";
+import {
+  ClientsWithPamphlet,
+  deleteClient,
+  getClientById,
+} from "@jamphlet/database";
 
 import { useClientAtom } from "lib/use-client";
 import { Separator } from "./ui/separator";
@@ -8,33 +12,39 @@ import { DeleteDialog } from "./delete-dialog";
 import { toast } from "sonner";
 import { ClientFormDialog } from "./client-form";
 import { PamphletForm } from "./pamphlet-form";
-import { ImageForm } from "./image-form";
 import { ScrollArea } from "./ui/scroll-area";
+import { useQuery } from "@tanstack/react-query";
 
 type ClientViewProps = {
-  data: ClientsWithPamphlet | null;
+  // data: ClientsWithPamphlet | null;
+  clientId: number;
 };
 
-export function ClientView({ data }: ClientViewProps) {
-  const [clientId, setClientId] = useClientAtom();
+export function ClientView({ clientId }: ClientViewProps) {
+  // const [clientId, setClientId] = useClientAtom();
 
-  const confirm = async () => {
-    const res = await deleteClient(clientId);
-    //Toast
-    console.log("Confirm Result:", res);
-    toast("Client has been deleted.", {
-      description: `${res.at(0)?.name} has left the building.`,
-      action: {
-        label: "Undo",
-        onClick: () => console.log("Undo"),
-      },
-    });
-    setClientId(0);
-  };
+  // const confirm = async () => {
+  //   const res = await deleteClient(clientId);
+  //   //Toast
+  //   console.log("Confirm Result:", res);
+  //   toast("Client has been deleted.", {
+  //     description: `${res.at(0)?.name} has left the building.`,
+  //     action: {
+  //       label: "Undo",
+  //       onClick: () => console.log("Undo"),
+  //     },
+  //   });
+  //   setClientId(0);
+  // };
 
-  const client = data?.find((c) => c.id === clientId);
+  // const client = data?.find((c) => c.id === clientId);
 
-  if (!data) return null;
+  const { data: client } = useQuery({
+    queryKey: ["client", clientId],
+    queryFn: () => getClientById(clientId),
+  });
+
+  if (!client) return null;
   return (
     <ScrollArea className=" h-full">
       {clientId === 0 ? (
@@ -90,10 +100,6 @@ export function ClientView({ data }: ClientViewProps) {
             </div> */}
             <div>
               <PamphletForm clientId={clientId} />
-              {/* <PamphletForm client={}/> */}
-            </div>
-            <div>
-              <ImageForm />
             </div>
           </div>
         </div>

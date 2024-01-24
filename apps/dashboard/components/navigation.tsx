@@ -1,43 +1,47 @@
 "use client";
 
-import { useMenuAtom } from "lib/use-menu";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Button } from "./ui/button";
 
 const navLinks = [
   {
     id: 1,
     name: "Clients",
-    value: "clients",
+    value: "/clients",
   },
   {
     id: 2,
     name: "Items",
-    value: "items",
+    value: "/items",
   },
   {
     id: 3,
     name: "Project",
-    value: "project",
+    value: "/project",
   },
   {
     id: 4,
     name: "Organization",
-    value: "organization",
+    value: "/organization",
   },
 ];
 
 export function Navigation() {
-  const [menuAtom, setMenuAtom] = useMenuAtom();
+  const pathname = usePathname();
+
   return (
     <div className=" flex flex-col p-2 gap-2">
       {navLinks.map((link) => (
-        <Button
-          key={link.id}
-          variant={menuAtom === link.value ? "default" : "outline"}
-          onClick={() => setMenuAtom(link.value)}
-        >
-          {link.name}
-        </Button>
+        <Link href={`${link.value}`} key={link.id} className=" w-full">
+          <Button
+            key={link.id}
+            variant={pathname === link.value ? "default" : "outline"}
+            className=" w-full"
+          >
+            {link.name}
+          </Button>
+        </Link>
       ))}
     </div>
   );

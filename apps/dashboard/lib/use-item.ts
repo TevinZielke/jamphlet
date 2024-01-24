@@ -1,4 +1,5 @@
 import { atom, useAtom, useSetAtom } from "jotai";
+import { useHydrateAtoms } from "jotai/utils";
 
 const itemAtom = atom(0);
 
