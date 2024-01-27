@@ -13,7 +13,7 @@ import {
   ResizablePanelGroup,
 } from "./ui/resizable";
 import { Separator } from "./ui/separator";
-import { ClientTable } from "./clientTable/data-table";
+import { ClientTable } from "./client-table";
 
 type ClientsProps = {
   userId: number;

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/resizable";
 import { Sidebar } from "@/components/sidebar";
 import { TanStackQueryProvider } from "providers/tanStackQueryProvider";
+import { cn } from "lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,18 +27,21 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TanStackQueryProvider>
-          <ResizablePanelGroup
-            direction="horizontal"
-            className=" min-h-full w-full rounded-lg border"
-          >
-            <ResizablePanel defaultSize={12} minSize={10} maxSize={20}>
-              <Sidebar />
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={88} minSize={80} maxSize={90}>
-              {children}
-            </ResizablePanel>
-          </ResizablePanelGroup>
+          <div className=" min-h-lvh p-4">
+            <ResizablePanelGroup
+              direction="horizontal"
+              // className=" rounded-lg border h-lvh m-4"
+              className={cn(" rounded-lg border min-h-full")}
+            >
+              <ResizablePanel defaultSize={12} minSize={10} maxSize={20}>
+                <Sidebar />
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={88} minSize={80} maxSize={90}>
+                {children}
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </div>
         </TanStackQueryProvider>
 
         <Toaster />

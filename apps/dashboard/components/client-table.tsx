@@ -1,16 +1,18 @@
 "use client";
 
 import * as React from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import {
   ColumnDef,
   ColumnFiltersState,
   FilterFn,
+  OnChangeFn,
+  Row,
   SortingState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -53,13 +55,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ClientPreview } from "../client-preview";
-import { ScrollArea } from "../ui/scroll-area";
+import { ClientPreview } from "./client-preview";
+import { ScrollArea } from "./ui/scroll-area";
 import {
   Client,
+  ClientApiResponse,
   ClientWithPamphlet,
-  ClientsWithPamphlet,
-  getClientsByUserId,
+  getClientPreviewsByUserIdAction,
 } from "@jamphlet/database";
 import { useClientAtom } from "lib/use-client";
 import { cn } from "lib/utils";
@@ -68,7 +70,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../ui/tooltip";
+} from "./ui/tooltip";
 import {
   Dialog,
   DialogContent,
@@ -76,17 +78,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { ClientForm } from "../client-form";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+} from "./ui/dialog";
+import { ClientForm } from "./client-form";
+import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
+// import { fetchSize } from "app/clients/layout";
 
-// export type Client = {
-//   id: string;
-//   name: string;
-//   email: string;
-//   lastModified: string;
-// };
+const fetchSize = 15;
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -103,73 +100,75 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 export const hiddenColumns = ["lastModified"];
 
-export const columns: ColumnDef<Client>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-    filterFn: fuzzyFilter,
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-    filterFn: fuzzyFilter,
-  },
-  {
-    accessorKey: "lastModified",
-    header: "Last Modified",
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("lastModified")}</div>
-    ),
-    filterFn: fuzzyFilter,
-    enableHiding: true,
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const client = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(client.id.toString())
-              }
-            >
-              Copy client ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View client</DropdownMenuItem>
-            <DropdownMenuItem>Delete client</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
-
-// Type
 export function ClientTable({ userId }: { userId: number }) {
-  const params = useParams();
+  const [clientId] = useClientAtom();
 
-  const { data } = useQuery({
-    queryKey: ["clients", userId],
-    queryFn: () => getClientsByUserId(userId),
-  });
+  const rerender = React.useReducer(() => ({}), {})[1];
 
-  if (!data) return null;
+  const tableContainerRef = React.useRef<HTMLDivElement>(null);
+  const cardsContainerRef = React.useRef<HTMLDivElement>(null);
 
-  // const data = d.data
+  const columns = React.useMemo<ColumnDef<Client>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Name",
+        cell: ({ row }) => (
+          <div className="capitalize">{row.getValue("name")}</div>
+        ),
+        filterFn: fuzzyFilter,
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("email")}</div>
+        ),
+        filterFn: fuzzyFilter,
+      },
+      {
+        accessorKey: "lastModified",
+        header: "Last Modified",
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("lastModified")}</div>
+        ),
+        filterFn: fuzzyFilter,
+        enableHiding: true,
+      },
+      {
+        id: "actions",
+        enableHiding: false,
+        cell: ({ row }) => {
+          const client = row.original;
+
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() =>
+                    navigator.clipboard.writeText(client.id.toString())
+                  }
+                >
+                  Copy client ID
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>View client</DropdownMenuItem>
+                <DropdownMenuItem>Delete client</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    []
+  );
 
   const [sortingMode, setSortingMode] = React.useState("Name ASC");
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -178,6 +177,69 @@ export function ClientTable({ userId }: { userId: number }) {
       desc: true,
     },
   ]);
+
+  const { data, fetchNextPage, isFetching, isLoading } =
+    useInfiniteQuery<ClientApiResponse>({
+      queryKey: [
+        "clients",
+        userId,
+        sorting, //refetch when sorting changes
+      ],
+      queryFn: async ({ pageParam }) => {
+        const start = (pageParam as number) * fetchSize;
+        const fetchedData = getClientPreviewsByUserIdAction(
+          userId,
+          start,
+          fetchSize,
+          sorting
+        );
+        return fetchedData;
+      },
+      initialPageParam: 0,
+      getNextPageParam: (_lastGroup, groups) => groups.length,
+      refetchOnWindowFocus: false,
+      placeholderData: keepPreviousData,
+    });
+
+  //flatten the array of arrays from the useInfiniteQuery hook
+  const flatData = React.useMemo(
+    () => data?.pages?.flatMap((page) => page.data) ?? [],
+    [data]
+  );
+
+  const totalDBRowCount = data?.pages?.[0]?.meta?.totalRowCount ?? 0;
+  const totalFetched = flatData.length;
+
+  const tableHeight = 600;
+  const estimatedTableRowHeight = 48;
+  const estimatedCardRowHeight = 106;
+
+  //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
+  const fetchMoreOnBottomReached = React.useCallback(
+    (containerRefElement?: HTMLDivElement | null) => {
+      if (containerRefElement) {
+        const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
+        // once the user has scrolled within three table rows off the bottom of the table, fetch more data if we can
+        const scrollDistance = scrollHeight - scrollTop - clientHeight;
+        const threshold = estimatedTableRowHeight * 3;
+        if (
+          scrollDistance < threshold &&
+          !isFetching &&
+          totalFetched < totalDBRowCount
+        ) {
+          fetchNextPage();
+        }
+      }
+    },
+    [fetchNextPage, isFetching, totalFetched, totalDBRowCount]
+  );
+
+  React.useEffect(() => {
+    viewMode === "table"
+      ? fetchMoreOnBottomReached(tableContainerRef.current)
+      : fetchMoreOnBottomReached(cardsContainerRef.current);
+  }, [fetchMoreOnBottomReached]);
+
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -189,10 +251,9 @@ export function ClientTable({ userId }: { userId: number }) {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const [viewMode, setViewMode] = React.useState("cards");
-  // const [menuMode] = React.useState("clients");
 
   const table = useReactTable({
-    data,
+    data: flatData,
     columns,
     filterFns: {
       fuzzy: fuzzyFilter,
@@ -201,11 +262,12 @@ export function ClientTable({ userId }: { userId: number }) {
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    manualSorting: true,
+    debugTable: true,
     state: {
       sorting,
       globalFilter,
@@ -213,14 +275,47 @@ export function ClientTable({ userId }: { userId: number }) {
       columnVisibility,
       rowSelection,
     },
-    initialState: {
-      pagination: {
-        pageSize: 6,
-      },
-    },
   });
 
-  if (!table) return null;
+  const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
+    setSorting(updater);
+    if (table.getRowModel().rows.length) {
+      rowVirtualizer.scrollToIndex?.(0);
+    }
+  };
+
+  table.setOptions((prev) => ({
+    ...prev,
+    onSortingChange: handleSortingChange,
+  }));
+
+  const { rows } = table.getRowModel();
+
+  const estimatedHeight =
+    viewMode === "table" ? estimatedTableRowHeight : estimatedCardRowHeight;
+
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    estimateSize: () =>
+      viewMode === "table" ? estimatedTableRowHeight : estimatedCardRowHeight, //estimate row height for accurate scrollbar dragging
+    getScrollElement: () =>
+      viewMode === "table"
+        ? tableContainerRef.current
+        : cardsContainerRef.current,
+    //measure dynamic row height, except in firefox because it measures table border height incorrectly
+    measureElement:
+      typeof window !== "undefined" &&
+      navigator.userAgent.indexOf("Firefox") === -1
+        ? (element) => element?.getBoundingClientRect().height
+        : undefined,
+    overscan: 3,
+  });
+
+  if (isLoading) {
+    return <>Loading...</>;
+  }
+
+  const items = rowVirtualizer.getVirtualItems();
 
   return (
     <div className=" flex flex-col justify-between h-full max-h-full">
@@ -348,22 +443,36 @@ export function ClientTable({ userId }: { userId: number }) {
                         changes later.
                       </DialogDescription>
                     </DialogHeader>
-                    <ClientForm />
+                    <ClientForm wrapper="dialog" />
                   </DialogContent>
                 </Dialog>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        ({flatData.length} of {totalDBRowCount} rows fetched)
         {viewMode === "table" ? (
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
+          <div
+            ref={tableContainerRef}
+            className={` relative rounded-md border overflow-auto h-[${tableHeight}px] w-full`}
+            onScroll={(e) =>
+              fetchMoreOnBottomReached(e.target as HTMLDivElement)
+            }
+          >
+            <Table className=" grid">
+              <TableHeader className=" grid sticky top-0 z-10 bg-white">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow key={headerGroup.id} className=" flex w-full">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id}>
+                        <TableHead
+                          key={header.id}
+                          style={{
+                            display: "flex",
+                            placeItems: "center",
+                            width: header.getSize(),
+                          }}
+                        >
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -376,27 +485,77 @@ export function ClientTable({ userId }: { userId: number }) {
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
+              <TableBody
+                style={{
+                  display: "grid",
+                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  position: "relative",
+                }}
+              >
+                {items.map((virtualRow) => {
+                  const row = rows[virtualRow.index] as Row<ClientWithPamphlet>;
+                  return (
                     <TableRow
                       key={row.id}
+                      data-index={virtualRow.index}
                       data-state={row.getIsSelected() && "selected"}
-                      className={cn(params === row.original.id && "bg-muted")}
-                      // onClick={() => {
-                      //   setClientAtom(row.original.id);
-                      // }}
+                      className={cn(clientId === row.original.id && "bg-muted")}
+                      ref={(node) => rowVirtualizer.measureElement(node)}
+                      style={{
+                        display: "flex",
+                        position: "absolute",
+                        transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+                        width: "100%",
+                      }}
                     >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
+                      {row.getVisibleCells().map((cell) => {
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            style={{
+                              display: "flex",
+                              width: cell.column.getSize(),
+                              justifyContent: cell.id.endsWith("actions")
+                                ? "center"
+                                : "flex-start",
+                            }}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
-                  ))
+                  );
+                })}
+              </TableBody>
+            </Table>
+            {isFetching && <div>Fetching more clients...</div>}
+          </div>
+        ) : (
+          /**
+           * Render clients as cards
+           */
+          <div
+            ref={cardsContainerRef}
+            className={` relative overflow-auto h-[${tableHeight}px] w-full`}
+            onScroll={(e) =>
+              fetchMoreOnBottomReached(e.target as HTMLDivElement)
+            }
+          >
+            <ScrollArea>
+              <div className="flex flex-col gap-2">
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => {
+                    const data: ClientWithPamphlet = row.original;
+                    return (
+                      <div key={row.id}>
+                        <ClientPreview inputData={data} />
+                      </div>
+                    );
+                  })
                 ) : (
                   <TableRow>
                     <TableCell
@@ -407,58 +566,10 @@ export function ClientTable({ userId }: { userId: number }) {
                     </TableCell>
                   </TableRow>
                 )}
-              </TableBody>
-            </Table>
+              </div>
+            </ScrollArea>
           </div>
-        ) : (
-          /**
-           * Render clients as cards
-           */
-          <ScrollArea className=" ">
-            <div className="flex flex-col gap-2">
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => {
-                  const data: ClientWithPamphlet = row.original;
-                  return (
-                    <div key={row.id}>
-                      <ClientPreview inputData={data} />
-                    </div>
-                  );
-                })
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </div>
-          </ScrollArea>
         )}
-      </div>
-
-      <div className="flex items-center justify-end space-x-2 ">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
       </div>
     </div>
   );

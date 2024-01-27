@@ -1,4 +1,5 @@
-import { ClientTable } from "@/components/clientTable/data-table";
+import { ClientFormDialog } from "@/components/client-form";
+import { ClientTable } from "@/components/client-table";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -7,9 +8,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { authenticateUser, getAuthenticatedUser } from "@jamphlet/auth";
 import {
+  ClientApiResponse,
   NewUser,
   addKindeUser,
-  getClientsByUserId,
+  getClientPreviewsByUserIdAction,
   getUserByKindeId,
 } from "@jamphlet/database";
 import {
@@ -17,9 +19,12 @@ import {
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
+import { SortingState } from "@tanstack/react-table";
 
 import { Provider as JotaiProvider } from "jotai";
 import { redirect } from "next/navigation";
+
+const fetchSize = 15;
 
 export default async function ClientsLayout({
   children,
@@ -58,9 +63,22 @@ export default async function ClientsLayout({
 
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ["clients", dbUser.id],
-    queryFn: () => getClientsByUserId(dbUser.id),
+  const sorting: SortingState = [
+    {
+      id: "lastModified",
+      desc: true,
+    },
+  ];
+
+  await queryClient.prefetchInfiniteQuery<ClientApiResponse>({
+    queryKey: ["clients", dbUser.id, sorting],
+    queryFn: () =>
+      getClientPreviewsByUserIdAction(dbUser.id, 0, fetchSize, sorting),
+    initialPageParam: 0,
+    getNextPageParam: (
+      _lastGroup: ClientApiResponse,
+      groups: ClientApiResponse[]
+    ) => groups.length,
   });
 
   return (
@@ -68,7 +86,7 @@ export default async function ClientsLayout({
       <JotaiProvider>
         <ResizablePanelGroup
           direction="horizontal"
-          className=" min-h-full w-full"
+          // className=" min-h-full w-full"
         >
           <ResizablePanel
             defaultSize={35}
@@ -76,8 +94,9 @@ export default async function ClientsLayout({
             maxSize={50}
             className=" flex flex-col"
           >
-            <div className="items-start px-4 py-2">
+            <div className=" flex justify-between items-center px-4 py-2">
               <h1 className="text-xl font-bold">Items</h1>
+              <ClientFormDialog text="New client" />
             </div>
             <Separator />
             <div className=" flex-auto flex flex-col p-4">

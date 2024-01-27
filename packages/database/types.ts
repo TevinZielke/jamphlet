@@ -56,6 +56,13 @@ export type ClientsWithPamphlet = Awaited<
 >;
 export type ClientWithPamphlet = Array<ClientsWithPamphlet>[0][0];
 
+export type ClientApiResponse = {
+  data: ClientWithPamphlet[];
+  meta: {
+    totalRowCount: number;
+  };
+};
+
 /* Item */
 export type Item = InferSelectModel<typeof items>;
 export type NewItem = InferInsertModel<typeof items>;

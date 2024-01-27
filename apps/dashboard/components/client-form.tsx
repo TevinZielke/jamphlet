@@ -31,27 +31,60 @@ import {
   DialogClose,
 } from "./ui/dialog";
 import { useClientAtom } from "lib/use-client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { redirect } from "next/navigation";
 
-export function ClientFormDialog() {
+type ClientFormDialogProps = {
+  text: string;
+};
+
+export function ClientFormDialog({ text }: ClientFormDialogProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">create a new one</Button>
+      <DialogTrigger asChild className=" hover:cursor-pointer">
+        <Button variant="outline">{text}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create client</DialogTitle>
           <DialogDescription>
-            Add a new client to your list. You can still make changes later.
+            Add a new client to your list. You can still make changes later on.
           </DialogDescription>
         </DialogHeader>
-        <ClientForm />
+        <ClientForm wrapper="dialog" />
       </DialogContent>
     </Dialog>
   );
 }
 
-export function ClientForm() {
+export function ClientFormCard() {
+  return (
+    <Card className="w-[440px]">
+      <CardHeader>
+        <CardTitle>Create client</CardTitle>
+        <CardDescription>
+          Add a new client to your list. You can still make changes later on.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ClientForm wrapper="card" />
+      </CardContent>
+    </Card>
+  );
+}
+
+type ClientFormProps = {
+  wrapper: "dialog" | "card";
+};
+
+export function ClientForm({ wrapper }: ClientFormProps) {
   const form = useForm<z.infer<typeof insertClientSchema>>({
     resolver: zodResolver(insertClientSchema),
     defaultValues: {
@@ -68,9 +101,12 @@ export function ClientForm() {
   const onSubmit = async (values: z.infer<typeof insertClientSchema>) => {
     const newClient: NewClient = values;
     const insertedClient = await addClient(newClient);
-    const icid = insertedClient.at(0)?.insertedId;
-    icid && addPamphlet(4, icid).then(() => setClientAtom(icid));
-    console.log("Client atom after submit", clientAtom);
+    const insertedClientId = insertedClient.at(0)?.insertedId;
+    insertedClientId &&
+      addPamphlet(4, insertedClientId).then(() => {
+        setClientAtom(insertedClientId);
+      });
+    redirect(`/items/${insertedClientId}`);
   };
 
   return (
@@ -81,11 +117,13 @@ export function ClientForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <div className=" flex justify-between">
+                <FormLabel>Name</FormLabel>
+                <FormDescription>The name of your client.</FormDescription>
+              </div>
               <FormControl>
                 <Input placeholder="Jane Doe" {...field} />
               </FormControl>
-              <FormDescription>The name of your client.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -95,11 +133,13 @@ export function ClientForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <div className=" flex justify-between">
+                <FormLabel>Email</FormLabel>
+                <FormDescription>The client's email address.</FormDescription>
+              </div>
               <FormControl>
                 <Input placeholder="jane.doe@mail.com" {...field} />
               </FormControl>
-              <FormDescription>The client's email address.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -109,25 +149,40 @@ export function ClientForm() {
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Notes</FormLabel>
+              <div className=" flex justify-between">
+                <FormLabel>Notes</FormLabel>
+                <FormDescription>
+                  Preliminary notes might come in handy later on.
+                </FormDescription>
+              </div>
               <FormControl>
                 <Input
                   placeholder="Client is a pet owner, prefers a north-west view,..."
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Preliminary notes might come in handy later on.
-              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
         />
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="submit">Submit</Button>
-          </DialogClose>
-        </DialogFooter>
+        {wrapper === "dialog" && (
+          <DialogFooter>
+            <DialogClose>
+              <Button type="button" variant="secondary">
+                Cancel
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button type="submit">Submit</Button>
+            </DialogClose>
+          </DialogFooter>
+        )}
+        {wrapper === "card" && (
+          <CardFooter className="flex justify-end p-0">
+            <Button>Submit</Button>
+          </CardFooter>
+        )}
       </form>
     </Form>
   );

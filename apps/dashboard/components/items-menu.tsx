@@ -7,7 +7,7 @@ import {
   ResizablePanelGroup,
 } from "./ui/resizable";
 import { Separator } from "./ui/separator";
-import { DataTable } from "./clientTable/data-table";
+import { DataTable } from "./client-table";
 import { ItemView } from "./item-view";
 
 type ItemsMenuProps = {

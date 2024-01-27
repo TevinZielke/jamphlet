@@ -44,16 +44,17 @@ export function ClientView({ clientId }: ClientViewProps) {
     queryFn: () => getClientById(clientId),
   });
 
-  if (!client) return null;
+  const text = "asd";
+  console.log(text);
+  // if (!client) return null;
   return (
     <ScrollArea className=" h-full">
       {clientId === 0 ? (
         <div className=" flex place-content-center items-center h-full">
           <div className=" h-full">
             <p>No Client selected.</p>
-            <p>
-              Select one from the left or <ClientFormDialog />
-            </p>
+            <p>Select one from the left or</p>
+            <ClientFormDialog text={text} />
           </div>
         </div>
       ) : (

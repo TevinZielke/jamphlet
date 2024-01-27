@@ -15,8 +15,6 @@ export function ClientPreview({ inputData }: ClientPreviewProps) {
   const client = inputData;
   const [clientAtom, setClientAtom] = useClientAtom();
 
-  console.log("client preview");
-
   if (!client) return null;
   return (
     <div>
@@ -33,10 +31,11 @@ export function ClientPreview({ inputData }: ClientPreviewProps) {
             <div className="flex items-center">
               <div className="flex items-center gap-2">
                 <div className="font-semibold">{client.name}</div>
-                {/* {!client.pamphlets.at(0)?.itemsOnPamphlets.at(0)
+                {/* {cl} */}
+                {client.pamphlets.at(0)?.itemsOnPamphlets.at(0)
                   ?.seenByClient && (
                   <span className="flex h-2 w-2 rounded-full bg-blue-600" />
-                )} */}
+                )}
               </div>
               <div
                 className={cn(
@@ -54,7 +53,7 @@ export function ClientPreview({ inputData }: ClientPreviewProps) {
             </div>
           </div>
           <div className="line-clamp-2 text-xs text-muted-foreground">
-            {/* {client.pamphlets.at(0)?.personalMessage?.substring(0, 300)} */}
+            {client.pamphlets.at(0)?.personalMessage?.substring(0, 300)}
           </div>
         </button>
       </Link>

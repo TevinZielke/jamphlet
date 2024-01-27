@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 import {
   Client,
+  ClientWithPamphlet,
   NewClient,
   NewPamphlet,
   clients,
@@ -13,6 +14,7 @@ import {
 } from "..";
 import { eq, sql } from "drizzle-orm/sql";
 import { timestamp } from "drizzle-orm/pg-core";
+import { ColumnSort, SortingState } from "@tanstack/react-table";
 
 /**
  * GET
@@ -79,8 +81,6 @@ export async function addPamphlet(userId: number, clientId: number) {
 }
 
 export async function updatePamphlet(newPamphlet: NewPamphlet) {
-  console.log("newPamphletAction", newPamphlet);
-
   const updatedRecord = await db.transaction(async (tx) => {
     await tx
       .update(pamphlets)
@@ -148,3 +148,46 @@ export async function updatePamphlet(newPamphlet: NewPamphlet) {
 
 //   return upsertedRecord;
 // }
+
+export async function getClientPreviewsByUserIdAction(
+  userId: number,
+  start: number,
+  size: number,
+  sorting: SortingState
+) {
+  const result = await db.query.clients.findMany({
+    where: eq(clients.userId, userId),
+    with: {
+      pamphlets: {
+        with: {
+          itemsOnPamphlets: {
+            with: {
+              item: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (sorting.length) {
+    const sort = sorting[0] as ColumnSort;
+    const { id, desc } = sort as {
+      id: keyof ClientWithPamphlet;
+      desc: boolean;
+    };
+    result.sort((a, b) => {
+      if (desc) {
+        return a[id]! < b[id]! ? 1 : -1;
+      }
+      return a[id]! > b[id]! ? 1 : -1;
+    });
+  }
+
+  return {
+    data: result.slice(start, start + size),
+    meta: {
+      totalRowCount: result.length,
+    },
+  };
+}

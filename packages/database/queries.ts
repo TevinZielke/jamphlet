@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import {
   Client,
+  ClientWithPamphlet,
   Pamphlet,
   Project,
   clients,
@@ -11,6 +12,9 @@ import {
   usersOnProjects,
 } from ".";
 import { db } from "./database";
+
+import { ColumnSort, SortingState } from "@tanstack/react-table";
+import { boolean } from "drizzle-orm/mysql-core";
 
 export async function getUserByKindeId(kindeId: string) {
   // return await db.select().from(users).where(eq(users.kindeId, kindeId));
@@ -111,6 +115,59 @@ export async function getPamphletByClientId(clientId: number) {
 /**
  * Clients
  */
+
+export async function getClientPreviewsByUserId(
+  userId: number,
+  // start: number,
+  start: number,
+  size: number,
+  sorting: SortingState
+) {
+  // const range = (start: number, stop: number, step: number) =>
+  //   Array.from(
+  //     { length: (stop - start) / step + 1 },
+  //     (_, index) => start + index * stop
+  //   );
+  // return { data: range(cursor, cursor + 10, 1), nextCursor: cursor + 10 + 1 };
+
+  const result = await db.query.clients.findMany({
+    where: eq(clients.userId, userId),
+    with: {
+      pamphlets: {
+        with: {
+          itemsOnPamphlets: {
+            with: {
+              item: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (sorting.length) {
+    const sort = sorting[0] as ColumnSort;
+    const { id, desc } = sort as {
+      id: keyof ClientWithPamphlet;
+      desc: boolean;
+    };
+    result.sort((a, b) => {
+      if (desc) {
+        return a[id]! < b[id]! ? 1 : -1;
+      }
+      return a[id]! > b[id]! ? 1 : -1;
+    });
+  }
+
+  return {
+    data: result.slice(start, start + size),
+    meta: {
+      totalRowCount: result.length,
+    },
+  };
+  // return result;
+}
+
 export async function getClientsWithPamphletsByUserId(userId: number) {
   const result = db.query.clients.findMany({
     where: eq(clients.userId, userId),
