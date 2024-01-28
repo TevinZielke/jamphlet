@@ -505,7 +505,7 @@ export function ClientTable({ userId }: { userId: number }) {
                         display: "flex",
                         position: "absolute",
                         transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-                        width: "100%",
+                        width: `${table.getTotalSize()}px`,
                       }}
                     >
                       {row.getVisibleCells().map((cell) => {
@@ -546,26 +546,40 @@ export function ClientTable({ userId }: { userId: number }) {
             }
           >
             <ScrollArea>
-              <div className="flex flex-col gap-2">
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => {
-                    const data: ClientWithPamphlet = row.original;
+              <div
+                style={{
+                  display: "grid",
+                  gap: "10px 0px",
+                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  position: "relative",
+                }}
+              >
+                {items.map((virtualRow) => {
+                  const row = rows[virtualRow.index] as Row<ClientWithPamphlet>;
+                  const data: ClientWithPamphlet = row.original;
+                  return (
+                    <div
+                      key={row.id}
+                      data-index={virtualRow.index}
+                      ref={(node) => rowVirtualizer.measureElement(node)}
+                      style={{
+                        display: "flex",
+                        position: "absolute",
+                        transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+                        width: "100%",
+                      }}
+                    >
+                      <ClientPreview inputData={data} />
+                    </div>
+                  );
+                })}
+
+                {/* const data: ClientWithPamphlet = row.original;
                     return (
                       <div key={row.id}>
                         <ClientPreview inputData={data} />
                       </div>
-                    );
-                  })
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
+                    ); */}
               </div>
             </ScrollArea>
           </div>

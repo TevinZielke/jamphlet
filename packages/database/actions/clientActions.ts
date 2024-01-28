@@ -3,7 +3,6 @@
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 import {
-  Client,
   ClientWithPamphlet,
   NewClient,
   NewPamphlet,
