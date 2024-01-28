@@ -1,21 +1,37 @@
 "use client";
 
-import { ItemWithImages } from "@jamphlet/database";
+import { ItemPreview, ItemWithImages } from "@jamphlet/database";
 import { useItemAtom } from "lib/use-item";
 import { cn } from "lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import Link from "next/link";
 
 type ItemPreviewProps = {
-  inputData: ItemWithImages;
+  inputData: ItemPreview;
 };
 
+export function ItemPreviewSkeleton() {
+  return (
+    <div className={cn("flex flex-col space-y-2 m-2 p-2 border rounded-lg")}>
+      <div className="space-y-1">
+        <Skeleton className="h-4 w-[200px]" />
+        <Skeleton className="h-4 w-[150px]" />
+      </div>
+      <div className="space-y-1">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+      </div>
+    </div>
+  );
+}
+
 // TODO: change type
-export function ItemPreview({ inputData }: ItemPreviewProps) {
+export function ItemPreviewCard({ inputData }: ItemPreviewProps) {
   const item = inputData;
   const [itemAtom, setItemAtom] = useItemAtom();
 
-  if (!item) return null;
   return (
     <div>
       <Link href={`/items/${item.id}`}>

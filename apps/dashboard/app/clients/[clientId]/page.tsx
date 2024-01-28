@@ -1,5 +1,5 @@
 import { ClientView } from "@/components/client-view";
-import { getClientById } from "@jamphlet/database";
+import { getClientAction } from "@jamphlet/database";
 import {
   HydrationBoundary,
   QueryClient,
@@ -17,7 +17,7 @@ export default async function Item({
 
   await queryClient.prefetchQuery({
     queryKey: ["client", clientId],
-    queryFn: () => getClientById(clientId),
+    queryFn: () => getClientAction(clientId),
   });
 
   return (

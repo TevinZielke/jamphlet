@@ -9,6 +9,7 @@ import {
   clients,
   db,
   getClientsWithPamphletsByUserId,
+  getPamphletByClientId,
   pamphlets,
 } from "..";
 import { eq, sql } from "drizzle-orm/sql";
@@ -18,6 +19,26 @@ import { ColumnSort, SortingState } from "@tanstack/react-table";
 /**
  * GET
  */
+
+export async function getClientAction(clientId: number) {
+  const result = db.query.clients.findFirst({
+    where: eq(clients.id, clientId),
+    with: {
+      pamphlets: {
+        with: {
+          itemsOnPamphlets: {
+            with: {
+              item: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return result;
+}
+
 // export async function getClients() {
 //   const res = unstable_cache(
 //     async (userId) => {
@@ -30,18 +51,18 @@ import { ColumnSort, SortingState } from "@tanstack/react-table";
 //   );
 // }
 
-export const getClients = async (userId: number) =>
-  await getClientsWithPamphletsByUserId(userId);
+// export const getClients = async (userId: number) =>
+//   await getClientsWithPamphletsByUserId(userId);
 
-export const getClientsCached = unstable_cache(
-  async (userId) => {
-    return getClientsWithPamphletsByUserId(userId);
-  },
-  ["clients"],
-  {
-    tags: ["clients"],
-  }
-);
+// export const getClientsCached = unstable_cache(
+//   async (userId) => {
+//     return getClientsWithPamphletsByUserId(userId);
+//   },
+//   ["clients"],
+//   {
+//     tags: ["clients"],
+//   }
+// );
 
 // /**
 //  * POST
@@ -68,6 +89,17 @@ export async function deleteClient(clientId: number) {
 
   return deletedClient;
 }
+
+// export async function getPamphletByClientIdAction(clientId: number) {
+//   const result = db.query.itemsOnPamphlets.findMany({
+//     where: eq(pamphlets.clientId, clientId),
+//     with: {
+//       item: true,
+//     },
+//   });
+
+//   return result;
+// }
 
 // Update param type
 export async function addPamphlet(userId: number, clientId: number) {

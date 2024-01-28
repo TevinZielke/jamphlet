@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/resizable";
 import { Sidebar } from "@/components/sidebar";
 import { TanStackQueryProvider } from "providers/tanStackQueryProvider";
-import { cn } from "lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 

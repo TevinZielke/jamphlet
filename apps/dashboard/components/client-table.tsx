@@ -56,7 +56,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ClientPreview } from "./client-preview";
-import { ScrollArea } from "./ui/scroll-area";
 import {
   Client,
   ClientApiResponse,
@@ -81,6 +80,9 @@ import {
 } from "./ui/dialog";
 import { ClientForm } from "./client-form";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
+import { ItemPreviewSkeleton } from "./item-preview";
+import { Fragment } from "react";
+import { Separator } from "./ui/separator";
 
 const fetchSize = 15;
 
@@ -100,11 +102,9 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 export const hiddenColumns = ["lastModified"];
 
 export function ClientTable({ userId }: { userId: number }) {
-  const [viewMode, setViewMode] = React.useState("table");
+  const [viewMode, setViewMode] = React.useState("cards");
 
   const [clientId] = useClientAtom();
-
-  const rerender = React.useReducer(() => ({}), {})[1];
 
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const cardsContainerRef = React.useRef<HTMLDivElement>(null);
@@ -179,7 +179,7 @@ export function ClientTable({ userId }: { userId: number }) {
     },
   ]);
 
-  const { data, fetchNextPage, isFetching, isLoading } =
+  const { data, fetchNextPage, status, isFetching, isLoading } =
     useInfiniteQuery<ClientApiResponse>({
       queryKey: [
         "clients",
@@ -211,7 +211,7 @@ export function ClientTable({ userId }: { userId: number }) {
   const totalDBRowCount = data?.pages?.[0]?.meta?.totalRowCount ?? 0;
   const totalFetched = flatData.length;
 
-  const tableHeight = 400;
+  const tableHeight = {};
   const estimatedTableRowHeight = 48;
   const estimatedCardRowHeight = 106;
 
@@ -307,151 +307,152 @@ export function ClientTable({ userId }: { userId: number }) {
     overscan: 3,
   });
 
-  if (isLoading) {
-    return <>Loading...</>;
-  }
-
   const items = rowVirtualizer.getVirtualItems();
 
+  const hideSeparator =
+    cardsContainerRef.current?.scrollTop === undefined ||
+    cardsContainerRef.current?.scrollTop === 0;
+
   return (
-    <div className=" flex flex-col justify-between h-full">
-      <div className=" flex-auto">
-        <div className="flex items-center pb-4 space-x-2">
-          <Input
-            placeholder="Search clients..."
-            value={globalFilter ?? "a"}
-            onChange={(e) => {
-              setGlobalFilter(String(e.target.value));
-            }}
-            className="max-w-sm"
-          />
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <MoreHorizontal />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Options</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuGroup>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <ArrowUpDown className="mr-2 h-4 w-4" />
-                    <span>Sort</span>
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                      {table
-                        .getAllColumns()
-                        .filter((column) => column.getCanSort())
-                        .map((column) => {
-                          return (
-                            <DropdownMenuRadioGroup
-                              key={`${column.id}`}
-                              value={sortingMode}
-                              onValueChange={setSortingMode}
+    <div className=" flex flex-col justify-between max-h-full">
+      <div className="flex flex-1 items-center pb-2 space-x-2">
+        <Input
+          placeholder="Search clients..."
+          value={globalFilter ?? "a"}
+          onChange={(e) => {
+            setGlobalFilter(String(e.target.value));
+          }}
+          className="max-w-sm"
+        />
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <MoreHorizontal />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Options</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuGroup>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <ArrowUpDown className="mr-2 h-4 w-4" />
+                  <span>Sort</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    {table
+                      .getAllColumns()
+                      .filter((column) => column.getCanSort())
+                      .map((column) => {
+                        return (
+                          <DropdownMenuRadioGroup
+                            key={`${column.id}`}
+                            value={sortingMode}
+                            onValueChange={setSortingMode}
+                          >
+                            <DropdownMenuRadioItem
+                              key={`${column.id} + asc`}
+                              className="capitalize justify-between"
+                              value={`${column.id} asc`}
+                              onClick={() => {
+                                column.toggleSorting(false);
+                              }}
                             >
-                              <DropdownMenuRadioItem
-                                key={`${column.id} + asc`}
-                                className="capitalize justify-between"
-                                value={`${column.id} asc`}
-                                onClick={() => {
-                                  column.toggleSorting(false);
-                                }}
-                              >
-                                {column.id}
-                                <ArrowUpWideNarrow />
-                              </DropdownMenuRadioItem>
-                              <DropdownMenuRadioItem
-                                key={`${column.id} + desc`}
-                                className="capitalize justify-between"
-                                value={`${column.id} desc`}
-                                onClick={() => {
-                                  column.toggleSorting(true);
-                                }}
-                              >
-                                {column.id}
-                                <ArrowDownNarrowWide />
-                              </DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                          );
-                        })}
-                    </DropdownMenuSubContent>
-                  </DropdownMenuPortal>
-                </DropdownMenuSub>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <LayoutList className="mr-2 h-4 w-4" />
-                    <span>View</span>
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                      <DropdownMenuRadioGroup
-                        value={sortingMode}
-                        onValueChange={setSortingMode}
+                              {column.id}
+                              <ArrowUpWideNarrow />
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem
+                              key={`${column.id} + desc`}
+                              className="capitalize justify-between"
+                              value={`${column.id} desc`}
+                              onClick={() => {
+                                column.toggleSorting(true);
+                              }}
+                            >
+                              {column.id}
+                              <ArrowDownNarrowWide />
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuRadioGroup>
+                        );
+                      })}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <LayoutList className="mr-2 h-4 w-4" />
+                  <span>View</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuRadioGroup
+                      value={sortingMode}
+                      onValueChange={setSortingMode}
+                    >
+                      <DropdownMenuRadioItem
+                        value="table"
+                        onClick={() => {
+                          setViewMode("table");
+                        }}
+                        className=" justify-between"
                       >
-                        <DropdownMenuRadioItem
-                          value="table"
-                          onClick={() => {
-                            setViewMode("table");
-                          }}
-                          className=" justify-between"
-                        >
-                          Table
-                          <TableIcon />
-                        </DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem
-                          value="card"
-                          onClick={() => {
-                            setViewMode("card");
-                          }}
-                          className=" justify-between"
-                        >
-                          Card
-                          <GalleryVertical />
-                        </DropdownMenuRadioItem>
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuPortal>
-                </DropdownMenuSub>
-                <DropdownMenuSeparator />
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      <span>New Client</span>
-                      <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Create new client</DialogTitle>
-                      <DialogDescription>
-                        Add a new client to your list. You can still make
-                        changes later.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <ClientForm wrapper="dialog" />
-                  </DialogContent>
-                </Dialog>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        {/* ({flatData.length} of {totalDBRowCount} rows fetched) */}
+                        Table
+                        <TableIcon />
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value="card"
+                        onClick={() => {
+                          setViewMode("card");
+                        }}
+                        className=" justify-between"
+                      >
+                        Card
+                        <GalleryVertical />
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    <span>New Client</span>
+                    <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create new client</DialogTitle>
+                    <DialogDescription>
+                      Add a new client to your list. You can still make changes
+                      later.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ClientForm wrapper="dialog" />
+                </DialogContent>
+              </Dialog>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div>
+        ({flatData.length} of {totalDBRowCount} rows fetched)
+      </div>
+      <>
         {viewMode === "table" ? (
           <div
             ref={tableContainerRef}
-            // className={` relative rounded-md border overflow-auto max-h-[${tableHeight}px] w-full`}
-            className={` relative flex-auto rounded-md border overflow-auto w-full max-h-[600px]`}
+            className={` relative flex-auto rounded-md border overflow-auto w-full h-[640px]`} //change to dynamic height
             onScroll={(e) =>
               fetchMoreOnBottomReached(e.target as HTMLDivElement)
             }
@@ -512,6 +513,7 @@ export function ClientTable({ userId }: { userId: number }) {
                             style={{
                               display: "flex",
                               width: cell.column.getSize(),
+                              alignItems: "center",
                               justifyContent: cell.id.endsWith("actions")
                                 ? "center"
                                 : "flex-start",
@@ -535,53 +537,56 @@ export function ClientTable({ userId }: { userId: number }) {
           /**
            * Render clients as cards
            */
-          <div
-            ref={cardsContainerRef}
-            className={` relative overflow-auto h-[${tableHeight}px] w-full`}
-            onScroll={(e) =>
-              fetchMoreOnBottomReached(e.target as HTMLDivElement)
-            }
-          >
-            <ScrollArea>
+          <>
+            {!hideSeparator && <Separator />}
+            <div
+              ref={cardsContainerRef}
+              className=" relative overflow-auto w-full h-fit"
+              onScroll={(e) =>
+                fetchMoreOnBottomReached(e.target as HTMLDivElement)
+              }
+            >
               <div
                 style={{
                   display: "grid",
-                  gap: "10px 0px",
-                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  height: `calc(${rowVirtualizer.getTotalSize()}px + 49px)`,
                   position: "relative",
                 }}
               >
-                {items.map((virtualRow) => {
-                  const row = rows[virtualRow.index] as Row<ClientWithPamphlet>;
-                  const data: ClientWithPamphlet = row.original;
-                  return (
-                    <div
-                      key={row.id}
-                      data-index={virtualRow.index}
-                      ref={(node) => rowVirtualizer.measureElement(node)}
-                      style={{
-                        display: "flex",
-                        position: "absolute",
-                        transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-                        width: "100%",
-                      }}
-                    >
-                      <ClientPreview inputData={data} />
-                    </div>
-                  );
-                })}
-
-                {/* const data: ClientWithPamphlet = row.original;
+                <>
+                  {items.map((virtualRow) => {
+                    const row = rows[
+                      virtualRow.index
+                    ] as Row<ClientWithPamphlet>;
+                    const data: ClientWithPamphlet = row.original;
                     return (
-                      <div key={row.id}>
-                        <ClientPreview inputData={data} />
-                      </div>
-                    ); */}
+                      <Fragment key={row.id}>
+                        {isFetching ? (
+                          <ItemPreviewSkeleton />
+                        ) : (
+                          <div
+                            key={row.id}
+                            data-index={virtualRow.index}
+                            ref={(node) => rowVirtualizer.measureElement(node)}
+                            style={{
+                              display: "flex",
+                              position: "absolute",
+                              transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+                              width: "100%",
+                            }}
+                          >
+                            <ClientPreview inputData={data} />
+                          </div>
+                        )}
+                      </Fragment>
+                    );
+                  })}
+                </>
               </div>
-            </ScrollArea>
-          </div>
+            </div>
+          </>
         )}
-      </div>
+      </>
     </div>
   );
 }

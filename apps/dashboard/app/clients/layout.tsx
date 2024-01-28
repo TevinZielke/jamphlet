@@ -1,5 +1,6 @@
 import { ClientFormDialog } from "@/components/client-form";
 import { ClientTable } from "@/components/client-table";
+import { ItemPreviewSkeleton } from "@/components/item-preview";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -9,29 +10,25 @@ import { Separator } from "@/components/ui/separator";
 import { authenticateUser, getAuthenticatedUser } from "@jamphlet/auth";
 import {
   ClientApiResponse,
+  ItemPreviewApiResponse,
   NewUser,
   addKindeUser,
   getClientPreviewsByUserIdAction,
+  getItemPreviewsByProjectIdAction,
+  getItemsByProjectIdAction,
   getUserByKindeId,
 } from "@jamphlet/database";
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@tanstack/react-query";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { SortingState } from "@tanstack/react-table";
 
 import { Provider as JotaiProvider } from "jotai";
+import getQueryClient from "lib/getQueryClient";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
 
 const fetchSize = 15;
 
-export default async function ClientsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+async function getClients() {
   const projectId = 1;
   const organizationId = 1;
 
@@ -62,7 +59,8 @@ export default async function ClientsLayout({
     throw new Error("Error fetching dbUser.");
   }
 
-  const queryClient = new QueryClient();
+  // const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   const sorting: SortingState = [
     {
@@ -82,8 +80,46 @@ export default async function ClientsLayout({
     ) => groups.length,
   });
 
+  await queryClient.prefetchInfiniteQuery<ItemPreviewApiResponse>({
+    queryKey: ["items", 1, sorting],
+    queryFn: () => getItemPreviewsByProjectIdAction(1, 0, fetchSize, sorting),
+    initialPageParam: 0,
+    getNextPageParam: (
+      _lastGroup: ItemPreviewApiResponse,
+      groups: ItemPreviewApiResponse[]
+    ) => groups.length,
+  });
+
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["items", projectId],
+  //   queryFn: () => getItemsByProjectIdAction(projectId),
+  // });
+
+  return dbUser;
+}
+
+function Skeletons() {
+  const containeHeight = 666;
+  const skeletonHeight = 125;
+  const skeletons = new Array(containeHeight % skeletonHeight).fill(
+    <ItemPreviewSkeleton />
+  );
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
+      {skeletons.map((elem, index) => (
+        <Fragment key={index}>{elem}</Fragment>
+      ))}
+    </>
+  );
+}
+
+export default async function ClientsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <HydrationBoundary state={dehydrate(getQueryClient())}>
       <JotaiProvider>
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel
@@ -92,14 +128,14 @@ export default async function ClientsLayout({
             maxSize={50}
             className=" flex flex-col"
           >
-            <div className=" flex justify-between items-center px-4 py-2">
-              <h1 className="text-xl font-bold">Items</h1>
+            <div className=" flex justify-between items-center px-2 py-2">
+              <h1 className="text-xl font-bold">Clients</h1>
               <ClientFormDialog text="New client" />
             </div>
             <Separator />
-            <div className=" flex-auto flex flex-col p-4">
-              <Suspense fallback="loading...">
-                <ClientTable userId={dbUser.id} />
+            <div className=" flex-auto flex flex-col p-2  max-h-full">
+              <Suspense fallback={<Skeletons />}>
+                <ClientList />
               </Suspense>
             </div>
           </ResizablePanel>
@@ -111,4 +147,10 @@ export default async function ClientsLayout({
       </JotaiProvider>
     </HydrationBoundary>
   );
+}
+
+async function ClientList() {
+  const dbUser = await getClients();
+
+  return <ClientTable userId={dbUser.id} />;
 }

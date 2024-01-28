@@ -1,22 +1,20 @@
 "use client";
-import {
-  ClientsWithPamphlet,
-  deleteClient,
-  getClientById,
-} from "@jamphlet/database";
+import { getClientAction, getItemsByProjectIdAction } from "@jamphlet/database";
 
-import { useClientAtom } from "lib/use-client";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { DeleteDialog } from "./delete-dialog";
 import { toast } from "sonner";
 import { ClientFormDialog } from "./client-form";
-import { PamphletForm } from "./pamphlet-form";
+import { PamphletForm, PamphletFormDefaultValues } from "./pamphlet-form";
 import { ScrollArea } from "./ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
+import { CalendarDays } from "lucide-react";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { useSelectionAtom } from "lib/use-selection";
 
 type ClientViewProps = {
-  // data: ClientsWithPamphlet | null;
   clientId: number;
 };
 
@@ -39,72 +37,99 @@ export function ClientView({ clientId }: ClientViewProps) {
 
   // const client = data?.find((c) => c.id === clientId);
 
-  const { data: client } = useQuery({
-    queryKey: ["client", clientId],
-    queryFn: () => getClientById(clientId),
+  const projectId = 1;
+
+  const { data: items } = useQuery({
+    queryKey: ["items", projectId],
+    queryFn: () => getItemsByProjectIdAction(projectId),
   });
 
-  const text = "asd";
-  console.log(text);
-  // if (!client) return null;
+  console.log("ClientViewItems: ", items);
+
+  const { data: client } = useQuery({
+    queryKey: ["client", clientId],
+    queryFn: () => getClientAction(clientId),
+  });
+
+  console.log("ClientViewClients: ", client);
+
+  const pamphlet = client?.pamphlets.at(0);
+
+  if (!client?.userId || !pamphlet?.personalMessage) return null;
+
+  const [selectionAtom, setSelectionAtom] = useSelectionAtom();
+  const itemIdArray = pamphlet.itemsOnPamphlets.map(({ itemId }) => itemId);
+  // setSelectionAtom(itemIdArray);
+
+  const formDefaultValues: PamphletFormDefaultValues = {
+    clientId: clientId,
+    userId: client?.userId,
+    personalMessage: pamphlet?.personalMessage,
+  };
+
   return (
     <ScrollArea className=" h-full">
-      {clientId === 0 ? (
-        <div className=" flex place-content-center items-center h-full">
-          <div className=" h-full">
-            <p>No Client selected.</p>
-            <p>Select one from the left or</p>
-            <ClientFormDialog text={text} />
-          </div>
-        </div>
-      ) : (
-        <div>
-          <div className="flex flex-row justify-between px-2 py-2">
-            <div>
-              <h2 className=" text-3xl font-bold">{client?.name}</h2>
-              <p>{client?.email}</p>
-              <p>{client?.createdAt?.toLocaleString()}</p>
-              <div>
-                <p>
-                  {client?.notes ? (
-                    client.notes
-                  ) : (
-                    <Button variant="ghost">Add a note</Button>
-                  )}
-                </p>
-              </div>
-            </div>
-            <div className=" flex gap-2">
-              <Button variant="link">Visit Jamphlet</Button>
-              <Button variant="secondary">Edit</Button>
-              <DeleteDialog handleConfirm={confirm}>
-                <Button variant="destructive">Delete</Button>
-              </DeleteDialog>
-              <Button>Share</Button>
-            </div>
-          </div>
-
-          <Separator />
-          <div className=" p-2">
-            {/* <div className=" flex-col">
-              <div>
-                <p>Personal message: {pamphlet?.personalMessage}</p>
-                <div>
-                  <span>Selected residences:</span>
-                  {pamphlet?.itemsOnPamphlets.map((iop) => (
-                    <p key={iop.itemId}>
-                      {iop.item.name}: {iop.comment}
-                    </p>
-                  ))}
+      <div>
+        <div className="flex flex-row justify-between px-2 py-2">
+          <div>
+            <h2 className=" text-3xl font-bold">{client?.name}</h2>
+            <p>{client?.email}</p>
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <Button variant="link" className=" p-0">
+                  Last edited{" "}
+                  {formatDistanceToNow(new Date(client.lastModified!))} ago
+                </Button>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-80">
+                <div className=" flex justify-between">
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-medium">Created at</h4>
+                    <div className="flex items-center pt-2">
+                      <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
+                      <span className="text-xs text-muted-foreground">
+                        {client.lastModified?.toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                  <Separator orientation="vertical" className=" h-[48px]" />
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-medium">Last modified</h4>
+                    <div className="flex items-center pt-2">
+                      <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
+                      <span className="text-xs text-muted-foreground">
+                        {client.lastModified?.toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div> */}
+              </HoverCardContent>
+            </HoverCard>
             <div>
-              <PamphletForm clientId={clientId} />
+              <p>
+                {client?.notes ? (
+                  client.notes
+                ) : (
+                  <Button variant="ghost">Add a note</Button>
+                )}
+              </p>
             </div>
           </div>
+          <div className=" flex gap-2">
+            <Button variant="link">Visit Jamphlet</Button>
+            <Button variant="secondary">Edit</Button>
+            <DeleteDialog handleConfirm={confirm}>
+              <Button variant="destructive">Delete</Button>
+            </DeleteDialog>
+            <Button>Share</Button>
+          </div>
         </div>
-      )}
+
+        <Separator />
+        <div className=" p-2">
+          <PamphletForm defaultValues={formDefaultValues} />
+        </div>
+      </div>
     </ScrollArea>
   );
 }

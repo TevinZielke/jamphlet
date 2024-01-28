@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-query";
 
 import { Provider as JotaiProvider } from "jotai";
+import getQueryClient from "lib/getQueryClient";
 
 export default async function ItemsLayout({
   children,
@@ -21,7 +22,8 @@ export default async function ItemsLayout({
 }) {
   const projectId = 1;
 
-  const queryClient = new QueryClient();
+  // const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["items", projectId],
@@ -47,7 +49,7 @@ export default async function ItemsLayout({
             </div>
             <Separator />
             <div className=" flex-auto flex flex-col p-4">
-              <ItemTable />
+              <ItemTable projectId={projectId} />
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />

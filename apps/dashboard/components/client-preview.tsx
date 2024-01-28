@@ -20,7 +20,7 @@ export function ClientPreview({ inputData }: ClientPreviewProps) {
       <button
         key={client.id}
         className={cn(
-          "flex flex-col items-start w-full gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
+          "flex flex-col items-start w-full gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent ",
           clientAtom === client.id && "bg-muted"
         )}
         onClick={() => setClientAtom(client.id)}

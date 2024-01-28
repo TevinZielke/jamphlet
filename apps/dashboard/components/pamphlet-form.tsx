@@ -1,8 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMediaQuery } from "usehooks-ts";
 import {
   NewPamphlet,
+  getItems,
+  getItemsByProjectIdAction,
   insertPamphletSchema,
   updatePamphlet,
 } from "@jamphlet/database";
@@ -21,34 +24,54 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { cn } from "lib/utils";
+import React from "react";
+import {
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
+  Drawer,
+} from "./ui/drawer";
+import { Label } from "./ui/label";
+import { useQuery } from "@tanstack/react-query";
+import { ItemTable } from "./item-table";
+import { useSelectionAtom } from "lib/use-selection";
+import { ClientTable } from "./client-table";
 
 type PamphletFormProps = {
-  clientId: number;
+  defaultValues: PamphletFormDefaultValues;
 };
 
-// type ClientsWithPamphlet = {
-//     client: Client;
-//     pamphlet: Pamphlet;
-// }
+export type PamphletFormDefaultValues = {
+  clientId: number;
+  userId: number;
+  personalMessage: string;
+};
 
-export function PamphletForm({ clientId }: PamphletFormProps) {
-  console.log(clientId);
-
+export function PamphletForm({ defaultValues }: PamphletFormProps) {
   const form = useForm<z.infer<typeof insertPamphletSchema>>({
     resolver: zodResolver(insertPamphletSchema),
-    defaultValues: {
-      clientId: clientId,
-      userId: 4,
-      personalMessage: "",
-    },
+    defaultValues: defaultValues,
     mode: "onBlur",
     reValidateMode: "onChange",
   });
 
   const onSubmit = async (values: z.infer<typeof insertPamphletSchema>) => {
     const newPamphlet: NewPamphlet = {
-      userId: 4,
-      clientId: clientId,
+      userId: defaultValues.userId,
+      clientId: defaultValues.clientId,
       personalMessage: values.personalMessage,
     };
     const insertedPamphlet = await updatePamphlet(newPamphlet);
@@ -58,21 +81,13 @@ export function PamphletForm({ clientId }: PamphletFormProps) {
     });
   };
 
-  useEffect(() => {
-    form.reset({
-      userId: 4,
-      clientId: clientId,
-      personalMessage: "",
-    });
-  }, [clientId]);
+  // useEffect(() => {
+  //   form.reset(defaultValues);
+  // }, [clientId]);
 
   useEffect(() => {
     if (form.formState.isSubmitSuccessful) {
-      form.reset({
-        userId: 4,
-        clientId: clientId,
-        personalMessage: "",
-      });
+      form.reset(defaultValues);
     }
     console.log("formState", form.formState);
   }, [form.formState]);
@@ -99,8 +114,84 @@ export function PamphletForm({ clientId }: PamphletFormProps) {
             </FormItem>
           )}
         />
+        <DrawerDialogDemo />
         <Button type="submit">Submit</Button>
       </form>
     </Form>
+  );
+}
+
+export function DrawerDialogDemo() {
+  const [open, setOpen] = React.useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  if (isDesktop) {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline">Edit selection</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit profile</DialogTitle>
+            <DialogDescription>
+              Make changes to --client name--'s selection. Click save when
+              you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <SelectionForm />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
+        <Button variant="outline">Edit Profile</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Edit profile</DrawerTitle>
+          <DrawerDescription>
+            Make changes to your profile here. Click save when you're done.
+          </DrawerDescription>
+        </DrawerHeader>
+        {/* <ProfileForm className="px-4" /> */}
+        <SelectionForm />
+        <DrawerFooter className="pt-2">
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
+function SelectionForm() {
+  const [selectionAtom, setSelectionAtom] = useSelectionAtom();
+  const projectId = 1;
+
+  const { data } = useQuery({
+    queryKey: ["items", projectId],
+    queryFn: () => getItemsByProjectIdAction(projectId),
+  });
+
+  console.log("pamphletForm: ", data);
+
+  return (
+    <div className=" flex justify-between">
+      <div>
+        <p>Current selection:</p>
+        {selectionAtom.map((item, index) => {
+          return <div key={index}>{index}</div>;
+        })}
+      </div>
+      <div>
+        <p>All tems</p>
+        <ItemTable projectId={1} />
+      </div>
+    </div>
   );
 }
