@@ -27,11 +27,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TanStackQueryProvider>
-          <div className=" min-h-lvh p-4">
+          <div className=" p-4">
             <ResizablePanelGroup
               direction="horizontal"
-              // className=" rounded-lg border h-lvh m-4"
-              className={cn(" rounded-lg border min-h-full")}
+              className=" rounded-lg border min-h-full max-h-[calc(100lvh-2rem)]"
             >
               <ResizablePanel defaultSize={12} minSize={10} maxSize={20}>
                 <Sidebar />

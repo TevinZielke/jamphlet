@@ -23,6 +23,7 @@ import { SortingState } from "@tanstack/react-table";
 
 import { Provider as JotaiProvider } from "jotai";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 const fetchSize = 15;
 
@@ -84,10 +85,7 @@ export default async function ClientsLayout({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <JotaiProvider>
-        <ResizablePanelGroup
-          direction="horizontal"
-          // className=" min-h-full w-full"
-        >
+        <ResizablePanelGroup direction="horizontal">
           <ResizablePanel
             defaultSize={35}
             minSize={20}
@@ -100,7 +98,9 @@ export default async function ClientsLayout({
             </div>
             <Separator />
             <div className=" flex-auto flex flex-col p-4">
-              <ClientTable userId={dbUser.id} />
+              <Suspense fallback="loading...">
+                <ClientTable userId={dbUser.id} />
+              </Suspense>
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />

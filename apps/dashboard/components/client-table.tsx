@@ -81,7 +81,6 @@ import {
 } from "./ui/dialog";
 import { ClientForm } from "./client-form";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
-// import { fetchSize } from "app/clients/layout";
 
 const fetchSize = 15;
 
@@ -101,6 +100,8 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 export const hiddenColumns = ["lastModified"];
 
 export function ClientTable({ userId }: { userId: number }) {
+  const [viewMode, setViewMode] = React.useState("table");
+
   const [clientId] = useClientAtom();
 
   const rerender = React.useReducer(() => ({}), {})[1];
@@ -210,7 +211,7 @@ export function ClientTable({ userId }: { userId: number }) {
   const totalDBRowCount = data?.pages?.[0]?.meta?.totalRowCount ?? 0;
   const totalFetched = flatData.length;
 
-  const tableHeight = 600;
+  const tableHeight = 400;
   const estimatedTableRowHeight = 48;
   const estimatedCardRowHeight = 106;
 
@@ -249,8 +250,6 @@ export function ClientTable({ userId }: { userId: number }) {
       lastModified: false,
     });
   const [rowSelection, setRowSelection] = React.useState({});
-
-  const [viewMode, setViewMode] = React.useState("cards");
 
   const table = useReactTable({
     data: flatData,
@@ -291,9 +290,6 @@ export function ClientTable({ userId }: { userId: number }) {
 
   const { rows } = table.getRowModel();
 
-  const estimatedHeight =
-    viewMode === "table" ? estimatedTableRowHeight : estimatedCardRowHeight;
-
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
     estimateSize: () =>
@@ -318,7 +314,7 @@ export function ClientTable({ userId }: { userId: number }) {
   const items = rowVirtualizer.getVirtualItems();
 
   return (
-    <div className=" flex flex-col justify-between h-full max-h-full">
+    <div className=" flex flex-col justify-between h-full">
       <div className=" flex-auto">
         <div className="flex items-center pb-4 space-x-2">
           <Input
@@ -450,11 +446,12 @@ export function ClientTable({ userId }: { userId: number }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        ({flatData.length} of {totalDBRowCount} rows fetched)
+        {/* ({flatData.length} of {totalDBRowCount} rows fetched) */}
         {viewMode === "table" ? (
           <div
             ref={tableContainerRef}
-            className={` relative rounded-md border overflow-auto h-[${tableHeight}px] w-full`}
+            // className={` relative rounded-md border overflow-auto max-h-[${tableHeight}px] w-full`}
+            className={` relative flex-auto rounded-md border overflow-auto w-full max-h-[600px]`}
             onScroll={(e) =>
               fetchMoreOnBottomReached(e.target as HTMLDivElement)
             }
