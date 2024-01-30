@@ -40,6 +40,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { redirect } from "next/navigation";
+import { Textarea } from "./ui/textarea";
 
 type ClientFormDialogProps = {
   text: string;
@@ -106,7 +107,7 @@ export function ClientForm({ wrapper }: ClientFormProps) {
       addPamphlet(4, insertedClientId).then(() => {
         setClientAtom(insertedClientId);
       });
-    redirect(`/items/${insertedClientId}`);
+    redirect(`/clients/${insertedClientId}`);
   };
 
   return (
@@ -156,7 +157,7 @@ export function ClientForm({ wrapper }: ClientFormProps) {
                 </FormDescription>
               </div>
               <FormControl>
-                <Input
+                <Textarea
                   placeholder="Client is a pet owner, prefers a north-west view,..."
                   {...field}
                 />

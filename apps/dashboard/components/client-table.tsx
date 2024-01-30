@@ -446,7 +446,9 @@ export function ClientTable({ userId }: { userId: number }) {
         </DropdownMenu>
       </div>
       <div>
-        ({flatData.length} of {totalDBRowCount} rows fetched)
+        <p className=" text-sm">
+          ({flatData.length} of {totalDBRowCount} rows fetched)
+        </p>
       </div>
       <>
         {viewMode === "table" ? (

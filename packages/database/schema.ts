@@ -19,6 +19,12 @@ export const invitationStatusEnum = pgEnum("invitation_status", [
   "accepted",
   "declined",
 ]);
+export const featureTypeEnum = pgEnum("feature_type", [
+  "quantity",
+  "currency",
+  "text",
+  "boolean",
+]);
 
 export const organizations = pgTable("organizations", {
   id: serial("id").primaryKey(),
@@ -44,9 +50,43 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
     fields: [projects.organizationId],
     references: [organizations.id],
   }),
+  categories: many(categories),
   usersOnProjects: many(usersOnProjects),
   clientsOnProjects: many(clientsOnProjects),
   projectImages: many(projectImages),
+}));
+
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
+  name: text("name"),
+  projectId: integer("project_id")
+    .notNull()
+    .references(() => projects.id),
+});
+
+export const categoriesRelations = relations(categories, ({ one, many }) => ({
+  project: one(projects, {
+    fields: [categories.projectId],
+    references: [projects.id],
+  }),
+  features: many(features),
+}));
+
+export const features = pgTable("features", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  value: text("value").notNull(),
+  type: featureTypeEnum("type").notNull().default("text"),
+  categoryId: integer("categoryId")
+    .notNull()
+    .references(() => categories.id),
+});
+
+export const featuresRelations = relations(features, ({ one }) => ({
+  category: one(categories, {
+    fields: [features.categoryId],
+    references: [categories.id],
+  }),
 }));
 
 export const users = pgTable("users", {

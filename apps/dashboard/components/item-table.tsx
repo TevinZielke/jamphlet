@@ -80,7 +80,7 @@ import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { ItemPreviewCard, ItemPreviewSkeleton } from "./item-preview";
 import { Fragment } from "react";
 import { Separator } from "./ui/separator";
-import { ItemForm } from "./item-form";
+import { ItemFormInitial } from "./item-form-initial";
 import { useItemAtom } from "lib/use-item";
 
 const fetchSize = 15;
@@ -440,16 +440,16 @@ export function ItemTable({ projectId }: { projectId: number }) {
                       later.
                     </DialogDescription>
                   </DialogHeader>
-                  <ItemForm />
+                  <ItemFormInitial wrapper="dialog" />
                 </DialogContent>
               </Dialog>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div>
+      <p className=" text-sm">
         ({flatData.length} of {totalDBRowCount} rows fetched)
-      </div>
+      </p>
       <>
         {viewMode === "table" ? (
           <div

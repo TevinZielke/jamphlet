@@ -24,6 +24,9 @@ export async function getItemByIdAction(itemId: number) {
 export async function getItemsByProjectIdAction(projectId: number) {
   const result = await db.query.items.findMany({
     where: eq(items.projectId, projectId),
+    with: {
+      itemImages: true,
+    },
   });
 
   return result;
@@ -37,6 +40,9 @@ export async function getItemPreviewsByProjectIdAction(
 ) {
   const result = await db.query.items.findMany({
     where: eq(items.projectId, projectId),
+    with: {
+      itemImages: true,
+    },
   });
 
   if (sorting.length) {

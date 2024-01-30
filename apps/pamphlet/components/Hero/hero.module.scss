@@ -1,0 +1,105 @@
+.root {
+  background: black;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+
+  .backgroundImage {
+    scale: 1.2;
+    opacity: 0;
+    transition: all 2s var(--cubic);
+  }
+
+  .logo,
+  .heading,
+  .text,
+  .button {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s var(--cubic);
+  }
+  .button {
+    transform: translateY(-20px);
+  }
+
+  .logo {
+    transition-delay: 0.6s;
+  }
+  .heading {
+    transition-delay: 0.65s;
+  }
+  .text {
+    transition-delay: 0.7s;
+  }
+
+  .button {
+    transition-delay: 1.5s;
+  }
+
+  &.visible {
+    .backgroundImage {
+      opacity: 1;
+      scale: 1;
+    }
+
+    .logo,
+    .heading,
+    .text,
+    .button {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  color: white;
+  max-width: 720px;
+  height: 100dvh;
+  padding: var(--outer-gutter-extended) 0;
+
+  .logo {
+    display: inline-block;
+    justify-self: self-start;
+  }
+
+  h1 {
+    margin: 20px 0;
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+  }
+
+  .scrollDown {
+    height: 30px;
+    width: 2px;
+    background-color: white;
+  }
+}
+
+.backgroundWrapper {
+  background-color: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+
+  .backgroundImage {
+    object-fit: cover;
+    object-position: center;
+    max-height: unset;
+  }
+}
