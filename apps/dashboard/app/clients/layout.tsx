@@ -8,21 +8,9 @@ import {
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { authenticateUser, getAuthenticatedUser } from "@jamphlet/auth";
-import {
-  ClientApiResponse,
-  ItemPreviewApiResponse,
-  NewUser,
-  addKindeUser,
-  getClientPreviewsByUserIdAction,
-  getItemPreviewsByProjectIdAction,
-  getItemsByProjectIdAction,
-  getUserByKindeId,
-} from "@jamphlet/database";
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { SortingState } from "@tanstack/react-table";
+import { getUserByKindeId } from "@jamphlet/database";
 
 import { Provider as JotaiProvider } from "jotai";
-import getQueryClient from "lib/getQueryClient";
 import { redirect } from "next/navigation";
 import { Fragment, Suspense } from "react";
 

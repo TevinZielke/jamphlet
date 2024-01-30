@@ -1,0 +1,1 @@
+ALTER TABLE "features" ADD COLUMN "is_main_fact" boolean DEFAULT false;

@@ -77,6 +77,7 @@ export const features = pgTable("features", {
   name: text("name").notNull(),
   value: text("value").notNull(),
   type: featureTypeEnum("type").notNull().default("text"),
+  mainFact: boolean("is_main_fact").default(false),
   categoryId: integer("categoryId")
     .notNull()
     .references(() => categories.id),
