@@ -1,0 +1,43 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "prettier",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "next/core-web-vitals"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    // Disallow console.log and others
+    "no-console": "warn",
+    // Require strict equality (=== and !==)
+    "eqeqeq": "error",
+    // Require new line after import statements
+    "import/newline-after-import": "error",
+    "padding-line-between-statements": [
+      "error",
+      // Option: always - Before return statements
+      { "blankLine": "always", "prev": "*", "next": "return" },
+      // Option: always - After function declarations
+      { "blankLine": "always", "prev": "function", "next": "*" },
+      // Option: always - Before and after export statements
+      { "blankLine": "always", "prev": "*", "next": "export" },
+      { "blankLine": "always", "prev": "export", "next": "*" }
+    ],
+    // Disallow nesting ternary expressions
+    "no-nested-ternary": "warn",
+    // Limits functions cognitive complexity allowed
+    "complexity": ["warn", { "max": 20 }]
+  }
+}

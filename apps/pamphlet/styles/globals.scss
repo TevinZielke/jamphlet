@@ -1,0 +1,113 @@
+:root {
+  // spaces & gaps
+  --space-l: 40px;
+  --space-m: 32px;
+  --space-s: 24px;
+  --space-xs: 16px;
+  --space-xxs: 8px;
+
+  --space-fluid-xl: clamp(60px, 12vw, 140px);
+  --space-fluid-l: clamp(60px, 6vw, 120px);
+  --space-fluid-m: clamp(24px, 4vw, 60px);
+  --space-fluid-s: clamp(8px, 2vw, 24px);
+
+  --outer-gutter: clamp(var(--space-xs), 2vw, var(--space-l));
+  --outer-gutter-extended: var(--space-fluid-l);
+
+  --max-container-width: 2000px;
+  --aside-width: clamp(320px, 32vw, 700px);
+  --side-navigation-size: 40px;
+  --sticky-header-height: 60px;
+  --border-radius: 8px;
+
+  --cubic: cubic-bezier(0.2, 0, 0.2, 1) 0s;
+  --fade-in: cubic-bezier(0.2, 0, 0.2, 1) 0s;
+
+  --font-size-xl: clamp(32px, 6vw, 48px);
+
+  --swiper-navigation-size: 42px !important;
+
+  // variables to overwrite
+  --color-text: #1a1a1a;
+  --color-background: #dfddd9;
+  --color-foreground: #efeee9;
+  --color-border: #bbb;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-text);
+  background-color: black;
+}
+
+p {
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  // max-height: 80vh;
+  object-fit: contain;
+}
+
+// @mixin heading-large {
+//   font-size: var(--font-size-xl);
+//   font-weight: 500;
+//   line-height: 1.2;
+// }
+
+.swiper-button-prev,
+.swiper-button-next {
+  width: var(--swiper-navigation-size) !important;
+  height: var(--swiper-navigation-size) !important;
+  background: transparent !important;
+  border-radius: var(--border-radius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--color-foreground) !important;
+  }
+
+  &:after {
+    content: '' !important;
+    background: url('/icon-arrow-right.svg') no-repeat center;
+    width: var(--swiper-navigation-size);
+    height: var(--swiper-navigation-size);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.swiper-button-prev:after {
+  transform: rotate(180deg);
+}
+
+select {
+  max-width: 100%;
+  font-size: 1rem;
+}
+
+[aria-disabled='true'] {
+  opacity: 0.5;
+}

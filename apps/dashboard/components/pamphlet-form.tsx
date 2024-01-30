@@ -1,8 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMediaQuery } from "usehooks-ts";
 import {
   NewPamphlet,
+  getItems,
+  getItemsByProjectIdAction,
   insertPamphletSchema,
   updatePamphlet,
 } from "@jamphlet/database";
@@ -21,34 +24,32 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import React from "react";
+import { Selection } from "./selection";
+import { Textarea } from "./ui/textarea";
 
 type PamphletFormProps = {
-  clientId: number;
+  defaultValues: PamphletFormDefaultValues;
 };
 
-// type ClientsWithPamphlet = {
-//     client: Client;
-//     pamphlet: Pamphlet;
-// }
+export type PamphletFormDefaultValues = {
+  clientId: number;
+  userId: number;
+  personalMessage: string;
+};
 
-export function PamphletForm({ clientId }: PamphletFormProps) {
-  console.log(clientId);
-
+export function PamphletForm({ defaultValues }: PamphletFormProps) {
   const form = useForm<z.infer<typeof insertPamphletSchema>>({
     resolver: zodResolver(insertPamphletSchema),
-    defaultValues: {
-      clientId: clientId,
-      userId: 4,
-      personalMessage: "",
-    },
+    defaultValues: defaultValues,
     mode: "onBlur",
     reValidateMode: "onChange",
   });
 
   const onSubmit = async (values: z.infer<typeof insertPamphletSchema>) => {
     const newPamphlet: NewPamphlet = {
-      userId: 4,
-      clientId: clientId,
+      userId: defaultValues.userId,
+      clientId: defaultValues.clientId,
       personalMessage: values.personalMessage,
     };
     const insertedPamphlet = await updatePamphlet(newPamphlet);
@@ -58,28 +59,20 @@ export function PamphletForm({ clientId }: PamphletFormProps) {
     });
   };
 
-  useEffect(() => {
-    form.reset({
-      userId: 4,
-      clientId: clientId,
-      personalMessage: "",
-    });
-  }, [clientId]);
+  // useEffect(() => {
+  //   form.reset(defaultValues);
+  // }, [clientId]);
 
   useEffect(() => {
     if (form.formState.isSubmitSuccessful) {
-      form.reset({
-        userId: 4,
-        clientId: clientId,
-        personalMessage: "",
-      });
+      form.reset(defaultValues);
     }
     console.log("formState", form.formState);
   }, [form.formState]);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="personalMessage"
@@ -87,7 +80,7 @@ export function PamphletForm({ clientId }: PamphletFormProps) {
             <FormItem>
               <FormLabel>Personal message</FormLabel>
               <FormControl>
-                <Input
+                <Textarea
                   placeholder="Welcome to your bespoke Jamphlet"
                   {...field}
                 />
@@ -99,7 +92,10 @@ export function PamphletForm({ clientId }: PamphletFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Selection />
+        <div className=" flex flex-auto justify-end">
+          <Button type="submit">Save</Button>
+        </div>
       </form>
     </Form>
   );

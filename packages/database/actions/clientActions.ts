@@ -3,20 +3,42 @@
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 import {
-  Client,
+  ClientWithPamphlet,
   NewClient,
   NewPamphlet,
   clients,
   db,
   getClientsWithPamphletsByUserId,
+  getPamphletByClientId,
   pamphlets,
 } from "..";
 import { eq, sql } from "drizzle-orm/sql";
 import { timestamp } from "drizzle-orm/pg-core";
+import { ColumnSort, SortingState } from "@tanstack/react-table";
 
 /**
  * GET
  */
+
+export async function getClientAction(clientId: number) {
+  const result = db.query.clients.findFirst({
+    where: eq(clients.id, clientId),
+    with: {
+      pamphlets: {
+        with: {
+          itemsOnPamphlets: {
+            with: {
+              item: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return result;
+}
+
 // export async function getClients() {
 //   const res = unstable_cache(
 //     async (userId) => {
@@ -29,18 +51,18 @@ import { timestamp } from "drizzle-orm/pg-core";
 //   );
 // }
 
-export const getClients = async (userId: number) =>
-  await getClientsWithPamphletsByUserId(userId);
+// export const getClients = async (userId: number) =>
+//   await getClientsWithPamphletsByUserId(userId);
 
-export const getClientsCached = unstable_cache(
-  async (userId) => {
-    return getClientsWithPamphletsByUserId(userId);
-  },
-  ["clients"],
-  {
-    tags: ["clients"],
-  }
-);
+// export const getClientsCached = unstable_cache(
+//   async (userId) => {
+//     return getClientsWithPamphletsByUserId(userId);
+//   },
+//   ["clients"],
+//   {
+//     tags: ["clients"],
+//   }
+// );
 
 // /**
 //  * POST
@@ -68,6 +90,17 @@ export async function deleteClient(clientId: number) {
   return deletedClient;
 }
 
+// export async function getPamphletByClientIdAction(clientId: number) {
+//   const result = db.query.itemsOnPamphlets.findMany({
+//     where: eq(pamphlets.clientId, clientId),
+//     with: {
+//       item: true,
+//     },
+//   });
+
+//   return result;
+// }
+
 // Update param type
 export async function addPamphlet(userId: number, clientId: number) {
   const newPamphlet: NewPamphlet = {
@@ -79,8 +112,6 @@ export async function addPamphlet(userId: number, clientId: number) {
 }
 
 export async function updatePamphlet(newPamphlet: NewPamphlet) {
-  console.log("newPamphletAction", newPamphlet);
-
   const updatedRecord = await db.transaction(async (tx) => {
     await tx
       .update(pamphlets)
@@ -148,3 +179,46 @@ export async function updatePamphlet(newPamphlet: NewPamphlet) {
 
 //   return upsertedRecord;
 // }
+
+export async function getClientPreviewsByUserIdAction(
+  userId: number,
+  start: number,
+  size: number,
+  sorting: SortingState
+) {
+  const result = await db.query.clients.findMany({
+    where: eq(clients.userId, userId),
+    with: {
+      pamphlets: {
+        with: {
+          itemsOnPamphlets: {
+            with: {
+              item: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (sorting.length) {
+    const sort = sorting[0] as ColumnSort;
+    const { id, desc } = sort as {
+      id: keyof ClientWithPamphlet;
+      desc: boolean;
+    };
+    result.sort((a, b) => {
+      if (desc) {
+        return a[id]! < b[id]! ? 1 : -1;
+      }
+      return a[id]! > b[id]! ? 1 : -1;
+    });
+  }
+
+  return {
+    data: result.slice(start, start + size),
+    meta: {
+      totalRowCount: result.length,
+    },
+  };
+}

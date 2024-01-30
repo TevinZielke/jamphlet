@@ -1,0 +1,20 @@
+// breakpoints
+$grid-breakpoints: (
+  xs: 420px,
+  s: 576px,
+  m: 768px,
+  l: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+  xxxl: 1800px,
+);
+
+:export {
+  xs: map-get($grid-breakpoints, xs);
+  s: map-get($grid-breakpoints, s);
+  m: map-get($grid-breakpoints, m);
+  l: map-get($grid-breakpoints, l);
+  xl: map-get($grid-breakpoints, xl);
+  xxl: map-get($grid-breakpoints, xxl);
+  xxxl: map-get($grid-breakpoints, xxxl);
+}

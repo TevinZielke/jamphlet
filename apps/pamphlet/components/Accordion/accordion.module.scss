@@ -1,0 +1,86 @@
+// @import '../../styles/mixins.scss';
+
+.accordion {
+  button,
+  h3 {
+    all: unset;
+  }
+
+  .accordion-item {
+    overflow: hidden;
+    margin-top: 1px;
+  }
+
+  .accordion-item:first-child {
+    margin-top: 0;
+  }
+
+  .accordion-item:focus-within {
+    position: relative;
+    z-index: 1;
+    // box-shadow: 0 0 0 2px var(--color-text);
+  }
+
+  .accordion-header {
+    display: flex;
+  }
+
+  .accordion-trigger {
+    font-family: inherit;
+    background-color: transparent;
+    padding: 0 var(--outer-gutter);
+    height: var(--sticky-header-height);
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // font-size: 16px;
+    line-height: 1;
+    color: var(--color-text);
+    transition: background-color 0.3s var(--cubic);
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--color-background);
+      cursor: pointer;
+    }
+  }
+
+  .accordion-content {
+    overflow: hidden;
+  }
+
+  .accordion-content[data-state='open'] {
+    animation: slideDown 0.5s var(--cubic);
+  }
+
+  .accordion-content[data-state='closed'] {
+    animation: slideUp 0.5s var(--cubic);
+  }
+
+  .icon {
+    transition: transform 0.5s var(--cubic);
+  }
+
+  .accordion-trigger[data-state='open'] > .icon {
+    transform: rotate(180deg);
+  }
+
+  @keyframes slideDown {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}

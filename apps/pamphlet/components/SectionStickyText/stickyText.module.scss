@@ -1,0 +1,27 @@
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 32px;
+  position: relative;
+}
+
+.stickyOuter {
+  position: relative;
+}
+
+.stickyInner {
+  position: sticky;
+  top: var(--outer-gutter);
+}
+
+.imageOuter {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.imageInner {
+  position: relative;
+  width: 100%;
+}

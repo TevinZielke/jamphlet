@@ -1,0 +1,97 @@
+@import './breakpoints.module.scss';
+
+// hide text for accessibility
+@mixin hide-text() {
+  text-indent: 99999px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+// Mediaquery mixins
+@mixin xs() {
+  @media only screen and (min-width: map-get($grid-breakpoints, xs)) {
+    @content;
+  }
+}
+
+@mixin s() {
+  @media only screen and (min-width: map-get($grid-breakpoints, s)) {
+    @content;
+  }
+}
+
+@mixin m() {
+  @media only screen and (min-width: map-get($grid-breakpoints, m)) {
+    @content;
+  }
+}
+
+@mixin l() {
+  @media only screen and (min-width: map-get($grid-breakpoints, l)) {
+    @content;
+  }
+}
+
+@mixin xl() {
+  @media only screen and (min-width: map-get($grid-breakpoints, xl)) {
+    @content;
+  }
+}
+
+@mixin xxl() {
+  @media only screen and (min-width: map-get($grid-breakpoints, xxl)) {
+    @content;
+  }
+}
+
+@mixin xxxl() {
+  @media only screen and (min-width: map-get($grid-breakpoints, xxxl)) {
+    @content;
+  }
+}
+
+// Typography mixins
+@mixin type-xs {
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
+@mixin type-s {
+  font-size: var(--font-size-s);
+  line-height: 1.5;
+}
+
+@mixin type-m {
+  font-size: var(--font-size-m);
+  line-height: 1.2;
+}
+
+@mixin type-l {
+  font-size: var(--font-size-l);
+  line-height: 1;
+}
+
+@mixin type-xl {
+  font-size: var(--font-size-xl);
+  line-height: 1;
+}
+
+@mixin type-xxl {
+  font-size: var(--font-size-xxl);
+  line-height: 1;
+}
+
+@mixin type-l-fluid {
+  font-size: var(--font-size-l-fluid);
+  line-height: 1;
+}
+
+@mixin type-xl-fluid {
+  font-size: var(--font-size-xl-fluid);
+  line-height: 1;
+}
+
+@mixin type-xxl-fluid {
+  font-size: var(--font-size-xxl-fluid);
+  line-height: 1;
+}

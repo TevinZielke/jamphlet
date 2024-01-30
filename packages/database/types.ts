@@ -12,7 +12,12 @@ import {
   usersOnOrganizations,
   usersOnProjects,
 } from "./schema";
-import { getClientsWithPamphletsByUserId } from ".";
+import {
+  getClientPreviewsByUserIdAction,
+  getClientsWithPamphletsByUserId,
+  getItemsByProjectId,
+  getItemsByProjectIdAction,
+} from ".";
 
 export { invitationStatusEnum as InvitationStatus } from "./schema";
 
@@ -49,23 +54,48 @@ export const insertClientSchema = createInsertSchema(clients, {
   notes: z
     .string()
     .max(500, { message: "Note can't be longer than 500 characters." }),
-  // .optional(),
 });
+// Full client
 export type ClientsWithPamphlet = Awaited<
   ReturnType<typeof getClientsWithPamphletsByUserId>
 >;
+export type ClientWithPamphlet = Array<ClientsWithPamphlet>[0][0];
 
+export type ClientApiResponse = {
+  data: ClientWithPamphlet[];
+  meta: {
+    totalRowCount: number;
+  };
+};
+// Preview client
+export type ClientPreviews = Awaited<
+  ReturnType<typeof getClientPreviewsByUserIdAction>
+>;
+
+/* Item */
 export type Item = InferSelectModel<typeof items>;
 export type NewItem = InferInsertModel<typeof items>;
+export const insertItemSchema = createInsertSchema(items, {
+  name: z.string().min(1, { message: "Name must be at least one character." }),
+  code: z.string().min(1, { message: "Code must be at least one character." }),
+});
+
+export type ItemsWithImages = Awaited<ReturnType<typeof getItemsByProjectId>>;
+export type ItemWithImages = Array<ItemsWithImages>[0][0];
+
+// Item Previews
+export type ItemPreviews = Awaited<
+  ReturnType<typeof getItemsByProjectIdAction>
+>;
+export type ItemPreview = Array<ItemPreviews>[0][0];
+
+export type ItemPreviewApiResponse = {
+  data: ItemPreview[];
+  meta: {
+    totalRowCount: number;
+  };
+};
 
 export type Pamphlet = InferSelectModel<typeof pamphlets>;
 export type NewPamphlet = InferInsertModel<typeof pamphlets>;
-export const insertPamphletSchema = createInsertSchema(pamphlets, {
-  // personalMessage: z
-  //   .string()
-  //   .max(500, { message: "Personal message must be 500 characters or fewer." }),
-});
-
-/**
- * Images
- */
+export const insertPamphletSchema = createInsertSchema(pamphlets, {});

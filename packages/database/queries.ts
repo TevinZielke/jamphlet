@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import {
   Client,
+  ClientWithPamphlet,
   Pamphlet,
   Project,
   clients,
@@ -11,6 +12,9 @@ import {
   usersOnProjects,
 } from ".";
 import { db } from "./database";
+
+import { ColumnSort, SortingState } from "@tanstack/react-table";
+import { boolean } from "drizzle-orm/mysql-core";
 
 export async function getUserByKindeId(kindeId: string) {
   // return await db.select().from(users).where(eq(users.kindeId, kindeId));
@@ -108,7 +112,53 @@ export async function getPamphletByClientId(clientId: number) {
   return result;
 }
 
-// Clients
+/**
+ * Clients
+ */
+
+export async function getClientPreviewsByUserId(
+  userId: number,
+  start: number,
+  size: number,
+  sorting: SortingState
+) {
+  const result = await db.query.clients.findMany({
+    where: eq(clients.userId, userId),
+    with: {
+      pamphlets: {
+        with: {
+          itemsOnPamphlets: {
+            with: {
+              item: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (sorting.length) {
+    const sort = sorting[0] as ColumnSort;
+    const { id, desc } = sort as {
+      id: keyof ClientWithPamphlet;
+      desc: boolean;
+    };
+    result.sort((a, b) => {
+      if (desc) {
+        return a[id]! < b[id]! ? 1 : -1;
+      }
+      return a[id]! > b[id]! ? 1 : -1;
+    });
+  }
+
+  return {
+    data: result.slice(start, start + size),
+    meta: {
+      totalRowCount: result.length,
+    },
+  };
+}
+
 export async function getClientsWithPamphletsByUserId(userId: number) {
   const result = db.query.clients.findMany({
     where: eq(clients.userId, userId),
@@ -122,6 +172,39 @@ export async function getClientsWithPamphletsByUserId(userId: number) {
           },
         },
       },
+    },
+  });
+
+  return result;
+}
+
+/**
+ * Items
+ */
+export async function getItemsByProjectId(projectId: number) {
+  const result = db.query.items.findMany({
+    where: eq(items.projectId, projectId),
+    with: {
+      itemImages: true,
+    },
+  });
+
+  return result;
+}
+
+export async function getItems(projectId: number) {
+  const result = db.query.items.findMany({
+    where: eq(items.projectId, projectId),
+  });
+
+  return result;
+}
+
+export async function getItemById(itemId: number) {
+  const result = await db.query.items.findFirst({
+    where: eq(items.id, itemId),
+    with: {
+      itemImages: true,
     },
   });
 
