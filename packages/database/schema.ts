@@ -83,12 +83,45 @@ export const features = pgTable("features", {
     .references(() => categories.id),
 });
 
-export const featuresRelations = relations(features, ({ one }) => ({
+export const featuresRelations = relations(features, ({ one, many }) => ({
   category: one(categories, {
     fields: [features.categoryId],
     references: [categories.id],
   }),
+  featuresOnItems: many(featuresOnItems),
 }));
+
+export const featuresOnItems = pgTable(
+  "features_items",
+  {
+    featureId: integer("feature_id")
+      .notNull()
+      .references(() => features.id),
+    itemId: integer("item_id")
+      .notNull()
+      .references(() => items.id),
+    value: text("value").notNull().default(""),
+  },
+  (table) => ({
+    pk: primaryKey({
+      columns: [table.featureId, table.itemId],
+    }),
+  })
+);
+
+export const featuresOnItemsRelations = relations(
+  featuresOnItems,
+  ({ one }) => ({
+    feature: one(features, {
+      fields: [featuresOnItems.featureId],
+      references: [features.id],
+    }),
+    item: one(items, {
+      fields: [featuresOnItems.itemId],
+      references: [items.id],
+    }),
+  })
+);
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -312,11 +345,12 @@ export const itemImages = pgTable("item_images", {
     .references(() => items.id),
 });
 
-export const itemImagesRelations = relations(itemImages, ({ one }) => ({
+export const itemImagesRelations = relations(itemImages, ({ one, many }) => ({
   item: one(items, {
     fields: [itemImages.itemId],
     references: [items.id],
   }),
+  featuresOnItems: many(featuresOnItems),
 }));
 
 export const pamphlets = pgTable("pamphlets", {

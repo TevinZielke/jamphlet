@@ -148,6 +148,13 @@
       "when": 1706608818102,
       "tag": "0020_yielding_terrax",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1706637853718,
+      "tag": "0021_flippant_black_cat",
+      "breakpoints": true
     }
   ]
 }

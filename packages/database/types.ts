@@ -2,7 +2,10 @@ import { InferSelectModel, InferInsertModel } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import {
+  categories,
   clients,
+  featureTypeEnum,
+  features,
   invitations,
   items,
   organizations,
@@ -13,19 +16,44 @@ import {
   usersOnProjects,
 } from "./schema";
 import {
+  FeatureType,
+  getCategoriesWithFeatures,
   getClientPreviewsByUserIdAction,
   getClientsWithPamphletsByUserId,
   getItemsByProjectId,
   getItemsByProjectIdAction,
+  getProjectFormSchemaAction,
 } from ".";
 
 export { invitationStatusEnum as InvitationStatus } from "./schema";
+export { featureTypeEnum as FeatureType } from "./schema";
 
 export type Organization = InferSelectModel<typeof organizations>;
 export type NewOrganization = InferInsertModel<typeof organizations>;
 
 export type Project = InferSelectModel<typeof projects>;
 export type NewProject = InferInsertModel<typeof projects>;
+
+export type Category = InferSelectModel<typeof categories>;
+export type NewCategory = InferInsertModel<typeof categories>;
+export const insertCategorySchema = createInsertSchema(categories, {
+  name: z.string().min(1, { message: "Name must be at least one character." }),
+});
+
+export type CategoriesWithFeatures = Awaited<
+  ReturnType<typeof getCategoriesWithFeatures>
+>;
+export type CategoryWithFeatures = Array<CategoriesWithFeatures>[0][0];
+
+export type Feature = InferSelectModel<typeof features>;
+export type NewFeature = InferInsertModel<typeof features>;
+export const insertFeatureSchema = createInsertSchema(features, {
+  name: z.string().min(1, { message: "Name must be at least one character." }),
+  value: z
+    .string()
+    .min(1, { message: "Value must be at least one character." }),
+  // type: z.enum(FeatureType.enumValues).Enum
+});
 
 export type Invitation = InferSelectModel<typeof invitations>;
 export type NewInvitation = InferInsertModel<typeof invitations>;

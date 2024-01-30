@@ -1,9 +1,11 @@
 import { eq } from "drizzle-orm";
 import {
+  CategoryWithFeatures,
   Client,
   ClientWithPamphlet,
   Pamphlet,
   Project,
+  categories,
   clients,
   items,
   pamphlets,
@@ -208,5 +210,18 @@ export async function getItemById(itemId: number) {
     },
   });
 
+  return result;
+}
+
+/** Project */
+export async function getCategoriesWithFeatures(categoryId: number) {
+  const result = await db.query.categories.findMany({
+    where: eq(categories.id, categoryId),
+    with: {
+      features: true,
+    },
+  });
+
+  if (!result) throw new Error();
   return result;
 }

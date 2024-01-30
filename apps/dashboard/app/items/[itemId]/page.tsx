@@ -1,10 +1,6 @@
 import { ItemView } from "@/components/item-view";
 import { getItemById } from "@jamphlet/database";
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@tanstack/react-query";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import getQueryClient from "lib/getQueryClient";
 
 export default async function Item({ params }: { params: { itemId: number } }) {

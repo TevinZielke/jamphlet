@@ -1,6 +1,6 @@
 "use client";
 
-import { ItemPreview, ItemWithImages } from "@jamphlet/database";
+import { ItemPreview } from "@jamphlet/database";
 import { useItemAtom } from "lib/use-item";
 import { cn } from "lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
