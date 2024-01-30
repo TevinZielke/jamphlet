@@ -4,8 +4,7 @@ import { getItemById } from "@jamphlet/database";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { DeleteDialog } from "./delete-dialog";
-import { toast } from "sonner";
-import { ClientFormDialog } from "./client-form";
+// import { toast } from "sonner";
 import Image from "next/image";
 import { ImageForm } from "./image-form";
 import { ScrollArea } from "./ui/scroll-area";
@@ -18,19 +17,19 @@ type ItemViewProps = {
 };
 
 export function ItemView({ itemId }: ItemViewProps) {
-  //   const confirm = async () => {
-  //     // const res = await deleteClient(itemAtom);
-  //     //Toast
-  //     // console.log("Confirm Result:", res);
-  //     toast("Client has been deleted.", {
-  //       description: `${res.at(0)?.name} has left the building.`,
-  //       action: {
-  //         label: "Undo",
-  //         onClick: () => console.log("Undo"),
-  //       },
-  //     });
-  //     setClientAtom(0);
-  //   };
+  const confirm = async () => {
+    // const res = await deleteClient(itemAtom);
+    //Toast
+    // console.log("Confirm Result:", res);
+    // toast("Client has been deleted.", {
+    //   description: `${res.at(0)?.name} has left the building.`,
+    //   action: {
+    //     label: "Undo",
+    //     onClick: () => console.log("Undo"),
+    //   },
+    // });
+    // setClientAtom(0);
+  };
 
   // const item = data?.find((c) => c.id === itemAtom);
 

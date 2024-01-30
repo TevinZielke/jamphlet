@@ -146,7 +146,6 @@ export default function Page() {
         visibleSection={visibleSection}
         background={section.color}
       >
-        {/** TODO: Revise the title and subtitle names as they impact navigation labels as well */}
         <Heading title={section.subTitle} subTitle={section.title} />
         {section.components.map((component: any) => {
           return renderComponents(component);
@@ -154,6 +153,9 @@ export default function Page() {
       </Section>
     );
   });
+  {
+    /* * TODO: Revise the title and subtitle names as they impact navigation labels as well */
+  }
 
   return (
     <>

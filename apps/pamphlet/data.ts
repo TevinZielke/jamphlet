@@ -1,4 +1,4 @@
-const residences = [
+export const residences = [
   {
     id: 'residence-1',
     title: 'Residence 76zG87',
