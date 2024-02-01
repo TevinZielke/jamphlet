@@ -1,9 +1,8 @@
 "use client";
 
 import {
-  ItemPreviews,
   ItemWithImages,
-  ItemsWithImages,
+  getClientAction,
   getItemsByProjectIdAction,
 } from "@jamphlet/database";
 import { useQuery } from "@tanstack/react-query";
@@ -21,17 +20,29 @@ import { SelectionFormDialog } from "./selection-form";
 //   itemId: number;
 // };
 
-const projectId = 1;
+type SelectionProps = {
+  projectId: number;
+  clientId: number;
+};
 
-export function Selection() {
+export function Selection({ projectId, clientId }: SelectionProps) {
   const { data } = useQuery({
     queryKey: ["items", projectId],
     queryFn: () => getItemsByProjectIdAction(projectId),
   });
 
+  const { data: client } = useQuery({
+    queryKey: ["client", clientId],
+    queryFn: () => getClientAction(clientId),
+  });
+
   if (!data) return null;
 
-  const items: ItemsWithImages = data;
+  // const items: ItemsWithImages = data;
+
+  const currentSelection = client?.pamphlets.at(0)?.itemsOnPamphlets;
+
+  if (!currentSelection) return null;
 
   return (
     <div className="space-y-2 flex flex-col">
@@ -40,12 +51,15 @@ export function Selection() {
         <SelectionFormDialog />
       </div>
       <div className=" border rounded-lg">
-        {items.map((item: ItemWithImages, index) => {
+        {currentSelection.map((selectionItem, index) => {
+          const item = selectionItem.item as ItemWithImages;
           return (
+            //  cs.map((it) => {
             <Fragment key={item.id}>
               {index !== 0 && <Separator />}
               <Item {...item} />
             </Fragment>
+            // });
           );
         })}
       </div>
@@ -73,7 +87,7 @@ function Item(item: ItemWithImages) {
           src={preview?.publicUrl!}
           width={150}
           height={100}
-          alt={preview?.alt!}
+          alt={"alt preview"}
         />
       </div>
       <div className={cn(" p-2 flex flex-col justify-between")}>

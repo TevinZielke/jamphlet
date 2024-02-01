@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import {
-  ItemImage,
   ItemPreview,
   ItemWithImages,
   NewItem,
+  NewItemImage,
   db,
   featuresOnItems,
   getItemById,
@@ -107,8 +107,8 @@ export async function updateItemFeatures(newItemFeatures: NewItemFeature[]) {
   return updatedItem;
 }
 
-export async function addItemImages(newItemImages: ItemImage[]) {
-  const result = await db.insert(itemImages).values(newItemImages).returning();
+export async function addItemImage(newItemImage: NewItemImage) {
+  const result = await db.insert(itemImages).values(newItemImage).returning();
 
   return result;
 }

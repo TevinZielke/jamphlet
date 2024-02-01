@@ -2,6 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ItemImage,
+  NewItemImage,
   createSignedUrlAndUploadAction,
   revalidateItemPath,
 } from "@jamphlet/database";
@@ -20,6 +22,9 @@ import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { ChangeEvent, useEffect, useReducer, useState, DragEvent } from "react";
 import { ImageUpload } from "./image-upload";
+import { ItemImageForm } from "./item-image-form";
+import ItemImageView from "./item-image-view";
+import { cn } from "lib/utils";
 
 // type ImageFormProps = {
 //   clientId: number;
@@ -243,9 +248,13 @@ export function ImageForm({ projectId, itemId }: ImageFormProps) {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* <FormField
+    <div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-[312px]"
+        >
+          {/* <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
@@ -258,43 +267,51 @@ export function ImageForm({ projectId, itemId }: ImageFormProps) {
             </FormItem>
           )}
         /> */}
-        <div
-          className="inset-0 cursor-pointer flex flex-col gap-2"
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
-          <FormField
-            control={form.control}
-            name="images"
-            render={() => (
-              <FormItem>
-                <FormLabel>Image File</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/png , image/jpg , image/jpeg , image/webp"
-                    multiple
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {input.map((image, index) => (
-            <ImageUpload
-              key={index}
-              name={image.name}
-              size={image.size}
-              url={image.getUrl}
+          <div
+            className="inset-0 cursor-pointer flex flex-col gap-2"
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          >
+            <FormField
+              control={form.control}
+              name="images"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Image File</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/png , image/jpg , image/jpeg , image/webp"
+                      multiple
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          ))}
-        </div>
-        <Button type="submit">Upload</Button>
-      </form>
-    </Form>
+          </div>
+          <Button type="submit">Upload</Button>
+        </form>
+      </Form>
+      <div className={cn("flex flex-wrap gap-6")}>
+        {input.map((image, index) => {
+          const itemImage: NewItemImage = {
+            itemId: itemId,
+            caption: "Give your image a title.",
+            alt: "Set a descriptive alt text for your image",
+            path: "",
+            publicUrl: image.getUrl,
+          };
+          return (
+            <div key={index}>
+              <ItemImageView itemImage={itemImage} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

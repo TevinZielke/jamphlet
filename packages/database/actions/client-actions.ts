@@ -28,7 +28,11 @@ export async function getClientAction(clientId: number) {
         with: {
           itemsOnPamphlets: {
             with: {
-              item: true,
+              item: {
+                with: {
+                  itemImages: true,
+                },
+              },
             },
           },
         },

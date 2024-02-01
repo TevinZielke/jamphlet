@@ -1,11 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMediaQuery } from "usehooks-ts";
 import {
   NewPamphlet,
-  getItems,
-  getItemsByProjectIdAction,
   insertPamphletSchema,
   updatePamphlet,
 } from "@jamphlet/database";
@@ -21,12 +18,13 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import React from "react";
 import { Selection } from "./selection";
 import { Textarea } from "./ui/textarea";
+
+const projectId = 1;
 
 type PamphletFormProps = {
   defaultValues: PamphletFormDefaultValues;
@@ -92,7 +90,7 @@ export function PamphletForm({ defaultValues }: PamphletFormProps) {
             </FormItem>
           )}
         />
-        <Selection />
+        <Selection projectId={projectId} clientId={defaultValues.clientId} />
         <div className=" flex flex-auto justify-end">
           <Button type="submit">Save</Button>
         </div>

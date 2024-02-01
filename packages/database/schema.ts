@@ -338,13 +338,13 @@ export const itemsRelations = relations(items, ({ one, many }) => ({
 
 export const itemImages = pgTable("item_images", {
   id: serial("id").primaryKey(),
-  publicUrl: text("public_url"),
-  path: text("path"),
-  alt: text("alt"),
+  publicUrl: text("public_url").notNull(),
+  path: text("path").notNull(),
+  alt: text("alt").notNull(),
   itemId: integer("item_id")
     .notNull()
     .references(() => items.id),
-  caption: text("caption"),
+  caption: text("caption").notNull(),
 });
 
 export const itemImagesRelations = relations(itemImages, ({ one }) => ({

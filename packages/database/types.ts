@@ -9,6 +9,7 @@ import {
   invitations,
   itemImages,
   items,
+  itemsOnPamphlets,
   organizations,
   pamphlets,
   projects,
@@ -23,6 +24,7 @@ import {
   getClientsWithPamphletsByUserId,
   getItemsByProjectId,
   getItemsByProjectIdAction,
+  getItemsOnPamphlet,
   getProjectFormSchemaAction,
 } from ".";
 
@@ -101,6 +103,12 @@ export type ClientPreviews = Awaited<
   ReturnType<typeof getClientPreviewsByUserIdAction>
 >;
 
+/** Pamphlet */
+export type ItemOnPamphlet = InferSelectModel<typeof itemsOnPamphlets>;
+export type NewItemOnPamphlet = InferInsertModel<typeof itemsOnPamphlets>;
+export type ItemsOnPamphlet = Awaited<ReturnType<typeof getItemsOnPamphlet>>;
+export type ItemSelection = Array<ItemsOnPamphlet>[0];
+
 /* Item */
 export type Item = InferSelectModel<typeof items>;
 export type NewItem = InferInsertModel<typeof items>;
@@ -125,8 +133,22 @@ export type ItemPreviewApiResponse = {
   };
 };
 
+// Images
 export type ItemImage = InferSelectModel<typeof itemImages>;
 export type NewItemImage = InferInsertModel<typeof itemImages>;
+export const insertItemImageSchema = createInsertSchema(itemImages, {
+  caption: z
+    .string()
+    .min(1, { message: "Caption must be at least one character." })
+    .max(64, { message: "Caption must be 64 characters or fewer." }),
+  alt: z
+    .string()
+    .min(1, { message: "Alt text must be at least one character." })
+    .max(140, { message: "Alt text must be 140 characters of fewer." }),
+  itemId: z.number().nonnegative(),
+  path: z.string(),
+  publicUrl: z.string(),
+});
 
 export type Pamphlet = InferSelectModel<typeof pamphlets>;
 export type NewPamphlet = InferInsertModel<typeof pamphlets>;

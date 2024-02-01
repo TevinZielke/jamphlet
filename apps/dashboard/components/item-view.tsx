@@ -14,6 +14,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { ItemForm, ItemFormCategory } from "./item-form";
 import { cn } from "lib/utils";
+import ItemImageView from "./item-image-view";
 
 type ItemViewProps = {
   itemId: number;
@@ -146,67 +147,62 @@ export function ItemView({ itemId }: ItemViewProps) {
 
   return (
     <ScrollArea className=" h-full">
-      <div>
-        <div className="flex flex-row justify-between px-2 py-2">
-          <div>
-            <h2 className=" text-3xl font-bold">{item?.name}</h2>
-            <p>{item?.code}</p>
-            <p>{item?.createdAt?.toLocaleString()}</p>
-          </div>
-          <div className=" flex gap-2">
-            <Button variant="link">Visit Jamphlet</Button>
-            <Button variant="secondary">Edit</Button>
-            <DeleteDialog handleConfirm={confirm}>
-              <Button variant="destructive">Delete</Button>
-            </DeleteDialog>
-            <Button>Share</Button>
+      <div className="flex flex-row justify-between p-2">
+        <div>
+          <h2 className=" text-3xl font-bold">{item?.name}</h2>
+          <p>{item?.code}</p>
+          <p>{item?.createdAt?.toLocaleString()}</p>
+        </div>
+        <div className=" flex gap-2">
+          <Button variant="link">Visit Jamphlet</Button>
+          <Button variant="secondary">Edit</Button>
+          <DeleteDialog handleConfirm={confirm}>
+            <Button variant="destructive">Delete</Button>
+          </DeleteDialog>
+          <Button>Share</Button>
+        </div>
+      </div>
+      <Separator />
+      <div className={cn("flex flex-col gap-8 p-2")}>
+        <div className={cn("flex flex-col gap-2")}>
+          <h3 className={cn(" text-xl font-semibold")}>Item Information</h3>
+          <div className={cn("flex justify-center")}>
+            <ItemForm formCategories={fields} item={inputItem} />
           </div>
         </div>
 
-        <Separator />
         <div>
-          <ItemForm formCategories={fields} item={inputItem} />
-        </div>
-
-        <div>
+          <h3 className={cn(" text-xl font-semibold pb-2")}>Item Images</h3>
           <p>Floorplans</p>
           <div className=" p-2">
-            <div className={cn("flex gap-2")}>
+            <div className={cn("flex flex-wrap gap-2")}>
               {floorplans.map((floorplan) => {
                 return (
                   <div key={floorplan.id}>
-                    <Image
-                      src={floorplan.publicUrl!}
-                      width={150}
-                      height={100}
-                      alt={floorplan.alt!}
-                      className={cn(" h-auto")}
-                    />
+                    <ItemImageView itemImage={floorplan} />
                   </div>
                 );
               })}
             </div>
-            <ImageForm projectId={projectId} itemId={itemId} />
+            <div>
+              <ImageForm projectId={projectId} itemId={itemId} />
+            </div>
           </div>
 
           <div>
             Gallery Images
-            <div className={cn("flex gap-2")}>
+            <div className={cn("flex flex-wrap gap-2")}>
               {galleryImages.map((galleryImage) => {
                 return (
                   <div key={galleryImage.id}>
-                    <Image
-                      src={galleryImage.publicUrl!}
-                      width={150}
-                      height={100}
-                      alt={galleryImage.alt!}
-                      className={cn(" h-auto")}
-                    />
+                    <ItemImageView itemImage={galleryImage} />
                   </div>
                 );
               })}
             </div>
-            <ImageForm projectId={projectId} itemId={itemId} />
+            <div>
+              <ImageForm projectId={projectId} itemId={itemId} />
+            </div>
           </div>
         </div>
       </div>

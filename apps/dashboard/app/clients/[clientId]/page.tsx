@@ -5,6 +5,7 @@ import {
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
+import getQueryClient from "lib/getQueryClient";
 
 export default async function Item({
   params,
@@ -13,7 +14,7 @@ export default async function Item({
 }) {
   const clientId: number = +params.clientId;
 
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["client", clientId],
