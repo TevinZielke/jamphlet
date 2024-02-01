@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createServerClientAction } from "../storage";
 
 const bucketName = "images";
@@ -42,12 +43,15 @@ export async function createSignedUrlAndUploadAction(formData: FormData) {
   const file = formData.get("image") as File;
   const path = formData.get("path") as string;
 
+  console.log("path", path);
+
   const { data: signedUrldata, error: signedUrlError } = await (
     await supabase
   ).storage
     .from(bucketName)
     .createSignedUploadUrl(path);
   if (signedUrlError) {
+    console.log("signedUrlError: ", signedUrlError);
     return signedUrlError.message;
   } else {
     return await uploadAction(signedUrldata.path, signedUrldata.token, file);
@@ -62,8 +66,15 @@ export async function uploadAction(path: string, token: string, file: File) {
     .uploadToSignedUrl(path, token, file);
 
   if (error) {
+    console.log("uploadError: ", error);
     return error.message;
   } else {
     return data;
   }
+
+  // revalidatePath('/')
+}
+
+export async function revalidateItemPath(itemId: number) {
+  revalidatePath(`/items/${itemId}`);
 }

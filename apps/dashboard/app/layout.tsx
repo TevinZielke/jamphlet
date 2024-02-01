@@ -20,6 +20,7 @@ import {
   getClientPreviewsByUserIdAction,
   ItemPreviewApiResponse,
   getItemPreviewsByProjectIdAction,
+  getProjectFormSchemaAction,
 } from "@jamphlet/database";
 import { SortingState } from "@tanstack/react-table";
 import { redirect } from "next/navigation";
@@ -95,6 +96,11 @@ async function getClients() {
     ) => groups.length,
   });
 
+  await queryClient.prefetchQuery({
+    queryKey: ["project-form-schema", projectId],
+    queryFn: () => getProjectFormSchemaAction(projectId),
+  });
+
   // await queryClient.prefetchQuery({
   //   queryKey: ["items", projectId],
   //   queryFn: () => getItemsByProjectIdAction(projectId),
@@ -103,11 +109,13 @@ async function getClients() {
   return dbUser;
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}): JSX.Element {
+}): Promise<JSX.Element> {
+  await getClients();
+
   return (
     <html lang="en">
       <body className={inter.className}>

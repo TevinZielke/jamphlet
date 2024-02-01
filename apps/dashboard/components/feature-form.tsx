@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   NewFeature,
   addFeatureAction,
+  deleteFeatureAction,
   insertFeatureSchema,
 } from "@jamphlet/database";
 import { useForm } from "react-hook-form";
@@ -33,9 +34,20 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { HelpCircle } from "lucide-react";
-import { useEffect } from "react";
+import { Ban, HelpCircle, Pencil, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 type FeatureFormProps = {
   feature?: NewFeature;
@@ -50,6 +62,8 @@ export function FeatureForm({
   categoryId,
   categoryName,
 }: FeatureFormProps) {
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const form = useForm<z.infer<typeof insertFeatureSchema>>({
     resolver: zodResolver(insertFeatureSchema),
     defaultValues: {
@@ -71,6 +85,15 @@ export function FeatureForm({
         description: `${insertedFeatureName} has been added to ${categoryName}.`,
       });
   };
+
+  async function handleFeatureDelete(featureId: number) {
+    const deletedFeature = await deleteFeatureAction(featureId);
+    const deletedFeatureName = deletedFeature.at(0)?.deletedFeatureName;
+    deletedFeature &&
+      toast("Feature deleted.", {
+        description: `${deletedFeatureName} has been removed from ${categoryName}.`,
+      });
+  }
 
   return (
     <Form {...form}>
@@ -98,14 +121,18 @@ export function FeatureForm({
                     </div>
                   )}
                   <FormControl>
-                    <Input placeholder="Price" {...field} />
+                    <Input
+                      placeholder="Price"
+                      {...field}
+                      disabled={feature && !isEditMode}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className=" w-1/5">
+          <div className=" w-1/5 min-w-[">
             <FormField
               control={form.control}
               name="type"
@@ -133,8 +160,9 @@ export function FeatureForm({
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={feature && !isEditMode}
                   >
-                    <FormControl>
+                    <FormControl className=" w-full">
                       <SelectTrigger>
                         <SelectValue placeholder="Data type" />
                       </SelectTrigger>
@@ -176,7 +204,11 @@ export function FeatureForm({
                     </div>
                   )}
                   <FormControl>
-                    <Input placeholder="100000000" {...field} />
+                    <Input
+                      placeholder="100000000"
+                      disabled={feature && !isEditMode}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -214,6 +246,7 @@ export function FeatureForm({
                         checked={field.value!}
                         onCheckedChange={field.onChange}
                         aria-readonly
+                        disabled={feature && !isEditMode}
                       />
                     </FormControl>
                   </div>
@@ -223,7 +256,72 @@ export function FeatureForm({
             />
           </div>
           <div className=" flex justify-end place-items-end">
-            <Button type="submit">Submit</Button>
+            {isEditMode || !feature ? (
+              <>
+                <Button
+                  variant={"ghost"}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault(), setIsEditMode(false);
+                  }}
+                  className={cn(" p-2")}
+                >
+                  <Ban color="grey" className="h-4 w-4" />
+                </Button>
+                <Button variant={"ghost"} type="submit" className={cn(" p-2")}>
+                  <Save color="limegreen" className="h-4 w-4" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant={"ghost"}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault(), setIsEditMode(true);
+                  }}
+                  className={cn(" p-2")}
+                >
+                  <Pencil color="grey" className="h-4 w-4" />
+                </Button>
+                {feature && (
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <Button
+                        variant={"ghost"}
+                        type="button"
+                        className={cn(" p-2")}
+                      >
+                        <Trash2 color="red" className="h-4 w-4 red" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete this feature and remove associated data from
+                          our servers.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={(e) => {
+                            e.preventDefault(),
+                              handleFeatureDelete(feature.id!);
+                          }}
+                        >
+                          Confirm
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </>
+            )}
           </div>
         </div>
       </form>

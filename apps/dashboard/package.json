@@ -9,6 +9,7 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
+    "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.3.4",
     "@jamphlet/auth": "workspace:*",
     "@jamphlet/database": "workspace:*",
@@ -35,6 +36,7 @@
     "date-fns": "^3.2.0",
     "dotenv": "^16.3.1",
     "jotai": "^2.6.1",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.302.0",
     "next": "^14.0.4",
     "next-themes": "^0.2.1",
@@ -56,6 +58,7 @@
     "@tanstack/eslint-plugin-query": "^5.17.7",
     "@tanstack/react-query-devtools": "^5.17.9",
     "@types/eslint": "^8.44.7",
+    "@types/lodash": "^4.14.202",
     "@types/node": "^17.0.12",
     "@types/react": "^18.2.8",
     "@types/react-dom": "^18.0.7",

@@ -1,5 +1,8 @@
 import { ProjectView } from "@/components/project-view";
-import { getProjectFormSchemaAction } from "@jamphlet/database";
+import {
+  getProjectAction,
+  getProjectFormSchemaAction,
+} from "@jamphlet/database";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import getQueryClient from "lib/getQueryClient";
 
@@ -13,9 +16,13 @@ export default async function Project() {
     queryFn: () => getProjectFormSchemaAction(projectId),
   });
 
+  await queryClient.prefetchQuery({
+    queryKey: ["project", projectId],
+    queryFn: () => getProjectAction(projectId),
+  });
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      {/* <ItemView itemId={itemId} /> */}
       <ProjectView projectId={projectId} />
     </HydrationBoundary>
   );

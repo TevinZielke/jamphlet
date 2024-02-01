@@ -7,6 +7,7 @@ import {
   featureTypeEnum,
   features,
   invitations,
+  itemImages,
   items,
   organizations,
   pamphlets,
@@ -123,6 +124,9 @@ export type ItemPreviewApiResponse = {
     totalRowCount: number;
   };
 };
+
+export type ItemImage = InferSelectModel<typeof itemImages>;
+export type NewItemImage = InferInsertModel<typeof itemImages>;
 
 export type Pamphlet = InferSelectModel<typeof pamphlets>;
 export type NewPamphlet = InferInsertModel<typeof pamphlets>;

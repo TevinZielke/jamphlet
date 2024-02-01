@@ -333,6 +333,7 @@ export const itemsRelations = relations(items, ({ one, many }) => ({
   }),
   itemsOnPamphlets: many(itemsOnPamphlets),
   itemImages: many(itemImages),
+  featuresOnItems: many(featuresOnItems),
 }));
 
 export const itemImages = pgTable("item_images", {
@@ -343,14 +344,14 @@ export const itemImages = pgTable("item_images", {
   itemId: integer("item_id")
     .notNull()
     .references(() => items.id),
+  caption: text("caption"),
 });
 
-export const itemImagesRelations = relations(itemImages, ({ one, many }) => ({
+export const itemImagesRelations = relations(itemImages, ({ one }) => ({
   item: one(items, {
     fields: [itemImages.itemId],
     references: [items.id],
   }),
-  featuresOnItems: many(featuresOnItems),
 }));
 
 export const pamphlets = pgTable("pamphlets", {

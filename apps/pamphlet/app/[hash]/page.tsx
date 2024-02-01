@@ -71,7 +71,7 @@ export default function Page() {
     // console.log('error = ', error);
     setData({
       id: '1',
-      name: 'Visitor',
+      name: 'Eveline',
       text: 'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.',
       Recommendation: [
         {
@@ -93,6 +93,7 @@ export default function Page() {
    */
   useEffect(() => {
     if (params.hash) {
+      const id: number = +params.hash;
       fetchData(params.hash);
     }
   }, [params]);

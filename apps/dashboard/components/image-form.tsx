@@ -1,7 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createSignedUrlAndUploadAction } from "@jamphlet/database";
+import {
+  createSignedUrlAndUploadAction,
+  revalidateItemPath,
+} from "@jamphlet/database";
 import { useForm } from "react-hook-form";
 import { ZodType, z } from "zod";
 import {
@@ -82,7 +85,12 @@ type State = FileWithUrl[];
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {}
 
-export function ImageForm() {
+type ImageFormProps = {
+  projectId: number;
+  itemId: number;
+};
+
+export function ImageForm({ projectId, itemId }: ImageFormProps) {
   const fileAmountLimit = 5;
 
   const [imageFile, setFile] = useState<File>();
@@ -139,30 +147,31 @@ export function ImageForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof ImageFormSchema>) => {
-    console.log("Input", values);
+    // console.log("Input", values);
 
-    const itemId = 1;
-    const projectId = 1;
-
-    input.map(async (image) => {
-      console.log("Submitting: ", image);
-      const imagePath = `images/${projectId}/${itemId}/${image?.name}`;
+    const uploads = input.some(async (image) => {
+      const imagePath = `${projectId}/${itemId}/${image?.name}`;
       const form = new FormData();
       form.append("image", image.file);
       form.append("path", imagePath);
 
       const insertedImage = await createSignedUrlAndUploadAction(form);
 
-      if (insertedImage.error || insertedImage.data.error) {
+      if (!insertedImage.error || !insertedImage.data.error) {
+        toast("Image succesfully uploaded", {
+          // description: `${insertedImage}`,
+        });
+        return true;
+      } else {
         toast("Error uploading image.", {
           description: `${insertedImage.error}`,
         });
-      } else {
-        toast("Image succesfully uploaded", {
-          description: `${insertedImage.error}`,
-        });
+        return false;
       }
     });
+
+    // If one upload succeeds, revalidate path
+    uploads && revalidateItemPath(itemId);
   };
 
   // handle drag events
@@ -184,7 +193,6 @@ export function ImageForm() {
     // validate file type
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const files = Array.from(e.dataTransfer.files);
-      //   const validFiles = files.filter((file) => validateFileType(file))
       const validFiles = files;
 
       if (files.length !== validFiles.length) {
@@ -196,11 +204,6 @@ export function ImageForm() {
       try {
         const filesWithUrl = await Promise.all(
           validFiles.map(async (file) => {
-            // const { name, size } = file
-            // const { getUrl, error } = await s3Upload(file)
-
-            // if (!getUrl || error) return { name, size, getUrl: '', error }
-
             const { name, size } = file;
             const getUrl = URL.createObjectURL(file);
 

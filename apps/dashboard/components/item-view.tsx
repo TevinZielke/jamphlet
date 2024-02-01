@@ -1,5 +1,8 @@
 "use client";
-import { getItemById } from "@jamphlet/database";
+import {
+  getItemByIdAction,
+  getProjectFormSchemaAction,
+} from "@jamphlet/database";
 
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
@@ -9,12 +12,89 @@ import Image from "next/image";
 import { ImageForm } from "./image-form";
 import { ScrollArea } from "./ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
+import { ItemForm, ItemFormCategory } from "./item-form";
+import { cn } from "lib/utils";
 
 type ItemViewProps = {
-  // data: ItemsWithImages | null;
-  // data: ItemWithImages | null;
   itemId: number;
 };
+
+export const fields: ItemFormCategory[] = [
+  {
+    category: {
+      categoryId: 1,
+      categoryName: "Pricing",
+    },
+    fields: [
+      {
+        featureIdString: "1",
+        fieldName: "pricing",
+        type: "currency",
+        label: "Pricing",
+        defaultValue: 1500000,
+      },
+    ],
+  },
+  {
+    category: {
+      categoryId: 3,
+      categoryName: "Size",
+    },
+    fields: [
+      {
+        featureIdString: "6",
+        fieldName: "sqft",
+        type: "quantity",
+        label: "Square Footage",
+        defaultValue: 5000,
+      },
+    ],
+  },
+  {
+    category: {
+      categoryId: 2,
+      categoryName: "Rooms",
+    },
+    fields: [
+      {
+        featureIdString: "2",
+        fieldName: "bedrooms",
+        type: "quantity",
+        label: "Bedrooms",
+        defaultValue: 2,
+      },
+      {
+        featureIdString: "3",
+        fieldName: "bathrooms",
+        type: "quantity",
+        label: "Bedrooms",
+        defaultValue: 1,
+      },
+      {
+        featureIdString: "7",
+        fieldName: "dining",
+        type: "text",
+        label: "Dining",
+        defaultValue: "Formal dining room",
+      },
+    ],
+  },
+  {
+    category: {
+      categoryId: 4,
+      categoryName: "Exposure",
+    },
+    fields: [
+      {
+        featureIdString: "4",
+        fieldName: "exposure",
+        type: "text",
+        label: "Exposure",
+        defaultValue: "South-West",
+      },
+    ],
+  },
+];
 
 export function ItemView({ itemId }: ItemViewProps) {
   const confirm = async () => {
@@ -33,12 +113,37 @@ export function ItemView({ itemId }: ItemViewProps) {
 
   // const item = data?.find((c) => c.id === itemAtom);
 
-  const { data: item } = useQuery({
-    queryKey: ["item", itemId],
-    queryFn: () => getItemById(itemId),
+  const projectId = 1;
+
+  const { data: formSchema } = useQuery({
+    queryKey: ["project-form-schema", projectId],
+    queryFn: () => getProjectFormSchemaAction(projectId),
   });
 
-  // if (!data) return null;
+  // console.log("formSchema: ", formSchema);
+
+  const { data: item } = useQuery({
+    queryKey: ["item", itemId],
+    queryFn: () => getItemByIdAction(itemId),
+  });
+
+  const itemFeatures = item?.featuresOnItems;
+
+  if (!item) return null;
+
+  const inputItem = {
+    id: item?.id,
+    name: item.name,
+  };
+
+  const floorplans = item.itemImages.filter(
+    (image) => image.caption?.includes("Floorplan")
+  );
+
+  const galleryImages = item.itemImages.filter(
+    (image) => image.caption?.includes("Gallery")
+  );
+
   return (
     <ScrollArea className=" h-full">
       <div>
@@ -59,24 +164,49 @@ export function ItemView({ itemId }: ItemViewProps) {
         </div>
 
         <Separator />
-        <div className=" p-2">
-          <div>
-            {item?.itemImages.map((itemImage) => {
-              return (
-                <div>
-                  <Image
-                    src={itemImage.publicUrl!}
-                    width={100}
-                    height={100}
-                    alt={itemImage.alt!}
-                  />
-                </div>
-              );
-            })}
+        <div>
+          <ItemForm formCategories={fields} item={inputItem} />
+        </div>
+
+        <div>
+          <p>Floorplans</p>
+          <div className=" p-2">
+            <div className={cn("flex gap-2")}>
+              {floorplans.map((floorplan) => {
+                return (
+                  <div key={floorplan.id}>
+                    <Image
+                      src={floorplan.publicUrl!}
+                      width={150}
+                      height={100}
+                      alt={floorplan.alt!}
+                      className={cn(" h-auto")}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <ImageForm projectId={projectId} itemId={itemId} />
           </div>
 
           <div>
-            <ImageForm />
+            Gallery Images
+            <div className={cn("flex gap-2")}>
+              {galleryImages.map((galleryImage) => {
+                return (
+                  <div key={galleryImage.id}>
+                    <Image
+                      src={galleryImage.publicUrl!}
+                      width={150}
+                      height={100}
+                      alt={galleryImage.alt!}
+                      className={cn(" h-auto")}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <ImageForm projectId={projectId} itemId={itemId} />
           </div>
         </div>
       </div>

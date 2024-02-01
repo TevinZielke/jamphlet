@@ -56,7 +56,6 @@ export const Residence: FC<ResidenceProps> = ({
       } else {
         setVisibleResidence(null);
       }
-      console.log('test');
     },
   });
 

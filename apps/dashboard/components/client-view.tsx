@@ -44,14 +44,10 @@ export function ClientView({ clientId }: ClientViewProps) {
     queryFn: () => getItemsByProjectIdAction(projectId),
   });
 
-  console.log("ClientViewItems: ", items);
-
   const { data: client } = useQuery({
     queryKey: ["client", clientId],
     queryFn: () => getClientAction(clientId),
   });
-
-  console.log("ClientViewClients: ", client);
 
   const pamphlet = client?.pamphlets.at(0);
 

@@ -67,7 +67,7 @@ export function PamphletForm({ defaultValues }: PamphletFormProps) {
     if (form.formState.isSubmitSuccessful) {
       form.reset(defaultValues);
     }
-    console.log("formState", form.formState);
+    // console.log("formState", form.formState);
   }, [form.formState]);
 
   return (

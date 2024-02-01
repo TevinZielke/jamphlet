@@ -4,39 +4,27 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-const navLinks = [
-  {
-    id: 1,
-    name: "Clients",
-    value: "/clients",
-  },
-  {
-    id: 2,
-    name: "Items",
-    value: "/items",
-  },
-  {
-    id: 3,
-    name: "Project",
-    value: "/project",
-  },
-  {
-    id: 4,
-    name: "Organization",
-    value: "/organization",
-  },
-];
+type NavLink = {
+  id: number;
+  name: string;
+  value: string;
+};
 
-export function Navigation() {
+type NavigationProps = {
+  links: NavLink[];
+};
+
+export function Navigation({ links }: NavigationProps) {
   const pathname = usePathname();
 
+  // console.log("pathname", pathname);
   return (
-    <div className=" flex flex-col p-2 gap-2">
-      {navLinks.map((link) => (
+    <div className=" flex flex-col p-2 gap-2 w-full">
+      {links.map((link) => (
         <Link href={`${link.value}`} key={link.id} className=" w-full">
           <Button
             key={link.id}
-            variant={pathname === link.value ? "default" : "outline"}
+            variant={pathname.endsWith(link.value) ? "default" : "outline"}
             className=" w-full"
           >
             {link.name}

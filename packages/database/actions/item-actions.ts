@@ -1,7 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ItemPreview, NewItem, db, getItemById, items } from "..";
+import {
+  ItemImage,
+  ItemPreview,
+  ItemWithImages,
+  NewItem,
+  db,
+  featuresOnItems,
+  getItemById,
+  itemImages,
+  items,
+} from "..";
 import { eq } from "drizzle-orm";
 import { ColumnSort, SortingState } from "@tanstack/react-table";
 
@@ -15,8 +25,20 @@ export async function addItem(newItem: NewItem) {
   return insertedItem;
 }
 
+// export async function getItemsAction() {
+//   const result = db.query.items.findMany({
+//     where: eq()
+//   })
+// }
+
 export async function getItemByIdAction(itemId: number) {
-  const result = await getItemById(itemId);
+  const result = await db.query.items.findFirst({
+    where: eq(items.id, itemId),
+    with: {
+      itemImages: true,
+      featuresOnItems: true,
+    },
+  });
 
   return result;
 }
@@ -42,6 +64,7 @@ export async function getItemPreviewsByProjectIdAction(
     where: eq(items.projectId, projectId),
     with: {
       itemImages: true,
+      featuresOnItems: true,
     },
   });
 
@@ -65,4 +88,27 @@ export async function getItemPreviewsByProjectIdAction(
       totalRowCount: result.length,
     },
   };
+}
+
+export type NewItemFeature = {
+  itemId: number;
+  featureId: number;
+  value: string;
+};
+
+export async function updateItemFeatures(newItemFeatures: NewItemFeature[]) {
+  const updatedItem = await db
+    .insert(featuresOnItems)
+    .values(newItemFeatures)
+    .returning({
+      updatedItem: featuresOnItems.itemId,
+    });
+
+  return updatedItem;
+}
+
+export async function addItemImages(newItemImages: ItemImage[]) {
+  const result = await db.insert(itemImages).values(newItemImages).returning();
+
+  return result;
 }

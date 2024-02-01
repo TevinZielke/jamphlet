@@ -1,7 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertCategorySchema } from "@jamphlet/database";
+import {
+  NewCategory,
+  addCategoryAction,
+  insertCategorySchema,
+} from "@jamphlet/database";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -22,28 +26,29 @@ import { Button } from "./ui/button";
 // type MyEnum = typeof FeatureType
 
 type CategoryFormProps = {
-  name?: string;
-  categoryId: number;
+  projectId: number;
 };
 
-export function CategoryForm({ name, categoryId }: CategoryFormProps) {
+const projectName = "St. Beaux";
+
+export function CategoryForm({ projectId }: CategoryFormProps) {
   const form = useForm<z.infer<typeof insertCategorySchema>>({
     resolver: zodResolver(insertCategorySchema),
     defaultValues: {
-      name: name || "",
+      name: "",
+      projectId: projectId,
     },
     mode: "onChange",
   });
 
   const onSubmit = async (values: z.infer<typeof insertCategorySchema>) => {
-    console.log("categoryForm", values);
-    // const newFeature: NewFeature = values;
-    // const insertedFeature = await addFeatureAction(newFeature);
-    // const insertedFeatureName = insertedFeature.at(0)?.insertedName;
-    // insertedFeatureName &&
-    //   toast("New feature type added.", {
-    //     description: `${insertedFeatureName} has been added to ${categoryName}.`,
-    //   });
+    const newCategory: NewCategory = values;
+    const insertedCategory = await addCategoryAction(newCategory);
+    const insertedCategoryName = insertedCategory.at(0)?.insertedCategoryName;
+    insertedCategoryName &&
+      toast("New feature type added.", {
+        description: `${insertedCategoryName} has been added to ${projectName}.`,
+      });
   };
 
   return (
@@ -56,17 +61,19 @@ export function CategoryForm({ name, categoryId }: CategoryFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Rooms" {...field} />
-                </FormControl>
+                <div className=" flex gap-2">
+                  <FormControl>
+                    <Input placeholder="Rooms" {...field} />
+                  </FormControl>
+                  <div className=" flex justify-end">
+                    <Button type="submit">Submit</Button>
+                  </div>
+                </div>
                 <FormDescription>The name of your category.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className=" flex justify-end">
-            <Button type="submit">Submit</Button>
-          </div>
         </div>
       </form>
     </Form>

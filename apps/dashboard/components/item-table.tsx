@@ -206,12 +206,10 @@ export function ItemTable({ projectId }: { projectId: number }) {
     [data]
   );
 
-  console.log("item-table: ", flatData);
-
   const totalDBRowCount = data?.pages?.[0]?.meta?.totalRowCount ?? 0;
   const totalFetched = flatData.length;
 
-  const tableHeight = {};
+  // const tableHeight = {};
   const estimatedTableRowHeight = 48;
   const estimatedCardRowHeight = 106;
 
@@ -312,8 +310,6 @@ export function ItemTable({ projectId }: { projectId: number }) {
   const hideSeparator =
     cardsContainerRef.current?.scrollTop === undefined ||
     cardsContainerRef.current?.scrollTop === 0;
-
-  console.log(hideSeparator);
 
   return (
     <div className=" flex flex-col justify-between max-h-full">

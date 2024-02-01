@@ -4,6 +4,29 @@ import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { Navigation } from "./navigation";
 
+const navLinks = [
+  {
+    id: 1,
+    name: "Clients",
+    value: "/clients",
+  },
+  {
+    id: 2,
+    name: "Items",
+    value: "/items",
+  },
+  {
+    id: 3,
+    name: "Project",
+    value: "/project",
+  },
+  {
+    id: 4,
+    name: "Organization",
+    value: "/organization",
+  },
+];
+
 export async function Sidebar() {
   return (
     <div className=" h-full flex flex-col">
@@ -11,7 +34,7 @@ export async function Sidebar() {
         <ProjectSelector />
       </div>
       <Separator />
-      <Navigation />
+      <Navigation links={navLinks} />
       <Separator />
       <div className=" flex flex-col flex-auto place-content-end p-2 gap-2">
         <Button variant="outline">

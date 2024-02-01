@@ -1,9 +1,8 @@
 export const residences = [
   {
     id: 'residence-1',
-    title: 'Residence 76zG87',
-    comment:
-      'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut.',
+    title: 'Residence 1A',
+    comment: 'You really liked the view from the North-East facing balcony.',
     floorplans: [
       {
         src: '/floorplan-example.jpg',
@@ -31,65 +30,23 @@ export const residences = [
         mainFacts: [
           {
             id: '1',
-            label: 'Facility 1',
-            value: 'Some value goes here lorem ipsum',
+            label: 'Price',
+            value: '$1.250.000',
           },
           {
             id: '2',
-            label: 'Facility 2',
-            value: 'Some value goes here lorem ipsum',
+            label: 'Bedrooms',
+            value: '2 bedrooms',
           },
           {
             id: '3',
-            label: 'Facility 3',
-            value: 'Some value goes here lorem ipsum',
+            label: 'Bathrooms',
+            value: '2 bathrooms',
           },
           {
             id: '2',
-            label: 'Facility 2',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '3',
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            id: '3',
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
+            label: 'Size',
+            value: '500 sqft',
           },
         ],
       },
@@ -97,18 +54,18 @@ export const residences = [
         Pricing: [
           {
             id: '1',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Price',
+            value: '$1.250.000',
           },
           {
             id: '2',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Est. tax',
+            value: '$12.350/a',
           },
           {
             id: '3',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Common charges',
+            value: '$5.500/a',
           },
         ],
       },
@@ -116,52 +73,23 @@ export const residences = [
         Rooms: [
           {
             id: '1',
-            label: 'Label 123',
-            value: 'Some value',
+            label: 'Bedrooms',
+            value: '2 Bedrooms',
           },
           {
             id: '2',
-            label: 'Label 123',
-            value: 'Some value',
+            label: 'Bathrooms',
+            value: '2 Bathrooms',
           },
           {
             id: '3',
-            label: 'Label goes here',
-            value: 'Some value',
+            label: 'Dining',
+            value: 'Formal dining room',
           },
         ],
       },
       {
-        Infos: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Test123: [
+        Extras: [
           {
             id: '1',
             label: 'Value 123',
@@ -192,166 +120,9 @@ export const residences = [
     ],
   },
   {
-    id: 'residence-421',
-    title: 'This is a very long Residence title for testing edge cases 76zG87 lorem ipsum',
-    comment:
-      'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut.',
-    floorplans: [
-      {
-        src: '/floorplan-example-2.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-      {
-        src: '/floorplan-example.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-    ],
-    images: [
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-    ],
-    rows: [
-      {
-        mainFacts: [
-          {
-            id: '1',
-            label: 'Facility 1',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '2',
-            label: 'Facility 2',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '3',
-            label: 'Facility 3',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '2',
-            label: 'Facility 2',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '3',
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-        ],
-      },
-      {
-        Pricing: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Rooms: [
-          {
-            id: '1',
-            label: 'Label 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Label 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Label goes here',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Infos: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Test123: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'home-12gf78ew',
-    title: 'Home 12gf78ew 76zG87',
-    comment:
-      'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
+    id: 'residence-2',
+    title: 'Residence 2B',
+    comment: 'Nice and big rooms for the kids.',
     floorplans: [
       {
         src: '/floorplan-example.jpg',
@@ -379,29 +150,23 @@ export const residences = [
         mainFacts: [
           {
             id: '1',
-            label: 'Facility 1',
-            value: 'Some value goes here lorem ipsum',
+            label: 'Price',
+            value: '$1.250.000',
           },
           {
             id: '2',
-            label: 'Facility 2',
-            value: 'Some value goes here lorem ipsum',
+            label: 'Bedrooms',
+            value: '2 bedrooms',
           },
           {
             id: '3',
-            label: 'Facility 3',
-            value: 'Some value goes here lorem ipsum',
+            label: 'Bathrooms',
+            value: '2 bathrooms',
           },
           {
             id: '2',
-            label: 'Facility 2',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '3',
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
+            label: 'Size',
+            value: '500 sqft',
           },
         ],
       },
@@ -409,18 +174,18 @@ export const residences = [
         Pricing: [
           {
             id: '1',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Price',
+            value: '$1.250.000',
           },
           {
             id: '2',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Est. tax',
+            value: '$12.350/a',
           },
           {
             id: '3',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Common charges',
+            value: '$5.500/a',
           },
         ],
       },
@@ -428,515 +193,23 @@ export const residences = [
         Rooms: [
           {
             id: '1',
-            label: 'Label 123',
-            value: 'Some value',
+            label: 'Bedrooms',
+            value: '2 Bedrooms',
           },
           {
             id: '2',
-            label: 'Label 123',
-            value: 'Some value',
+            label: 'Bathrooms',
+            value: '2 Bathrooms',
           },
           {
             id: '3',
-            label: 'Label goes here',
-            value: 'Some value',
+            label: 'Dining',
+            value: 'Formal dining room',
           },
         ],
       },
       {
-        Infos: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Test123: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'weimar-35',
-    title:
-      'Im the longest fucking title in the world that will destroy the whole design - I promise!!!!  This is a very long Residence title for testing edge cases 76zG87 lorem ipsum',
-    comment:
-      'Some very long comments for you my friend! Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-    floorplans: [
-      {
-        src: '/floorplan-example.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-      {
-        src: '/floorplan-example-2.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-    ],
-    images: [
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-    ],
-    rows: [
-      {
-        mainFacts: [
-          {
-            id: '1',
-            label: 'Facility 1',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '2',
-            label: 'Facility 2',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '3',
-            label: 'Facility 3',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '2',
-            label: 'Facility 2',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '3',
-            label: 'Facility 3',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-        ],
-      },
-      {
-        Pricing: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Rooms: [
-          {
-            id: '1',
-            label: 'Label 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Label 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Label goes here',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Infos: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Test123: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'some-residence-2',
-    title: 'Some Residence Title goes here',
-    comment: 'Lorem ipsum',
-    url: 'Some value goes here lorem ipsum',
-    floorplans: [
-      {
-        src: '/floorplan-example.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-      {
-        src: '/floorplan-example-2.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-    ],
-    images: [
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-    ],
-    rows: [
-      {
-        mainFacts: [
-          {
-            id: '1',
-            label: 'Facility 1',
-            value: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '2',
-            title: 'Facility 2',
-            url: 'Some value goes here lorem ipsum',
-          },
-          {
-            id: '3',
-            title: 'Facility 3',
-            url: 'Some value goes here lorem ipsum',
-          },
-        ],
-      },
-      {
-        Pricing: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Infos: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Test123: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Rooms: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '6',
-            label: 'Value 123',
-            value:
-              'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-          },
-          {
-            id: '7',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'residence-3',
-    title: 'Residence 3',
-    floorplans: [
-      {
-        src: '/floorplan-example.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-      {
-        src: '/floorplan-example-2.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-    ],
-    images: [],
-    rows: [
-      {
-        mainFacts: [
-          {
-            id: '1',
-            label: 'Facility 1',
-            value: 'Some value goes here lorem ipsum',
-          },
-        ],
-      },
-      {
-        Pricing: [
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Rooms: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Infos: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Test123: [
+        Extras: [
           {
             id: '1',
             label: 'Value 123',
@@ -967,9 +240,16 @@ export const residences = [
     ],
   },
   {
-    id: 'residence-4',
-    title: 'Residence title goes here 4',
+    id: 'residence-3',
+    title: 'Residence 3C',
+    comment: 'The terrace makes this one really dog-friendly.',
     floorplans: [
+      {
+        src: '/floorplan-example.jpg',
+        alt: 'test',
+        width: 630,
+        height: 358,
+      },
       {
         src: '/floorplan-example-2.jpg',
         alt: 'test',
@@ -984,52 +264,48 @@ export const residences = [
         width: 1600,
         height: 900,
       },
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
     ],
     rows: [
       {
         mainFacts: [
           {
             id: '1',
-            label: 'Facility 1',
-            value: 'Some value goes here lorem ipsum',
+            label: 'Price',
+            value: '$1.250.000',
+          },
+          {
+            id: '2',
+            label: 'Bedrooms',
+            value: '2 bedrooms',
+          },
+          {
+            id: '3',
+            label: 'Bathrooms',
+            value: '2 bathrooms',
+          },
+          {
+            id: '2',
+            label: 'Size',
+            value: '500 sqft',
           },
         ],
       },
       {
         Pricing: [
           {
+            id: '1',
+            label: 'Price',
+            value: '$1.250.000',
+          },
+          {
             id: '2',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Est. tax',
+            value: '$12.350/a',
           },
           {
             id: '3',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Common charges',
+            value: '$5.500/a',
           },
         ],
       },
@@ -1037,18 +313,23 @@ export const residences = [
         Rooms: [
           {
             id: '1',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Bedrooms',
+            value: '2 Bedrooms',
           },
           {
             id: '2',
-            label: 'Value 123',
-            value: 'Some value',
+            label: 'Bathrooms',
+            value: '2 Bathrooms',
+          },
+          {
+            id: '3',
+            label: 'Dining',
+            value: 'Formal dining room',
           },
         ],
       },
       {
-        Test123: [
+        Extras: [
           {
             id: '1',
             label: 'Value 123',
@@ -1073,116 +354,6 @@ export const residences = [
             id: '5',
             label: 'Value 123',
             value: 'Some value',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'residence-5',
-    title: 'Home 523B',
-    comment: 'Some value goes here lorem ipsum',
-    floorplans: [
-      {
-        src: '/floorplan-example.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-    ],
-    images: [
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 500,
-        height: 700,
-      },
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 900,
-        height: 1600,
-      },
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-    ],
-    rows: [
-      {
-        mainFacts: [
-          {
-            id: '1',
-            label: 'Facility 1',
-            value: 'Some value goes here lorem ipsum',
-          },
-        ],
-      },
-      {
-        Pricing: [
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Rooms: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Infos: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-      {
-        Test123: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: '—',
           },
         ],
       },
@@ -1191,7 +362,7 @@ export const residences = [
 ];
 
 export const pageData = {
-  projectName: 'The Perrie',
+  projectName: 'St. Beaux',
   styles: [
     // { label: 'color-text', value: 'black' },
     // { label: 'color-border', value: 'black' },
@@ -1202,7 +373,7 @@ export const pageData = {
   sections: [
     {
       id: 'building',
-      subTitle: 'The Perrie',
+      subTitle: 'St. Beaux',
       title: 'Building',
       color: 'var(--color-foreground)',
       components: [
@@ -1267,7 +438,7 @@ export const pageData = {
     {
       id: 'comparison',
       title: 'Comparison',
-      subTitle: 'Keep calm and compare',
+      subTitle: 'Compare the selection',
       color: 'var(--color-foreground)',
       components: [{ componentName: 'comparison', data: residences }],
     },
