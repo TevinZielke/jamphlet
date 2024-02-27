@@ -2,9 +2,9 @@ import { LogoutLink } from "@jamphlet/auth";
 import { ProjectSelector } from "./project-selector";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import { Navigation } from "./navigation";
+import { NavLink, Navigation } from "./navigation";
 
-const navLinks = [
+const navLinks: NavLink[] = [
   {
     id: 1,
     name: "Clients",

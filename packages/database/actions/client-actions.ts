@@ -31,6 +31,7 @@ export async function getClientAction(clientId: number) {
               item: {
                 with: {
                   itemImages: true,
+                  featuresOnItems: true,
                 },
               },
             },

@@ -19,7 +19,7 @@ export const residences = [
     ],
     images: [
       {
-        src: '/hero-back.jpg',
+        src: '/gallery_image_002.jpg',
         alt: 'test',
         width: 1600,
         height: 900,
@@ -139,7 +139,7 @@ export const residences = [
     ],
     images: [
       {
-        src: '/hero-back.jpg',
+        src: '/gallery_image_002.jpg',
         alt: 'test',
         width: 1600,
         height: 900,
@@ -239,126 +239,126 @@ export const residences = [
       },
     ],
   },
-  {
-    id: 'residence-3',
-    title: 'Residence 3C',
-    comment: 'The terrace makes this one really dog-friendly.',
-    floorplans: [
-      {
-        src: '/floorplan-example.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-      {
-        src: '/floorplan-example-2.jpg',
-        alt: 'test',
-        width: 630,
-        height: 358,
-      },
-    ],
-    images: [
-      {
-        src: '/hero-back.jpg',
-        alt: 'test',
-        width: 1600,
-        height: 900,
-      },
-    ],
-    rows: [
-      {
-        mainFacts: [
-          {
-            id: '1',
-            label: 'Price',
-            value: '$1.250.000',
-          },
-          {
-            id: '2',
-            label: 'Bedrooms',
-            value: '2 bedrooms',
-          },
-          {
-            id: '3',
-            label: 'Bathrooms',
-            value: '2 bathrooms',
-          },
-          {
-            id: '2',
-            label: 'Size',
-            value: '500 sqft',
-          },
-        ],
-      },
-      {
-        Pricing: [
-          {
-            id: '1',
-            label: 'Price',
-            value: '$1.250.000',
-          },
-          {
-            id: '2',
-            label: 'Est. tax',
-            value: '$12.350/a',
-          },
-          {
-            id: '3',
-            label: 'Common charges',
-            value: '$5.500/a',
-          },
-        ],
-      },
-      {
-        Rooms: [
-          {
-            id: '1',
-            label: 'Bedrooms',
-            value: '2 Bedrooms',
-          },
-          {
-            id: '2',
-            label: 'Bathrooms',
-            value: '2 Bathrooms',
-          },
-          {
-            id: '3',
-            label: 'Dining',
-            value: 'Formal dining room',
-          },
-        ],
-      },
-      {
-        Extras: [
-          {
-            id: '1',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '2',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '3',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '4',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-          {
-            id: '5',
-            label: 'Value 123',
-            value: 'Some value',
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   id: 'residence-3',
+  //   title: 'Residence 3C',
+  //   comment: 'The terrace makes this one really dog-friendly.',
+  //   floorplans: [
+  //     {
+  //       src: '/floorplan-example.jpg',
+  //       alt: 'test',
+  //       width: 630,
+  //       height: 358,
+  //     },
+  //     {
+  //       src: '/floorplan-example-2.jpg',
+  //       alt: 'test',
+  //       width: 630,
+  //       height: 358,
+  //     },
+  //   ],
+  //   images: [
+  //     {
+  //       src: '/gallery_image_001.jpg',
+  //       alt: 'test',
+  //       width: 1600,
+  //       height: 900,
+  //     },
+  //   ],
+  //   rows: [
+  //     {
+  //       mainFacts: [
+  //         {
+  //           id: '1',
+  //           label: 'Price',
+  //           value: '$1.250.000',
+  //         },
+  //         {
+  //           id: '2',
+  //           label: 'Bedrooms',
+  //           value: '2 bedrooms',
+  //         },
+  //         {
+  //           id: '3',
+  //           label: 'Bathrooms',
+  //           value: '2 bathrooms',
+  //         },
+  //         {
+  //           id: '2',
+  //           label: 'Size',
+  //           value: '500 sqft',
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       Pricing: [
+  //         {
+  //           id: '1',
+  //           label: 'Price',
+  //           value: '$1.250.000',
+  //         },
+  //         {
+  //           id: '2',
+  //           label: 'Est. tax',
+  //           value: '$12.350/a',
+  //         },
+  //         {
+  //           id: '3',
+  //           label: 'Common charges',
+  //           value: '$5.500/a',
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       Rooms: [
+  //         {
+  //           id: '1',
+  //           label: 'Bedrooms',
+  //           value: '2 Bedrooms',
+  //         },
+  //         {
+  //           id: '2',
+  //           label: 'Bathrooms',
+  //           value: '2 Bathrooms',
+  //         },
+  //         {
+  //           id: '3',
+  //           label: 'Dining',
+  //           value: 'Formal dining room',
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       Extras: [
+  //         {
+  //           id: '1',
+  //           label: 'Value 123',
+  //           value: 'Some value',
+  //         },
+  //         {
+  //           id: '2',
+  //           label: 'Value 123',
+  //           value: 'Some value',
+  //         },
+  //         {
+  //           id: '3',
+  //           label: 'Value 123',
+  //           value: 'Some value',
+  //         },
+  //         {
+  //           id: '4',
+  //           label: 'Value 123',
+  //           value: 'Some value',
+  //         },
+  //         {
+  //           id: '5',
+  //           label: 'Value 123',
+  //           value: 'Some value',
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
 ];
 
 export const pageData = {
@@ -384,7 +384,7 @@ export const pageData = {
         {
           componentName: 'image',
           image: {
-            src: '/hero-back.jpg',
+            src: '/gallery_image_003.jpg',
             alt: 'test',
             width: 1600,
             height: 900,
@@ -420,7 +420,7 @@ export const pageData = {
           text: 'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
           textRightImageLeft: true,
           image: {
-            url: '/hero-back.jpg',
+            url: '/gallery_image_004.jpg',
             alt: '',
             width: 1600,
             height: 900,
@@ -452,7 +452,7 @@ export const pageData = {
           title: 'Optional headline goes here',
           text: 'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
           image: {
-            url: '/hero-back.jpg',
+            url: '/gallery_image_003.jpg',
             alt: '',
             width: 1600,
             height: 900,
@@ -463,7 +463,7 @@ export const pageData = {
           text: 'Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
           textRightImageLeft: true,
           image: {
-            url: '/hero-back.jpg',
+            url: '/gallery_image_004.jpg',
             alt: '',
             width: 1600,
             height: 900,

@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import getQueryClient from "lib/getQueryClient";
 
-export default async function Item({
+export default async function Client({
   params,
 }: {
   params: { clientId: number };

@@ -106,14 +106,14 @@ export function ClientView({ clientId }: ClientViewProps) {
                 {client?.notes ? (
                   client.notes
                 ) : (
-                  <Button variant="ghost">Add a note</Button>
+                  <Button variant="outline">Add a note</Button>
                 )}
               </p>
             </div>
           </div>
           <div className=" flex gap-2">
             <Button variant="link">Visit Jamphlet</Button>
-            <Button variant="secondary">Edit</Button>
+            <Button variant="secondary">Edit info</Button>
             <DeleteDialog handleConfirm={confirm}>
               <Button variant="destructive">Delete</Button>
             </DeleteDialog>

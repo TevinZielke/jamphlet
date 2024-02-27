@@ -108,31 +108,33 @@ export default async function ClientsLayout({
 }) {
   return (
     // <HydrationBoundary state={dehydrate(getQueryClient())}>
-    <JotaiProvider>
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel
-          defaultSize={35}
-          minSize={20}
-          maxSize={50}
-          className=" flex flex-col"
-        >
-          <div className=" flex justify-between items-center px-2 py-2">
-            <h1 className="text-xl font-bold">Clients</h1>
-            <ClientFormDialog text="New client" />
-          </div>
-          <Separator />
-          <div className=" flex-auto flex flex-col p-2  max-h-full">
-            <Suspense fallback={<Skeletons />}>
-              <ClientList />
-            </Suspense>
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={65} minSize={50} maxSize={80}>
-          <div className="h-full w-full p-2">{children}</div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </JotaiProvider>
+    <div className=" h-svh">
+      <JotaiProvider>
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel
+            defaultSize={35}
+            minSize={20}
+            maxSize={50}
+            className=" flex flex-col"
+          >
+            <div className=" flex justify-between items-center px-2 py-2">
+              <h1 className="text-xl font-bold">Clients</h1>
+              <ClientFormDialog text="New client" />
+            </div>
+            <Separator />
+            <div className=" flex-auto flex flex-col p-2  max-h-full">
+              <Suspense fallback={<Skeletons />}>
+                <ClientList />
+              </Suspense>
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={65} minSize={50} maxSize={80}>
+            <div className="h-full w-full p-2">{children}</div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </JotaiProvider>
+    </div>
     // </HydrationBoundary>
   );
 }

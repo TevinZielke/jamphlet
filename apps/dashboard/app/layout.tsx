@@ -117,7 +117,7 @@ export default async function RootLayout({
   await getClients();
 
   return (
-    <html lang="en">
+    <html lang="en" className="h-svh">
       <body className={inter.className}>
         <TanStackQueryProvider>
           <div className=" p-4">

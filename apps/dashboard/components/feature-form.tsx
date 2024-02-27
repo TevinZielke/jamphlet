@@ -163,7 +163,7 @@ export function FeatureForm({
                     disabled={feature && !isEditMode}
                   >
                     <FormControl className=" w-full">
-                      <SelectTrigger>
+                      <SelectTrigger className={cn(" w-[110px]")}>
                         <SelectValue placeholder="Data type" />
                       </SelectTrigger>
                     </FormControl>

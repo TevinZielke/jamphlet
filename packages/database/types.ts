@@ -1,11 +1,11 @@
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import {
   categories,
   clients,
-  featureTypeEnum,
   features,
+  featuresOnItems,
   invitations,
   itemImages,
   items,
@@ -18,14 +18,12 @@ import {
   usersOnProjects,
 } from "./schema";
 import {
-  FeatureType,
   getCategoriesWithFeatures,
   getClientPreviewsByUserIdAction,
   getClientsWithPamphletsByUserId,
   getItemsByProjectId,
   getItemsByProjectIdAction,
   getItemsOnPamphlet,
-  getProjectFormSchemaAction,
 } from ".";
 
 export { invitationStatusEnum as InvitationStatus } from "./schema";
@@ -57,6 +55,13 @@ export const insertFeatureSchema = createInsertSchema(features, {
     .min(1, { message: "Value must be at least one character." }),
   // type: z.enum(FeatureType.enumValues).Enum
 });
+
+export type FeaturesOnItems = InferSelectModel<typeof featuresOnItems>;
+export type NewFeaturesOnItems = InferInsertModel<typeof featuresOnItems>;
+
+/**
+ * User
+ */
 
 export type Invitation = InferSelectModel<typeof invitations>;
 export type NewInvitation = InferInsertModel<typeof invitations>;
@@ -117,6 +122,7 @@ export const insertItemSchema = createInsertSchema(items, {
   code: z.string().min(1, { message: "Code must be at least one character." }),
 });
 
+// Todo: switch to union of types
 export type ItemsWithImages = Awaited<ReturnType<typeof getItemsByProjectId>>;
 export type ItemWithImages = Array<ItemsWithImages>[0][0];
 

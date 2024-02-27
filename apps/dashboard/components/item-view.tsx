@@ -174,8 +174,8 @@ export function ItemView({ itemId }: ItemViewProps) {
         <div>
           <h3 className={cn(" text-xl font-semibold pb-2")}>Item Images</h3>
           <p>Floorplans</p>
-          <div className=" p-2">
-            <div className={cn("flex flex-wrap gap-2")}>
+          <div className="flex flex-col gap-2">
+            <div className={cn("grid grid-cols-3 gap-2")}>
               {floorplans.map((floorplan) => {
                 return (
                   <div key={floorplan.id}>
@@ -184,14 +184,14 @@ export function ItemView({ itemId }: ItemViewProps) {
                 );
               })}
             </div>
+            {/* <div className={cn("w-full border rounded-lg p-2")}> */}
             <div>
               <ImageForm projectId={projectId} itemId={itemId} />
             </div>
           </div>
-
+          <p>Gallery Images</p>
           <div>
-            Gallery Images
-            <div className={cn("flex flex-wrap gap-2")}>
+            <div className={cn("grid grid-cols-3 gap-2")}>
               {galleryImages.map((galleryImage) => {
                 return (
                   <div key={galleryImage.id}>

@@ -25,6 +25,7 @@ import { ImageUpload } from "./image-upload";
 import { ItemImageForm } from "./item-image-form";
 import ItemImageView from "./item-image-view";
 import { cn } from "lib/utils";
+import { Separator } from "./ui/separator";
 
 // type ImageFormProps = {
 //   clientId: number;
@@ -248,25 +249,36 @@ export function ImageForm({ projectId, itemId }: ImageFormProps) {
   }
 
   return (
-    <div>
+    <div className="w-full">
+      {input.length !== 0 && (
+        <div className="w-full py-2 flex flex-col gap-2">
+          <Separator />
+          <p className="text-sm font-medium text-center">
+            {input.length} new files selected.
+          </p>
+        </div>
+      )}
+      <div className={cn("grid grid-cols-3 gap-2")}>
+        {input.map((image, index) => {
+          const itemImage: NewItemImage = {
+            itemId: itemId,
+            caption: "",
+            alt: "",
+            path: "",
+            publicUrl: image.getUrl,
+          };
+          return (
+            <div key={index}>
+              <ItemImageView itemImage={itemImage} />
+            </div>
+          );
+        })}
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-[312px]"
+          className="space-y-8 max-w-[320px]"
         >
-          {/* <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Filename</FormLabel>
-              <FormControl>
-                <Input placeholder="floorplan_01" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
           <div
             className="inset-0 cursor-pointer flex flex-col gap-2"
             onDragEnter={handleDrag}
@@ -296,22 +308,6 @@ export function ImageForm({ projectId, itemId }: ImageFormProps) {
           <Button type="submit">Upload</Button>
         </form>
       </Form>
-      <div className={cn("flex flex-wrap gap-6")}>
-        {input.map((image, index) => {
-          const itemImage: NewItemImage = {
-            itemId: itemId,
-            caption: "Give your image a title.",
-            alt: "Set a descriptive alt text for your image",
-            path: "",
-            publicUrl: image.getUrl,
-          };
-          return (
-            <div key={index}>
-              <ItemImageView itemImage={itemImage} />
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 }

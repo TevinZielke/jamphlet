@@ -101,6 +101,8 @@ export const featuresOnItems = pgTable(
       .notNull()
       .references(() => items.id),
     value: text("value").notNull().default(""),
+    displayText: text("display_text"),
+    isMainFact: boolean("is_main_fact").default(false),
   },
   (table) => ({
     pk: primaryKey({

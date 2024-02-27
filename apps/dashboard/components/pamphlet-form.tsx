@@ -76,7 +76,9 @@ export function PamphletForm({ defaultValues }: PamphletFormProps) {
           name="personalMessage"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Personal message</FormLabel>
+              <FormLabel>
+                <p className="font-medium">Personal message</p>
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Welcome to your bespoke Jamphlet"

@@ -26,7 +26,8 @@ import {
   Drawer,
 } from "./ui/drawer";
 import { Separator } from "./ui/separator";
-import { MinusCircle } from "lucide-react";
+import { X } from "lucide-react";
+import { cn } from "lib/utils";
 
 export function SelectionFormDialog() {
   const [open, setOpen] = React.useState(false);
@@ -38,7 +39,7 @@ export function SelectionFormDialog() {
         <DialogTrigger asChild>
           <Button variant="outline">Edit selection</Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="max-h-[500px]">
           <DialogHeader>
             <DialogTitle>Edit selection</DialogTitle>
             <DialogDescription>
@@ -65,7 +66,6 @@ export function SelectionFormDialog() {
             <p>Click save when you're done.</p>{" "}
           </DrawerDescription>
         </DrawerHeader>
-        {/* <ProfileForm className="px-4" /> */}
         <SelectionForm />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
@@ -92,20 +92,23 @@ function SelectionForm() {
 
   return (
     <div className=" flex justify-between">
-      <div className=" font-medium">
+      <div className=" font-medium max-h-[300px]">
         <p>All items</p>
         <ItemTable projectId={1} />
       </div>
       <Separator orientation="vertical" />
       <div className=" w-[175px]">
         <p className=" font-medium">Current selection</p>
+        <div className="pb-6">
+          <Button variant={"outline"}>Save changes</Button>
+        </div>
         {currentSelection?.map((item, index) => {
           return (
             <div key={index}>
               <div className=" flex justify-between place-items-center">
                 <p>{item.name}</p>
                 <Button variant="ghost" className=" p-0">
-                  <MinusCircle />
+                  <X color="grey" className="h-4 w-4" />
                 </Button>
               </div>
               <Separator />

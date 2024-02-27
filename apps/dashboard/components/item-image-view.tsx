@@ -11,10 +11,10 @@ export default function ItemImageView({ itemImage }: ItemImageViewProps) {
   return (
     <div
       className={cn(
-        " flex flex-col justify-between gap-3 p-3 border rounded-lg w-[312px]"
+        " flex flex-col justify-between gap-3 p-3 border rounded-lg max-w-[320px]"
       )}
     >
-      <div className="relative aspect-[200/133] ">
+      <div className="relative aspect-[173/115] ">
         <Image
           src={itemImage.publicUrl!}
           fill

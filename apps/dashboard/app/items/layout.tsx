@@ -44,34 +44,37 @@ export default async function ItemsLayout({
 
   return (
     // <HydrationBoundary state={dehydrate(queryClient)}>
-    <JotaiProvider>
-      <ResizablePanelGroup
-        direction="horizontal"
-        className=" min-h-full w-full"
-      >
-        <ResizablePanel
-          defaultSize={35}
-          minSize={20}
-          maxSize={50}
-          className=" flex flex-col"
+    <div className=" h-svh">
+      <JotaiProvider>
+        <ResizablePanelGroup
+          direction="horizontal"
+          // className=" min-h-full w-full"
         >
-          <div className=" flex justify-between items-center px-2 py-2">
-            <h1 className="text-xl font-bold">Items</h1>
-            <ItemFormDialog text="New item" />
-          </div>
-          <Separator />
-          <div className=" flex-auto flex flex-col p-4">
-            <Suspense fallback={<Skeletons />}>
-              <ItemList />
-            </Suspense>
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={65} minSize={50} maxSize={80}>
-          <div className="h-full w-full p-2">{children}</div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </JotaiProvider>
+          <ResizablePanel
+            defaultSize={35}
+            minSize={20}
+            maxSize={50}
+            className=" flex flex-col"
+          >
+            <div className=" flex justify-between items-center px-2 py-2">
+              <h1 className="text-xl font-bold">Items</h1>
+              <ItemFormDialog text="New item" />
+            </div>
+            <Separator />
+            <div className=" flex-auto flex flex-col p-2  max-h-full">
+              <Suspense fallback={<Skeletons />}>
+                <ItemList />
+              </Suspense>
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize={65} minSize={50} maxSize={80}>
+            <div className="h-full w-full p-2">{children}</div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </JotaiProvider>
+    </div>
+
     // </HydrationBoundary>
   );
 }

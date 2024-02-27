@@ -20,6 +20,7 @@ import {
 import { Input } from "./ui/input";
 import { cn } from "lib/utils";
 import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
 
 type ItemImageFormProps = {
   itemId: number;
@@ -30,8 +31,8 @@ export function ItemImageForm({ itemId, itemImage }: ItemImageFormProps) {
   const form = useForm<z.infer<typeof insertItemImageSchema>>({
     resolver: zodResolver(insertItemImageSchema),
     defaultValues: {
-      caption: itemImage.caption || "Give your image a title.",
-      alt: itemImage.alt || "Set a descriptive alt text for your image",
+      caption: itemImage.caption || "",
+      alt: itemImage.alt || "",
       path: itemImage.path || "",
       publicUrl: itemImage.publicUrl || "",
       itemId: itemId,
@@ -55,11 +56,11 @@ export function ItemImageForm({ itemId, itemImage }: ItemImageFormProps) {
             control={form.control}
             name="caption"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className={cn("space-y-1")}>
                 <FormLabel>Caption</FormLabel>
-                <div className=" flex gap-2">
+                <div className=" flex gap-1">
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} placeholder="The title of your image." />
                   </FormControl>
                 </div>
                 <FormDescription>The title of your image.</FormDescription>
@@ -71,15 +72,20 @@ export function ItemImageForm({ itemId, itemImage }: ItemImageFormProps) {
             control={form.control}
             name="alt"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className={cn("space-y-1")}>
                 <FormLabel>Alt text</FormLabel>
-                <div className=" flex gap-2">
+                <div className=" flex gap-1">
                   <FormControl>
-                    <Input {...field} />
+                    {/* <Input {...field} /> */}
+                    <Textarea
+                      placeholder="Modern and cozy apartment living room with a comfortable sectional sofa, stylish coffee table, soft rug, and large windows letting in natural light."
+                      className=" resize-none h-fit"
+                      {...field}
+                    />
                   </FormControl>
                 </div>
                 <FormDescription>
-                  Add a descriptive alternative text to your iamge.
+                  Add a descriptive alternative text to your image.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

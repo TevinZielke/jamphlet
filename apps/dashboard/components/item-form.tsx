@@ -77,7 +77,7 @@ export function ItemForm({ item, formCategories }: ItemFormProps) {
             const category = formCategory.category;
             return (
               <div key={i}>
-                <p>{category.categoryName}</p>
+                <p className="text-m font-medium">{category.categoryName}</p>
                 <div
                   className={cn(
                     " flex flex-col gap-2 border rounded-lg p-2 w-[400px]"
@@ -92,7 +92,7 @@ export function ItemForm({ item, formCategories }: ItemFormProps) {
                         <div className={"flex justify-between"}>
                           <Label
                             htmlFor={field.featureIdString}
-                            className={cn("my-auto")}
+                            className={cn("my-auto font-medium")}
                           >
                             {field.label}
                           </Label>
