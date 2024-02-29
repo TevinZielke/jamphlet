@@ -1,7 +1,7 @@
 ## Table of Contents
 
 - [Browsing Items](#browsing-items)
-- [Creating New Projects](#creating-new-projects)
+- [Creating New Projects](#creating-new-items)
 - [Updating Item Properties](#updating-item-properties)
 - [Managing Item Images](#managing-item-images)
 
@@ -11,7 +11,7 @@ In the Items menu, users can seamlessly browse the list of items associated with
 
 ## Creating New Projects
 
-Users can create a new project by either filling out the form in the panel or by clicking the "New Item" button. This provides flexibility in how projects are initiated within the system.
+Users can create a new item by either filling out the form in the panel or by clicking the "New Item" button. This provides flexibility in how projects are initiated within the system.
 
 ## Updating Item Properties
 
