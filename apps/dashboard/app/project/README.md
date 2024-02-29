@@ -9,6 +9,9 @@ Welcome to the Project Configuration and Item Schema documentation! This section
 - [Updating Project Configuration](#updating-project-configuration)
 - [Item Schema Configuration](#item-schema-configuration)
 - [Project Structure](#project-structure)
+- [Project Media](#project-media)
+- [Project Members](#project-members)
+- [Project Analytics](#project-analytics)
 
 ## Updating Project Configuration
 
@@ -29,3 +32,18 @@ The project structure dictates which sections are rendered on the client's perso
 - **Comparison Component:** Allow users to compare items against each other.
 
 This modular approach ensures a tailored and engaging presentation of project information on the client's webpage.
+
+## Project Media
+
+-- TBI -- 
+Manage Media files of the project (images, videos, ...)
+
+## Project Members
+
+-- TBI -- 
+Overview over all users assigned to this project
+
+## Project Analytics
+
+-- TBI -- 
+Analytics about the items, the project, users, clients,...
