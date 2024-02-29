@@ -13,6 +13,7 @@ Welcome to Jamphlet's Dashboard App! This web application is designed to provide
 - [Sorting and View Options](#sorting-and-view-options)
 - [Client View](#client-view)
 - [Editing Client Information](#editing-client-information)
+- [Project Menu](#project-menu)
 
 ## Getting Started
 
@@ -45,3 +46,7 @@ When clicking on an entry in the client list, the Client View component opens in
 ## Editing Client Information
 
 Within the Client View panel, users have the capability to edit the client's information, update the personal message, and modify the client's selection, ensuring that the client database remains accurate and up-to-date.
+
+## Project Menu
+To see documentation about the project menu, click here:
+https://github.com/TevinZielke/jamphlet/blob/main/apps/dashboard/app/project/README.md
