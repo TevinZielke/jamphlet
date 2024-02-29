@@ -24,9 +24,17 @@ cd jamphlet
 pnpm install
 ```
 
+### 4. Start the Development Servers
+```bash
+turbo dev
+```
+
+
 ### Useful Commands
 
 - `turbo build` - Build all packages
 - `turbo dev` - Run all packages locally
 - `turbo lint` - Lint all packages
+
+
 
