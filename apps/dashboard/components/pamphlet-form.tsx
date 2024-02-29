@@ -1,11 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMediaQuery } from "usehooks-ts";
 import {
   NewPamphlet,
-  getItems,
-  getItemsByProjectIdAction,
   insertPamphletSchema,
   updatePamphlet,
 } from "@jamphlet/database";
@@ -21,7 +18,6 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import React from "react";
@@ -30,15 +26,17 @@ import { Textarea } from "./ui/textarea";
 
 type PamphletFormProps = {
   defaultValues: PamphletFormDefaultValues;
+  projectId: number;
 };
 
 export type PamphletFormDefaultValues = {
   clientId: number;
+  clientName: string;
   userId: number;
   personalMessage: string;
 };
 
-export function PamphletForm({ defaultValues }: PamphletFormProps) {
+export function PamphletForm({ defaultValues, projectId }: PamphletFormProps) {
   const form = useForm<z.infer<typeof insertPamphletSchema>>({
     resolver: zodResolver(insertPamphletSchema),
     defaultValues: defaultValues,
@@ -67,7 +65,7 @@ export function PamphletForm({ defaultValues }: PamphletFormProps) {
     if (form.formState.isSubmitSuccessful) {
       form.reset(defaultValues);
     }
-    console.log("formState", form.formState);
+    // console.log("formState", form.formState);
   }, [form.formState]);
 
   return (
@@ -78,7 +76,9 @@ export function PamphletForm({ defaultValues }: PamphletFormProps) {
           name="personalMessage"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Personal message</FormLabel>
+              <FormLabel>
+                <p className="font-medium">Personal message</p>
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Welcome to your bespoke Jamphlet"
@@ -92,7 +92,11 @@ export function PamphletForm({ defaultValues }: PamphletFormProps) {
             </FormItem>
           )}
         />
-        <Selection />
+        <Selection
+          projectId={projectId}
+          clientId={defaultValues.clientId}
+          clientName={defaultValues.clientName}
+        />
         <div className=" flex flex-auto justify-end">
           <Button type="submit">Save</Button>
         </div>

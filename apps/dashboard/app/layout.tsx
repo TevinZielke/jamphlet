@@ -20,6 +20,7 @@ import {
   getClientPreviewsByUserIdAction,
   ItemPreviewApiResponse,
   getItemPreviewsByProjectIdAction,
+  getProjectFormSchemaAction,
 } from "@jamphlet/database";
 import { SortingState } from "@tanstack/react-table";
 import { redirect } from "next/navigation";
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
 const fetchSize = 15;
 
 async function getClients() {
-  const projectId = 1;
+  // const projectId = 1;
   const organizationId = 1;
 
   const isLoggedIn = await authenticateUser();
@@ -50,8 +51,9 @@ async function getClients() {
   }
 
   const dbUser = await getUserByKindeId(kindeUser.id);
+  const projectId = dbUser?.currentProjectId;
 
-  if (!dbUser) {
+  if (projectId && !dbUser) {
     const newUser: NewUser = {
       kindeId: kindeUser.id,
       name: kindeUser.given_name + " " + kindeUser.family_name,
@@ -74,6 +76,8 @@ async function getClients() {
     },
   ];
 
+  if (!projectId) return <p>No project available.</p>;
+
   await queryClient.prefetchInfiniteQuery<ClientApiResponse>({
     queryKey: ["clients", dbUser.id, sorting],
     queryFn: () =>
@@ -95,6 +99,11 @@ async function getClients() {
     ) => groups.length,
   });
 
+  await queryClient.prefetchQuery({
+    queryKey: ["project-form-schema", projectId],
+    queryFn: () => getProjectFormSchemaAction(projectId),
+  });
+
   // await queryClient.prefetchQuery({
   //   queryKey: ["items", projectId],
   //   queryFn: () => getItemsByProjectIdAction(projectId),
@@ -103,13 +112,15 @@ async function getClients() {
   return dbUser;
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
-}): JSX.Element {
+}): Promise<JSX.Element> {
+  await getClients();
+
   return (
-    <html lang="en">
+    <html lang="en" className="h-svh">
       <body className={inter.className}>
         <TanStackQueryProvider>
           <div className=" p-4">

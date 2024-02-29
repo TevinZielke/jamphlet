@@ -59,6 +59,8 @@ import {
   Item,
   ItemPreview,
   ItemPreviewApiResponse,
+  NewItemOnPamphlet,
+  addItemToPamphletAction,
   getItemPreviewsByProjectIdAction,
 } from "@jamphlet/database";
 import { cn } from "lib/utils";
@@ -100,7 +102,12 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 export const hiddenColumns = ["lastModified"];
 
-export function ItemTable({ projectId }: { projectId: number }) {
+type ItemTableProps = {
+  projectId: number;
+  pamphletId?: number;
+};
+
+export function ItemTable({ projectId, pamphletId }: ItemTableProps) {
   const [viewMode, setViewMode] = React.useState("cards");
   const [itemId, setItemId] = useItemAtom();
 
@@ -206,12 +213,10 @@ export function ItemTable({ projectId }: { projectId: number }) {
     [data]
   );
 
-  console.log("item-table: ", flatData);
-
   const totalDBRowCount = data?.pages?.[0]?.meta?.totalRowCount ?? 0;
   const totalFetched = flatData.length;
 
-  const tableHeight = {};
+  // const tableHeight = {};
   const estimatedTableRowHeight = 48;
   const estimatedCardRowHeight = 106;
 
@@ -312,8 +317,6 @@ export function ItemTable({ projectId }: { projectId: number }) {
   const hideSeparator =
     cardsContainerRef.current?.scrollTop === undefined ||
     cardsContainerRef.current?.scrollTop === 0;
-
-  console.log(hideSeparator);
 
   return (
     <div className=" flex flex-col justify-between max-h-full">
@@ -440,7 +443,7 @@ export function ItemTable({ projectId }: { projectId: number }) {
                       later.
                     </DialogDescription>
                   </DialogHeader>
-                  <ItemFormInitial wrapper="dialog" />
+                  <ItemFormInitial wrapper="dialog" projectId={projectId} />
                 </DialogContent>
               </Dialog>
             </DropdownMenuGroup>
@@ -574,8 +577,22 @@ export function ItemTable({ projectId }: { projectId: number }) {
                               transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                               width: "100%",
                             }}
+                            // onClick={(e) => {
+                            //   e.preventDefault();
+
+                            //   if (pamphletId) {
+                            //     const pamhletItem: NewItemOnPamphlet = {
+                            //       itemId: data.id,
+                            //       pamphletId: pamphletId,
+                            //     };
+                            //     handleAddPamphlet(pamhletItem);
+                            //   }
+                            // }}
                           >
-                            <ItemPreviewCard inputData={data} />
+                            <ItemPreviewCard
+                              inputData={data}
+                              pamphletId={pamphletId}
+                            />
                           </div>
                         )}
                       </Fragment>

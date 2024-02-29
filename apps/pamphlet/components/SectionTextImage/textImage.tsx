@@ -4,9 +4,9 @@ import { Container } from '../Container/container';
 import styles from './textImage.module.scss';
 import classNames from 'classnames';
 
-interface TextImageProps {
+export type TextImageProps = {
   image: {
-    url: string;
+    publicUrl: string;
     alt: string;
     width: number;
     height: number;
@@ -14,7 +14,7 @@ interface TextImageProps {
   text: string;
   title?: string;
   textRightImageLeft?: boolean;
-}
+};
 
 export const TextImage: FC<TextImageProps> = ({
   image,
@@ -35,7 +35,7 @@ export const TextImage: FC<TextImageProps> = ({
           {title && <h3>{title}</h3>}
           <p>{text}</p>
         </div>
-        <Image src={image.url} alt={image.alt} width={image.width} height={image.height} />
+        <Image src={image.publicUrl} alt={image.alt} width={666} height={333} />
       </div>
     </Container>
   );

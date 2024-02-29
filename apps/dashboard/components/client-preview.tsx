@@ -5,6 +5,7 @@ import { useClientAtom } from "lib/use-client";
 import { cn } from "lib/utils";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import Link from "next/link";
+import { UserCheck } from "lucide-react";
 
 type ClientPreviewProps = {
   inputData: ClientWithPamphlet;
@@ -29,6 +30,7 @@ export function ClientPreview({ inputData }: ClientPreviewProps) {
           <div className="flex items-center">
             <div className="flex items-center gap-2">
               <div className="font-semibold">{client.name}</div>
+              <UserCheck color="grey" className={cn("h-4 w-4 mb-1")} />
               {client.pamphlets.at(0)?.itemsOnPamphlets.at(0)?.seenByClient && (
                 <span className="flex h-2 w-2 rounded-full bg-blue-600" />
               )}

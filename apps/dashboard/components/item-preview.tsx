@@ -1,15 +1,21 @@
 "use client";
 
-import { ItemPreview, ItemWithImages } from "@jamphlet/database";
+import {
+  ItemPreview,
+  NewItemOnPamphlet,
+  addItemToPamphletAction,
+} from "@jamphlet/database";
 import { useItemAtom } from "lib/use-item";
 import { cn } from "lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import Link from "next/link";
+import Image from "next/image";
 
 type ItemPreviewProps = {
   inputData: ItemPreview;
+  pamphletId?: number;
 };
 
 export function ItemPreviewSkeleton() {
@@ -28,9 +34,16 @@ export function ItemPreviewSkeleton() {
 }
 
 // TODO: change type
-export function ItemPreviewCard({ inputData }: ItemPreviewProps) {
+export function ItemPreviewCard({ inputData, pamphletId }: ItemPreviewProps) {
   const item = inputData;
   const [itemAtom, setItemAtom] = useItemAtom();
+
+  const preview = item.itemImages.find((e) => e.path?.includes("preview"));
+
+  async function handleAddPamphlet(newItemOnPamphlet: NewItemOnPamphlet) {
+    const res = await addItemToPamphletAction(newItemOnPamphlet);
+    console.log("result: ", res);
+  }
 
   return (
     <Link href={`/items/${item.id}`} className=" w-full py-1">
@@ -40,16 +53,33 @@ export function ItemPreviewCard({ inputData }: ItemPreviewProps) {
           "flex flex-col items-start w-full gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
           itemAtom === item.id && "bg-muted"
         )}
-        onClick={() => setItemAtom(item.id)}
+        onClick={() => {
+          // e.preventDefault();
+          if (pamphletId) {
+            const newItemOnPamphlet: NewItemOnPamphlet = {
+              itemId: item.id,
+              pamphletId: pamphletId,
+            };
+            newItemOnPamphlet && handleAddPamphlet(newItemOnPamphlet);
+          } else {
+            setItemAtom(item.id);
+          }
+        }}
       >
+        {/* <div className="flex gap-3 w-fulll"> */}
+        {/* <div>
+            <Image
+              className={cn(" rounded-lg")}
+              src={preview?.publicUrl!}
+              width={150}
+              height={100}
+              alt={preview?.alt!}
+            />
+          </div> */}
         <div className="flex w-full flex-col gap-1">
           <div className="flex items-center">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-between">
               <div className="font-semibold">{item.name}</div>
-              {/* {!client.pamphlets.at(0)?.itemsOnPamphlets.at(0)
-                ?.seenByClient && (
-                <span className="flex h-2 w-2 rounded-full bg-blue-600" />
-              )} */}
             </div>
             <div
               className={cn(
@@ -64,6 +94,8 @@ export function ItemPreviewCard({ inputData }: ItemPreviewProps) {
           </div>
           <div className="text-xs font-medium text-gray-500">{item.code}</div>
         </div>
+        {/* </div> */}
+
         {/* <div className="line-clamp-2 text-xs text-muted-foreground">
           {client.pamphlets.at(0)?.personalMessage?.substring(0, 300)}
         </div> */}

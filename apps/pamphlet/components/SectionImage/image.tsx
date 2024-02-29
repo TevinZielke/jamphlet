@@ -2,15 +2,11 @@ import { FC } from 'react';
 import Image from 'next/image';
 import { Container } from '../Container/container';
 import styles from './image.module.scss';
+import { ProjectImage } from '@jamphlet/database';
 
-interface SectionImageProps {
-  image: {
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-  };
-}
+export type SectionImageProps = {
+  image: any;
+};
 
 export const SectionImage: FC<SectionImageProps> = ({ image }) => {
   if (!image) return null;
@@ -18,7 +14,8 @@ export const SectionImage: FC<SectionImageProps> = ({ image }) => {
   return (
     <Container width='extended'>
       <div className={styles.grid}>
-        <Image src={image.src} alt={image.alt} width={image.width} height={image.height} />
+        hallo
+        <Image src={image.publicUrl!} alt={image.alt!} width={666} height={333} />
       </div>
     </Container>
   );

@@ -10,7 +10,9 @@ import {
   primaryKey,
   varchar,
   index,
+  json,
 } from "drizzle-orm/pg-core";
+import { number } from "zod";
 
 export const planEnum = pgEnum("plan", ["free", "pro"]);
 export const roleEnum = pgEnum("role", ["basic", "admin"]);
@@ -50,15 +52,37 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
     fields: [projects.organizationId],
     references: [organizations.id],
   }),
+  projectStructure: one(projectStructures),
   categories: many(categories),
   usersOnProjects: many(usersOnProjects),
   clientsOnProjects: many(clientsOnProjects),
   projectImages: many(projectImages),
+  componentsOnProjects: many(componentsOnProjects),
+  // sections: many(sections),
 }));
+
+export const projectStructures = pgTable("project_structures", {
+  id: serial("id").primaryKey(),
+  // json: json("json").$type<{foo: string}>(),
+  json: json("json"),
+  projectId: integer("project_id")
+    .notNull()
+    .references(() => projects.id),
+});
+
+export const projectStructuresRelations = relations(
+  projectStructures,
+  ({ one }) => ({
+    project: one(projects, {
+      fields: [projectStructures.projectId],
+      references: [projects.id],
+    }),
+  })
+);
 
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
-  name: text("name"),
+  name: text("name").notNull(),
   projectId: integer("project_id")
     .notNull()
     .references(() => projects.id),
@@ -70,6 +94,7 @@ export const categoriesRelations = relations(categories, ({ one, many }) => ({
     references: [projects.id],
   }),
   features: many(features),
+  featuresOnItems: many(featuresOnItems),
 }));
 
 export const features = pgTable("features", {
@@ -83,12 +108,54 @@ export const features = pgTable("features", {
     .references(() => categories.id),
 });
 
-export const featuresRelations = relations(features, ({ one }) => ({
+export const featuresRelations = relations(features, ({ one, many }) => ({
   category: one(categories, {
     fields: [features.categoryId],
     references: [categories.id],
   }),
+  featuresOnItems: many(featuresOnItems),
 }));
+
+export const featuresOnItems = pgTable(
+  "features_items",
+  {
+    featureId: integer("feature_id")
+      .notNull()
+      .references(() => features.id),
+    itemId: integer("item_id")
+      .notNull()
+      .references(() => items.id),
+    value: text("value").notNull().default(""),
+    displayText: text("display_text"),
+    isMainFact: boolean("is_main_fact").default(false),
+    categoryId: integer("category_id")
+      .notNull()
+      .references(() => categories.id),
+  },
+  (table) => ({
+    pk: primaryKey({
+      columns: [table.featureId, table.itemId],
+    }),
+  })
+);
+
+export const featuresOnItemsRelations = relations(
+  featuresOnItems,
+  ({ one }) => ({
+    feature: one(features, {
+      fields: [featuresOnItems.featureId],
+      references: [features.id],
+    }),
+    item: one(items, {
+      fields: [featuresOnItems.itemId],
+      references: [items.id],
+    }),
+    category: one(categories, {
+      fields: [featuresOnItems.itemId],
+      references: [categories.id],
+    }),
+  })
+);
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -300,16 +367,18 @@ export const itemsRelations = relations(items, ({ one, many }) => ({
   }),
   itemsOnPamphlets: many(itemsOnPamphlets),
   itemImages: many(itemImages),
+  featuresOnItems: many(featuresOnItems),
 }));
 
 export const itemImages = pgTable("item_images", {
   id: serial("id").primaryKey(),
-  publicUrl: text("public_url"),
-  path: text("path"),
-  alt: text("alt"),
+  publicUrl: text("public_url").notNull(),
+  path: text("path").notNull(),
+  alt: text("alt").notNull(),
   itemId: integer("item_id")
     .notNull()
     .references(() => items.id),
+  caption: text("caption").notNull(),
 });
 
 export const itemImagesRelations = relations(itemImages, ({ one }) => ({
@@ -418,3 +487,45 @@ export const projectImagesRelations = relations(projectImages, ({ one }) => ({
     references: [projects.id],
   }),
 }));
+
+export const components = pgTable("components", {
+  id: serial("id").primaryKey(),
+  name: text("name"),
+});
+
+export const componentsRelations = relations(components, ({ many }) => ({
+  componentsOnProjects: many(componentsOnProjects),
+}));
+
+export const componentsOnProjects = pgTable(
+  "components_projects",
+  {
+    componentId: integer("component_id")
+      .notNull()
+      .references(() => components.id),
+    projectId: integer("project_id")
+      .notNull()
+      .references(() => projects.id),
+  },
+  (table) => {
+    return {
+      pk: primaryKey({
+        columns: [table.componentId, table.projectId],
+      }),
+    };
+  }
+);
+
+export const componentsOnProjectsRelations = relations(
+  componentsOnProjects,
+  ({ one }) => ({
+    component: one(components, {
+      fields: [componentsOnProjects.componentId],
+      references: [components.id],
+    }),
+    project: one(projects, {
+      fields: [componentsOnProjects.projectId],
+      references: [projects.id],
+    }),
+  })
+);

@@ -1,51 +1,73 @@
 "use client";
 
 import {
-  ItemPreviews,
-  ItemWithImages,
-  ItemsWithImages,
-  getItemsByProjectIdAction,
+  FeaturesOnItems,
+  Item,
+  ItemImage,
+  ItemOnPamphlet,
+  getClientAction,
 } from "@jamphlet/database";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "lib/utils";
 import Image from "next/image";
-import { Fragment } from "react";
 import { Separator } from "./ui/separator";
 import { SelectionFormDialog } from "./selection-form";
+import { Textarea } from "./ui/textarea";
+import { Siren } from "lucide-react";
 
-// type PreviewImage = {
-//   id: number;
-//   publicUrl: string;
-//   path: string;
-//   alt: string;
-//   itemId: number;
-// };
+type SelectionItemProps = {
+  info: Item & ItemOnPamphlet;
+  features: FeaturesOnItems[];
+  images: ItemImage[];
+};
 
-const projectId = 1;
+type SelectionProps = {
+  projectId: number;
+  clientId: number;
+  clientName: string;
+};
 
-export function Selection() {
-  const { data } = useQuery({
-    queryKey: ["items", projectId],
-    queryFn: () => getItemsByProjectIdAction(projectId),
+export function Selection({ clientId, clientName, projectId }: SelectionProps) {
+  const { data: client } = useQuery({
+    queryKey: ["client", clientId],
+    queryFn: () => getClientAction(clientId),
   });
 
-  if (!data) return null;
+  const currentSelection = client?.pamphlets.at(0)?.itemsOnPamphlets;
 
-  const items: ItemsWithImages = data;
+  if (!currentSelection) return null;
 
   return (
     <div className="space-y-2 flex flex-col">
       <div className=" flex justify-between place-items-center">
-        <p className=" text-sm font-medium">Selection</p>
-        <SelectionFormDialog />
+        <p className="text-sm font-medium">Selection</p>
+        <SelectionFormDialog projectId={projectId} clientName={clientName} />
       </div>
       <div className=" border rounded-lg">
-        {items.map((item: ItemWithImages, index) => {
+        {currentSelection.map((selectionItem, index) => {
+          const item: SelectionItemProps = {
+            info: {
+              id: selectionItem.itemId,
+              itemId: selectionItem.itemId,
+              code: selectionItem.item.code,
+              comment: selectionItem.comment,
+              createdAt: selectionItem.createdAt,
+              lastModified: selectionItem.lastModified,
+              name: selectionItem.item.name,
+              pamphletId: selectionItem.pamphletId,
+              projectId: selectionItem.item.projectId,
+              seenAt: selectionItem.seenAt,
+              seenByClient: selectionItem.seenByClient,
+            },
+            images: selectionItem.item.itemImages,
+            features: selectionItem.item.featuresOnItems,
+          };
+
           return (
-            <Fragment key={item.id}>
+            <div key={item.info.id}>
               {index !== 0 && <Separator />}
-              <Item {...item} />
-            </Fragment>
+              <SelectionItem {...item} />
+            </div>
           );
         })}
       </div>
@@ -56,34 +78,52 @@ export function Selection() {
   );
 }
 
-function Item(item: ItemWithImages) {
-  const previewRegex = ".*\bpreview\b.*";
-  const itemImages = item.itemImages;
-  const previewImage = itemImages.find((img) => img.path?.search(previewRegex));
+function SelectionItem(item: SelectionItemProps) {
+  const preview = item.images.find((image) => image.path?.includes("preview"));
 
-  const preview = itemImages.find((e) => e.path?.includes("preview"));
+  console.log(item.info.id, ": ", item.features);
 
-  const price = `$${item.id * 2}.500.000`;
-  const bedrooms = `${item.id + 1} bedrooms`;
+  // move isMainFact to feature table
   return (
-    <div className={cn(" flex")}>
-      <div className={cn(" p-2")}>
+    <div className={cn("flex gap-4 p-2")}>
+      <div className={cn("col-span-1")}>
         <Image
-          className={cn(" rounded-lg")}
+          className={cn(" rounded-md")}
           src={preview?.publicUrl!}
           width={150}
           height={100}
           alt={preview?.alt!}
         />
       </div>
-      <div className={cn(" p-2 flex flex-col justify-between")}>
-        <p className=" text-sm font-medium">{item.name}</p>
-        <div className=" flex gap-12">
-          <p className=" text-sm">{price}</p>
-          <div>
-            <p className=" text-sm">{bedrooms}</p>
-            <p className=" text-sm">{bedrooms}</p>
-          </div>
+      <div className={cn("flex-auto grid grid-cols-2 gap-4")}>
+        <div className={cn("col-span-1 flex flex-col gap-1")}>
+          <p className=" text-sm font-medium mb-2">{item.info.name}</p>
+          {item.features.length > 0 ? (
+            <div className={cn("grid grid-cols-2 gap-x-4")}>
+              {item.features.flatMap((feature) => {
+                if (feature.isMainFact) {
+                  return (
+                    <p className="text-sm  text-gray-500">
+                      {feature.displayText || feature.value}
+                    </p>
+                  );
+                }
+              })}
+            </div>
+          ) : (
+            <div className=" inline-flex gap-1">
+              {/* <Siren color="orange" className="h-4 w-4 mt-0" /> */}
+              <span className="text-sm text-gray-500 italic">
+                No main facts have been set for this item.
+              </span>
+            </div>
+          )}
+        </div>
+        <div className={cn("col-span-1 flex flex-col gap-1")}>
+          <p className=" text-sm font-medium">Comment</p>
+          <Textarea placeholder="Highlight a feature that makes this item a good fit for the client.">
+            {item.info.comment}
+          </Textarea>
         </div>
       </div>
     </div>

@@ -1,7 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createSignedUrlAndUploadAction } from "@jamphlet/database";
+import {
+  ItemImage,
+  NewItemImage,
+  createSignedUrlAndUploadAction,
+  revalidateItemPath,
+} from "@jamphlet/database";
 import { useForm } from "react-hook-form";
 import { ZodType, z } from "zod";
 import {
@@ -17,6 +22,10 @@ import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { ChangeEvent, useEffect, useReducer, useState, DragEvent } from "react";
 import { ImageUpload } from "./image-upload";
+import { ItemImageForm } from "./item-image-form";
+import ItemImageView from "./item-image-view";
+import { cn } from "lib/utils";
+import { Separator } from "./ui/separator";
 
 // type ImageFormProps = {
 //   clientId: number;
@@ -82,7 +91,12 @@ type State = FileWithUrl[];
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {}
 
-export function ImageForm() {
+type ImageFormProps = {
+  projectId: number;
+  itemId: number;
+};
+
+export function ImageForm({ projectId, itemId }: ImageFormProps) {
   const fileAmountLimit = 5;
 
   const [imageFile, setFile] = useState<File>();
@@ -139,30 +153,31 @@ export function ImageForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof ImageFormSchema>) => {
-    console.log("Input", values);
+    // console.log("Input", values);
 
-    const itemId = 1;
-    const projectId = 1;
-
-    input.map(async (image) => {
-      console.log("Submitting: ", image);
-      const imagePath = `images/${projectId}/${itemId}/${image?.name}`;
+    const uploads = input.some(async (image) => {
+      const imagePath = `${projectId}/${itemId}/${image?.name}`;
       const form = new FormData();
       form.append("image", image.file);
       form.append("path", imagePath);
 
       const insertedImage = await createSignedUrlAndUploadAction(form);
 
-      if (insertedImage.error || insertedImage.data.error) {
+      if (!insertedImage.error || !insertedImage.data.error) {
+        toast("Image succesfully uploaded", {
+          // description: `${insertedImage}`,
+        });
+        return true;
+      } else {
         toast("Error uploading image.", {
           description: `${insertedImage.error}`,
         });
-      } else {
-        toast("Image succesfully uploaded", {
-          description: `${insertedImage.error}`,
-        });
+        return false;
       }
     });
+
+    // If one upload succeeds, revalidate path
+    uploads && revalidateItemPath(itemId);
   };
 
   // handle drag events
@@ -184,7 +199,6 @@ export function ImageForm() {
     // validate file type
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const files = Array.from(e.dataTransfer.files);
-      //   const validFiles = files.filter((file) => validateFileType(file))
       const validFiles = files;
 
       if (files.length !== validFiles.length) {
@@ -196,11 +210,6 @@ export function ImageForm() {
       try {
         const filesWithUrl = await Promise.all(
           validFiles.map(async (file) => {
-            // const { name, size } = file
-            // const { getUrl, error } = await s3Upload(file)
-
-            // if (!getUrl || error) return { name, size, getUrl: '', error }
-
             const { name, size } = file;
             const getUrl = URL.createObjectURL(file);
 
@@ -240,58 +249,65 @@ export function ImageForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Filename</FormLabel>
-              <FormControl>
-                <Input placeholder="floorplan_01" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        <div
-          className="inset-0 cursor-pointer flex flex-col gap-2"
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-        >
-          <FormField
-            control={form.control}
-            name="images"
-            render={() => (
-              <FormItem>
-                <FormLabel>Image File</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/png , image/jpg , image/jpeg , image/webp"
-                    multiple
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {input.map((image, index) => (
-            <ImageUpload
-              key={index}
-              name={image.name}
-              size={image.size}
-              url={image.getUrl}
-            />
-          ))}
+    <div className="w-full">
+      {input.length !== 0 && (
+        <div className="w-full py-2 flex flex-col gap-2">
+          <Separator />
+          <p className="text-sm font-medium text-center">
+            {input.length} new files selected.
+          </p>
         </div>
-        <Button type="submit">Upload</Button>
-      </form>
-    </Form>
+      )}
+      <div className={cn("grid grid-cols-3 gap-2")}>
+        {input.map((image, index) => {
+          const itemImage: NewItemImage = {
+            itemId: itemId,
+            caption: "",
+            alt: "",
+            path: "",
+            publicUrl: image.getUrl,
+          };
+          return (
+            <div key={index}>
+              <ItemImageView itemImage={itemImage} />
+            </div>
+          );
+        })}
+      </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 max-w-[320px]"
+        >
+          <div
+            className="inset-0 cursor-pointer flex flex-col gap-2"
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          >
+            <FormField
+              control={form.control}
+              name="images"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Image File</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/png , image/jpg , image/jpeg , image/webp"
+                      multiple
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button type="submit">Upload</Button>
+        </form>
+      </Form>
+    </div>
   );
 }

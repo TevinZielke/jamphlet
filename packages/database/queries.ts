@@ -1,9 +1,11 @@
 import { eq } from "drizzle-orm";
 import {
+  CategoryWithFeatures,
   Client,
   ClientWithPamphlet,
   Pamphlet,
   Project,
+  categories,
   clients,
   items,
   pamphlets,
@@ -178,6 +180,49 @@ export async function getClientsWithPamphletsByUserId(userId: number) {
   return result;
 }
 
+// export async function getItemsOnPamphlet(clientId: number) {
+//   const result = db.query.clients.findFirst({
+//     where: eq(clients.id, clientId),
+//     columns: {},
+//     with: {
+//       pamphlets: {
+//         columns: {},
+//         with: {
+//           itemsOnPamphlets: {
+//             with: {
+//               item: {
+//                 with: {
+//                   itemImages: true,
+//                 },
+//               },
+//             },
+//           },
+//         },
+//       },
+//     },
+//   });
+
+//   return result;
+// }
+
+export async function getItemsOnPamphlet(clientId: number) {
+  const result = db.query.pamphlets.findFirst({
+    where: eq(pamphlets.clientId, clientId),
+    with: {
+      itemsOnPamphlets: {
+        with: {
+          item: {
+            with: {
+              itemImages: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  return result;
+}
+
 /**
  * Items
  */
@@ -208,5 +253,18 @@ export async function getItemById(itemId: number) {
     },
   });
 
+  return result;
+}
+
+/** Project */
+export async function getCategoriesWithFeatures(categoryId: number) {
+  const result = await db.query.categories.findMany({
+    where: eq(categories.id, categoryId),
+    with: {
+      features: true,
+    },
+  });
+
+  if (!result) throw new Error();
   return result;
 }

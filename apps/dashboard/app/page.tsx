@@ -5,7 +5,7 @@ import { addKindeUser, getUserByKindeId, NewUser } from "@jamphlet/database";
 
 import styles from "./page.module.css";
 
-const projectId = 1;
+// const projectId = 1;
 const organizationId = 1;
 
 export default async function Page(): Promise<JSX.Element> {
@@ -24,8 +24,9 @@ export default async function Page(): Promise<JSX.Element> {
   }
 
   const dbUser = await getUserByKindeId(kindeUser.id);
+  const projectId = dbUser?.currentProjectId;
 
-  if (!dbUser) {
+  if (projectId && !dbUser) {
     const newUser: NewUser = {
       kindeId: kindeUser.id,
       name: kindeUser.given_name + " " + kindeUser.family_name,
