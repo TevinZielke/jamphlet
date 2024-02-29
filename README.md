@@ -30,11 +30,16 @@ turbo dev
 ```
 
 
-### Useful Commands
+### 5. Useful Commands
 
 - `turbo build` - Build all packages
 - `turbo dev` - Run all packages locally
 - `turbo lint` - Lint all packages
+
+### 6. Further Documentation
+- `Dashboard app` - https://github.com/TevinZielke/jamphlet/tree/main/apps/dashboard
+- `Database package` - https://github.com/TevinZielke/jamphlet/blob/main/packages/database/
+
 
 
 
