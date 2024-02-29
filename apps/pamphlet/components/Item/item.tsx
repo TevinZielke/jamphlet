@@ -1,11 +1,10 @@
 'use client';
 
-import { useMotionValueEvent, useScroll } from 'framer-motion';
-import { FC, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
+import { useInView, useMotionValueEvent, useScroll } from 'framer-motion';
+import { FC, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Navigation, Pagination, A11y } from 'swiper/modules';
-import styles from './residence.module.scss';
+import styles from './item.module.scss';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -17,47 +16,33 @@ import { Container } from '../Container/container';
 import { Heading } from '../Heading/heading';
 import { Button } from '../Button/button';
 import classNames from 'classnames';
+import { Category, FeaturesOnItems, ItemImage } from '@jamphlet/database';
 
-type ImageProps = {
-  src: string;
-  width: number;
-  height: number;
-  alt: string;
+export type ItemProps = {
+  setVisibleItem: (itemId: number | null) => void;
+  visibleItem: any;
+  projectData: any;
+  itemData?: any;
 };
 
-type ResidenceProps = {
-  id: string;
-  title: string;
-  images: ImageProps[];
-  floorplans: ImageProps[];
-  rows: any[]; // Specs for each row
-  visibleResidence: any;
-  setVisibleResidence: any;
-};
+export const Item: FC<ItemProps> = ({ setVisibleItem, visibleItem, projectData, itemData }) => {
+  const itemCategories = projectData;
+  const itemImages = itemData.item.itemImages;
+  const floorplans = itemImages.filter((image: any) => image.path.includes('floorplan'));
+  const galleryImages = itemImages.filter((image: any) => !image.path.includes('floorplan'));
 
-export const Residence: FC<ResidenceProps> = ({
-  id,
-  title,
-  images,
-  floorplans,
-  rows,
-  setVisibleResidence,
-  visibleResidence,
-}) => {
   const { scrollY } = useScroll();
   const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
-  const { ref } = useInView({
-    threshold: 0,
-    rootMargin: '-50%',
-    onChange: (inView, entry) => {
-      if (inView && visibleResidence !== entry.target.id) {
-        // console.log('entry.target.id = ', entry.target.id);
-        setVisibleResidence(entry.target.id);
-      } else {
-        setVisibleResidence(null);
-      }
-    },
-  });
+  const itemRef = useRef(null);
+  const isInView = useInView(itemRef, { margin: '-50%' });
+
+  useEffect(() => {
+    if (isInView && visibleItem !== itemData.item.id) {
+      setVisibleItem(itemData.item.id);
+    } else {
+      setVisibleItem(null);
+    }
+  }, [isInView]);
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setSideBarCollapsed(false);
@@ -72,16 +57,15 @@ export const Residence: FC<ResidenceProps> = ({
   });
 
   return (
-    <div key={id} id={id} className={styles.root} ref={ref}>
-      <Heading subTitle={'Residence'} title={title} />
+    <div key={itemData.item.id} id={itemData.item.id} className={styles.root} ref={itemRef}>
+      <Heading subTitle={'Items'} title={itemData.item.name} />
       <div className={styles.stickyWrapper}>
-        {/* <div className={styles.stickyHeader}>{title}</div> */}
         <div className={gridClass}>
           <div>
             <div className={styles.main}>
               <div className={styles.mainHeader}>
                 <div>
-                  <span>{title}</span>
+                  <span>{itemData.item.name}</span>
                   <Button variant='filled'>Floorplan (1/2)</Button>
                   <Button variant='filled'>Buildingkey (1/2)</Button>
                 </div>
@@ -102,14 +86,14 @@ export const Residence: FC<ResidenceProps> = ({
                   // onSlideChange={() => console.log('slide change')}
                 >
                   {floorplans &&
-                    floorplans.map((image, i: number) => (
+                    floorplans.map((image: any, i: number) => (
                       <SwiperSlide className={styles.slide} key={i}>
                         <Image
-                          key={image.src}
-                          src={image.src}
+                          key={image.id}
+                          src={image.publicUrl}
                           // fill
-                          width={image.width}
-                          height={image.height}
+                          width={666}
+                          height={333}
                           alt={image.alt}
                         />
                       </SwiperSlide>
@@ -121,30 +105,26 @@ export const Residence: FC<ResidenceProps> = ({
           <aside className={styles.aside}>
             <div className={styles.asideHeader}></div>
             <div className={styles.asideContent}>
-              {
-                /** Residences */
-                rows?.length > 0 &&
-                  rows.map((row: any) => (
-                    <div key={row.id} className={styles['row-wrapper']}>
-                      {Object.keys(row).map((key: any, i: number) => (
-                        <div key={i} className={styles['row']}>
-                          <div className={styles['row-title']}>{key}</div>
-                          <div className={styles['row-value']}>
-                            {
-                              /** Rows */
-                              row[key].map((item: any, i: number) => (
-                                <div key={i} className={styles['row-item']}>
-                                  <p className={styles['row-item-label']}>{item.label}</p>
-                                  <p className={styles['row-item-value']}>{item.value}</p>
-                                </div>
-                              ))
-                            }
-                          </div>
-                        </div>
-                      ))}
+              {itemCategories.map((category: Category) => {
+                return (
+                  <div key={category.id} className={styles['row-wrapper']}>
+                    <div className={styles['row']}>
+                      <div className={styles['row-title']}>{category.name}</div>
+                      <div className={styles['row-value']}>
+                        {itemData.item.featuresOnItems.map((feature: FeaturesOnItems) => {
+                          if (feature.categoryId !== category.id) return null;
+                          return (
+                            <div key={feature.featureId} className={styles['row-item']}>
+                              <p className={styles['row-item-label']}>{'feautre label'}</p>
+                              <p className={styles['row-item-value']}>{feature.displayText}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  ))
-              }
+                  </div>
+                );
+              })}
             </div>
           </aside>
         </div>
@@ -158,15 +138,10 @@ export const Residence: FC<ResidenceProps> = ({
             // onSwiper={(swiper) => console.log(swiper)}
             // onSlideChange={() => console.log('slide change')}
           >
-            {images?.length > 0 &&
-              images.map((image, i) => (
-                <SwiperSlide className={styles.slide} key={i}>
-                  <Image
-                    src={image.src}
-                    width={image.width}
-                    height={image.height}
-                    alt={image.alt}
-                  />
+            {galleryImages?.length > 0 &&
+              galleryImages.map((image: ItemImage) => (
+                <SwiperSlide className={styles.slide} key={image.id}>
+                  <Image src={image.publicUrl} width={666} height={333} alt={image.alt} />
                 </SwiperSlide>
               ))}
           </Swiper>

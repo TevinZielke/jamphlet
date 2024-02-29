@@ -1,3 +1,4 @@
+import { ProjectStructure } from "@/components/project-structure";
 import { ProjectView } from "@/components/project-view";
 import {
   getProjectAction,
@@ -24,6 +25,8 @@ export default async function Project() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <ProjectView projectId={projectId} />
+      Hello
+      <ProjectStructure projectId={projectId} />
     </HydrationBoundary>
   );
 }

@@ -1,19 +1,25 @@
+'use client';
 import { FC, useEffect, useState } from 'react';
 import styles from './navigation.module.scss';
 import Link from 'next/link';
 import classNames from 'classnames';
+import { Section } from '@jamphlet/database';
+import { useSectionAtomValue } from '@/utils/atoms/use-section';
+import { useNavigationAtomValue } from '@/utils/atoms/use-navigation';
 
-interface NavigationProps {
-  sections: any;
+export type NavigationProps = {
+  sections: Section[];
   activeSection: string;
   visible: boolean;
-}
+};
 
-export const Navigation: FC<NavigationProps> = ({ sections, activeSection, visible }) => {
+export const Navigation: FC<NavigationProps> = ({ sections }) => {
+  const activeSection = useSectionAtomValue();
+  const isVisible = useNavigationAtomValue();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const rootClass = classNames(styles.root, {
-    [styles['visible']]: visible,
+    [styles['visible']]: isVisible,
     [styles['show-mobile-menu']]: showMobileMenu,
   });
 
@@ -32,19 +38,19 @@ export const Navigation: FC<NavigationProps> = ({ sections, activeSection, visib
       </button>
       <nav className={rootClass}>
         <ul className={styles.list}>
-          {sections.map((item: any) => {
+          {sections.map((section, i: number) => {
             const itemClass = classNames(styles.item, {
-              [styles['active']]: activeSection === item.id,
+              [styles['active']]: activeSection === section.name,
             });
 
             return (
-              <li className={itemClass} key={item.id}>
+              <li className={itemClass} key={i}>
                 <Link
-                  href={`#${item.id}`}
+                  href={`#${section.name}`}
                   className={styles.link}
                   onClick={() => handleMenuClick()}
                 >
-                  {item.title}
+                  {section.name}
                 </Link>
               </li>
             );

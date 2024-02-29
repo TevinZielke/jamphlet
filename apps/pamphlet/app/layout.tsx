@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '../styles/globals.scss';
+import { getProjectAction } from '@jamphlet/database';
 
 const inter = Inter({
   subsets: ['latin'],

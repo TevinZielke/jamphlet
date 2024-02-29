@@ -6,6 +6,7 @@ import {
   categories,
   db,
   features,
+  projectStructures,
   projects,
 } from "..";
 import { revalidatePath } from "next/cache";
@@ -32,10 +33,40 @@ export async function getProjectAction(projectId: number) {
     with: {
       projectImages: true,
       usersOnProjects: true,
+      componentsOnProjects: {
+        with: {
+          component: true,
+        },
+      },
+      projectStructure: true,
+      // sections: {
+      //   with: {
+      //     components: true,
+      //   },
+      // },
     },
   });
 
   return result;
+}
+
+/**
+ * Project Structure
+ */
+export async function addProjectStructure(values: any) {
+  // const entry = {
+  //   json: values,
+  //   projectId: "asd",
+  // };
+  const insertedProjectStructure = await db
+    .insert(projectStructures)
+    .values(values)
+    .returning({
+      insertedProjectStructure: projectStructures.projectId,
+    });
+  revalidatePath("/project");
+
+  return insertedProjectStructure;
 }
 
 /**

@@ -20,11 +20,16 @@ const projectNavLinks = [
   },
   {
     id: 2,
+    name: "Structure",
+    value: "/project/structure",
+  },
+  {
+    id: 3,
     name: "Media",
     value: "/project/media",
   },
   {
-    id: 3,
+    id: 4,
     name: "Members",
     value: "/project/members",
   },

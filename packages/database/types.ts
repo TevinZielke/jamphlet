@@ -12,6 +12,7 @@ import {
   itemsOnPamphlets,
   organizations,
   pamphlets,
+  projectImages,
   projects,
   users,
   usersOnOrganizations,
@@ -19,6 +20,7 @@ import {
 } from "./schema";
 import {
   getCategoriesWithFeatures,
+  getClientAction,
   getClientPreviewsByUserIdAction,
   getClientsWithPamphletsByUserId,
   getItemsByProjectId,
@@ -91,7 +93,10 @@ export const insertClientSchema = createInsertSchema(clients, {
     .string()
     .max(500, { message: "Note can't be longer than 500 characters." }),
 });
-// Full client
+// Full client (for Jamphlet app)
+export type ClientData = Awaited<ReturnType<typeof getClientAction>>;
+
+// Full clients
 export type ClientsWithPamphlet = Awaited<
   ReturnType<typeof getClientsWithPamphletsByUserId>
 >;
@@ -140,6 +145,21 @@ export type ItemPreviewApiResponse = {
 };
 
 // Images
+export type ProjectImage = InferSelectModel<typeof projectImages>;
+export type NewProjectImage = InferInsertModel<typeof projectImages>;
+// export const insertProjectImageSchema = createInsertSchema(projectImages, {
+//   caption: z
+//     .string()
+//     .min(1, { message: "Caption must be at least one character." })
+//     .max(64, { message: "Caption must be 64 characters or fewer." }),
+//   alt: z
+//     .string()
+//     .min(1, { message: "Alt text must be at least one character." })
+//     .max(140, { message: "Alt text must be 140 characters of fewer." }),
+//   itemId: z.number().nonnegative(),
+//   path: z.string(),
+//   publicUrl: z.string(),
+// });
 export type ItemImage = InferSelectModel<typeof itemImages>;
 export type NewItemImage = InferInsertModel<typeof itemImages>;
 export const insertItemImageSchema = createInsertSchema(itemImages, {
@@ -159,3 +179,71 @@ export const insertItemImageSchema = createInsertSchema(itemImages, {
 export type Pamphlet = InferSelectModel<typeof pamphlets>;
 export type NewPamphlet = InferInsertModel<typeof pamphlets>;
 export const insertPamphletSchema = createInsertSchema(pamphlets, {});
+
+/**
+ * Project Structure
+ */
+
+export type ProjectStructureConfig = {
+  sections: Section[];
+};
+
+export type Section = {
+  name: string;
+  subtitle: string;
+  order: number;
+  components: Component[];
+};
+
+export type Component =
+  | ItemsComponent
+  | ComparisonComponent
+  | ImageComponent
+  | StickyTextComponent
+  | TextImageComponent
+  | ImageComponent
+  | TextComponent;
+
+export type ComparisonComponent = {
+  type: "comparisonComponent";
+  order: number;
+  data?: ItemSelection;
+};
+
+export type ItemsComponent = {
+  type: "itemsComponent";
+  order: number;
+  data?: ItemSelection;
+};
+
+export type StickyTextComponent = {
+  type: "stickyTextComponent";
+  text: string;
+  order: number;
+  images: ImageComponent[];
+};
+
+export type TextImageComponent = {
+  type: "textImageComponent";
+  order: number;
+  title: string;
+  text: string;
+  textRightImageLeft: boolean;
+  image: ImageComponent;
+};
+
+export type ImageComponent = {
+  type: "imageComponent";
+  order: number;
+  publicUrl: string;
+  //   path: string;
+  alt: string;
+  caption: string;
+  //   id?: number | undefined;
+};
+
+export type TextComponent = {
+  type: "textComponent";
+  text: string;
+  order: number;
+};

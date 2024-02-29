@@ -2,7 +2,7 @@ import { ClientView } from "@/components/client-view";
 import { getClientAction } from "@jamphlet/database";
 import {
   HydrationBoundary,
-  QueryClient,
+  // QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
 import getQueryClient from "lib/getQueryClient";

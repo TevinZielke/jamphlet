@@ -1,70 +1,34 @@
-// import { ResidenceProps } from '@/app/[hash]/page';
+'use client';
 import Image from 'next/image';
 import { FC, useState } from 'react';
 import styles from './comparison.module.scss';
 import { AccordionItem, AccordionRoot } from '../Accordion/accordion';
+import { Category, ItemSelection } from '@jamphlet/database';
 
-interface ComparisonProps {
-  data?: any;
-}
+export type ComparisonProps = {
+  id: number;
+  projectData: any;
+  itemData?: ItemSelection;
+};
 
-export const Comparison: FC<ComparisonProps> = ({ data }) => {
-  const residences = data;
-  const [selection, setSelection] = useState<any>([residences[0], residences[1]]);
+export const Comparison: FC<ComparisonProps> = ({ projectData, itemData, id }) => {
+  const itemCategories = projectData;
+  const items = itemData?.itemsOnPamphlets;
+  if (!itemCategories || !items) return <p>No project data</p>;
 
-  // Initialize an empty object to store aggregated data
-  const aggregatedData: any = {};
+  const [selection, setSelection] = useState<any>([items?.at(2), items?.at(2)]);
 
-  // Loop through each residence
-  selection &&
-    selection.forEach((residence: any) => {
-      // Loop through each row in the residence
-      residence.rows.forEach((row: any) => {
-        // Loop through each key (mainFacts, Pricing, Rooms, etc.) in the row
-        Object.keys(row).forEach((key) => {
-          // If the key doesn't exist in the aggregatedData object, create it as an empty array
-          if (!aggregatedData[key]) {
-            aggregatedData[key] = [];
-          }
-
-          // Find the corresponding entry for the current residence ID
-          const entry = aggregatedData[key].find((item: any) => item[residence.id]);
-
-          // If the entry doesn't exist, create it and push the data
-          if (!entry) {
-            const newEntry = {
-              [residence.id]: row[key],
-            };
-            aggregatedData[key].push(newEntry);
-          } else {
-            // If the entry exists, push the data to the existing residence's array
-            entry[residence.id].push(...row[key]);
-          }
-        });
-      });
-    });
-
-  // convert the aggregatedData object to the specified structure
-  const newArray = Object.keys(aggregatedData).map((key) => {
-    return {
-      [key]: aggregatedData[key],
-    };
-  });
-
-  const updateSelection = (position: number, residenceId: string) => {
-    // get residence by id
-    const residence = residences.find((item: any) => item.id === residenceId);
-
-    // update the selection with the residence at the specified position
+  const updateSelection = (position: number, itemId: string) => {
+    // get item by id
+    const item = items.find((item: any) => item.id === itemId);
+    // update the selection with the item at the specified position
     const updatedSelection = [...selection];
-    updatedSelection[position] = residence;
+    updatedSelection[position] = item;
     setSelection(updatedSelection);
   };
 
-  // console.log('selection = ', selection);
-
   return (
-    <div className={styles.root}>
+    <div className={styles.root} key={id}>
       {/** Comparison */}
       <div className={styles['horizontal-wrapper']}>
         {/**
@@ -76,20 +40,22 @@ export const Comparison: FC<ComparisonProps> = ({ data }) => {
               <div key={i}>
                 <select
                   className={styles.select}
-                  value={selection[i]?.id}
+                  value={selection[i]?.item.name}
                   onChange={(e) => updateSelection(i, e.target.value)}
                 >
-                  {residences.map((residence: any, i: number) => {
-                    // disable the selected residences
-                    const disabled = selection.some((item: any) => item.id === residence.id);
+                  {items.map((item: any, i: number) => {
+                    // disable the selected items
+                    const disabled = selection.some(
+                      (disabledItem: any) => item.id === disabledItem.id
+                    );
                     return (
                       <option
-                        value={residence.id}
-                        // selected={selection[i]?.id}
+                        key={i}
+                        value={item.item.name}
                         disabled={disabled}
                         aria-disabled={disabled}
                       >
-                        {residence.title}
+                        {item.item.name}
                       </option>
                     );
                   })}
@@ -99,33 +65,39 @@ export const Comparison: FC<ComparisonProps> = ({ data }) => {
         </div>
 
         {/**
-         * floorplans
+         * Images
          * */}
         <div className={`${styles.row} ${styles.floorplans}`}>
           {selection?.length > 0 &&
-            selection.map((selectionItem: any, i: number) => (
-              <div key={i} className={styles.col}>
-                {selectionItem.floorplans && (
-                  <Image
-                    src={selectionItem.floorplans[0]?.src}
-                    alt={selectionItem.floorplans[0]?.alt}
-                    width={selectionItem.floorplans[0]?.width}
-                    height={selectionItem.floorplans[0]?.height}
-                  />
-                )}
-              </div>
-            ))}
+            selection.map((selectionItem: any, i: number) => {
+              const itemImages = selectionItem.item.itemImages;
+              const floorplans = itemImages.filter((image: any) =>
+                image.path.includes('floorplan')
+              );
+              return (
+                <div key={i} className={styles.col}>
+                  {floorplans && (
+                    <Image
+                      src={floorplans.at(0).publicUrl}
+                      alt={floorplans.at(0).alt}
+                      width={666}
+                      height={333}
+                    />
+                  )}
+                </div>
+              );
+            })}
         </div>
 
         {/**
-         * jump to residence
+         * jump to item
          * */}
         <div className={styles.row}>
           {selection?.length > 0 &&
             // TODO: add ButtonLink component
             selection.map((selectionItem: any, i: number) => (
               <div key={i} className={styles.col}>
-                <a href={`#${selectionItem.id}`}>jump to residence</a>
+                <a href={`#${selectionItem.id}`}>Jump to item</a>
               </div>
             ))}
         </div>
@@ -134,39 +106,61 @@ export const Comparison: FC<ComparisonProps> = ({ data }) => {
          * rows
          * */}
         <div>
-          {/* Render the transformed data rows */}
-          {newArray.map((item: any, i: number) => (
-            <div key={i} className={styles['row-outer']}>
-              <AccordionRoot type='single' collapsible width={'100vw'}>
-                {/* Render each category (mainFacts, Pricing, Rooms, etc.) */}
-                {Object.keys(item).map((category) => (
-                  <AccordionItem title={category} value={category}>
-                    <div key={category} className={styles['row-inner']}>
-                      {/* Render data for each residence within the category */}
-                      {item[category].map((residenceData: any, i: number) => (
-                        <div key={i}>
-                          <ul>
-                            {/* Render label-value pairs for each residence */}
-                            {
-                              // @ts-ignore
-                              residenceData[Object.keys(residenceData)].map(
-                                (data: any, i: number) => (
+          <div key={0} className={styles['row-outer']}>
+            <AccordionRoot type='single' collapsible width={'100vw'}>
+              {/* Render each category (mainFacts, Pricing, Rooms, etc.) */}
+              <AccordionItem title={'Main Facts'} value={'mainFacts'} key={-1}>
+                <div key={-1} className={styles['row-inner']}>
+                  {selection.map((selectionItem: any, i: number) => {
+                    const features = selectionItem.item.featuresOnItems;
+                    const mainFacts = features.filter((feature: any) => feature.isMainFact);
+                    return (
+                      <div key={i}>
+                        <ul>
+                          {mainFacts.map((mainFact: any, i: number) => {
+                            return (
+                              <li key={i}>
+                                {/* Label: {data.label}, Value:  */}
+                                {mainFact.displayText}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    );
+                  })}
+                </div>
+              </AccordionItem>
+              {itemCategories.map((category: Category) => {
+                return (
+                  <AccordionItem title={category.name!} value={category.name!} key={category.id}>
+                    <div className={styles['row-inner']}>
+                      {selection.map((selectionItem: any, i: number) => {
+                        const features = selectionItem.item.featuresOnItems;
+                        const mainFacts = features.filter(
+                          (feature: any) => feature.categoryId === category.id
+                        );
+                        return (
+                          <div key={i}>
+                            <ul>
+                              {mainFacts.map((mainFact: any, i: number) => {
+                                return (
                                   <li key={i}>
                                     {/* Label: {data.label}, Value:  */}
-                                    {data.value}
+                                    {mainFact.displayText}
                                   </li>
-                                )
-                              )
-                            }
-                          </ul>
-                        </div>
-                      ))}
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        );
+                      })}
                     </div>
                   </AccordionItem>
-                ))}
-              </AccordionRoot>
-            </div>
-          ))}
+                );
+              })}
+            </AccordionRoot>
+          </div>
         </div>
       </div>
     </div>

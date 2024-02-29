@@ -265,6 +265,9 @@ importers:
       framer-motion:
         specifier: ^10.16.16
         version: 10.18.0(react-dom@18.2.0)(react@18.2.0)
+      jotai:
+        specifier: ^2.6.1
+        version: 2.6.1(@types/react@18.2.8)(react@18.2.0)
       next:
         specifier: ^14.0.4
         version: 14.0.4(react-dom@18.2.0)(react@18.2.0)(sass@1.70.0)

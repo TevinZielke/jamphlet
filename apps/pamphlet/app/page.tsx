@@ -3,6 +3,7 @@ import supabase from '../utils/supabase';
 
 import { Container } from '@/components/Container/container';
 import { residences } from '@/data';
+import { getClientAction, getProjectAction } from '@jamphlet/database';
 
 export const revalidate = 0;
 

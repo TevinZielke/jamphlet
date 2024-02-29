@@ -3,16 +3,17 @@ import Image from 'next/image';
 import styles from './stickyText.module.scss';
 import { Container } from '../Container/container';
 
-interface StickyTextProps {
+export type StickyTextProps = {
+  id: number;
   text: string;
   images: any[];
-}
+};
 
-export const StickyText: FC<StickyTextProps> = ({ text, images }) => {
+export const StickyText: FC<StickyTextProps> = ({ id, text, images }) => {
   if (!text || !images) return null;
 
   return (
-    <Container>
+    <Container key={id}>
       <div className={styles.grid}>
         <div className={styles.stickyOuter}>
           <div className={styles.stickyInner}>
@@ -23,11 +24,11 @@ export const StickyText: FC<StickyTextProps> = ({ text, images }) => {
           {images.map((image: any, i: number) => (
             <div className={styles.imageInner} key={i}>
               <Image
-                src={image.src}
+                src={image.publicUrl}
                 alt={image.alt}
                 // sizes='100vw'
-                width={image.width}
-                height={image.height}
+                width={666}
+                height={333}
               />
             </div>
           ))}

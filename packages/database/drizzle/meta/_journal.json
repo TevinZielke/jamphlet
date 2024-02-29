@@ -190,6 +190,34 @@
       "when": 1707463054775,
       "tag": "0026_fantastic_barracuda",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1709047754209,
+      "tag": "0027_regular_sabretooth",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "5",
+      "when": 1709048305393,
+      "tag": "0028_ambitious_george_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "5",
+      "when": 1709072578338,
+      "tag": "0029_flashy_wrecking_crew",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "5",
+      "when": 1709124338155,
+      "tag": "0030_faithful_wiccan",
+      "breakpoints": true
     }
   ]
 }
