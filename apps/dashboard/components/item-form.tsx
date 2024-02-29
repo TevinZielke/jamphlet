@@ -10,6 +10,7 @@ import { Label } from "./ui/label";
 import { ErrorMessage } from "@hookform/error-message";
 import {
   FeaturesOnItems,
+  NewFeaturesOnItems,
   NewItemFeature,
   updateItemFeatures,
 } from "@jamphlet/database";
@@ -54,15 +55,50 @@ export function ItemForm({ item, formCategories }: ItemFormProps) {
     formState: { isSubmitting, errors },
   } = formMethods;
 
+  const featureList = [
+    {
+      id: 1,
+      categoryId: 1,
+    },
+    {
+      id: 2,
+      categoryId: 2,
+    },
+    {
+      id: 3,
+      categoryId: 2,
+    },
+    {
+      id: 4,
+      categoryId: 4,
+    },
+    {
+      id: 5,
+      categoryId: 5,
+    },
+    {
+      id: 6,
+      categoryId: 3,
+    },
+    {
+      id: 7,
+      categoryId: 2,
+    },
+  ];
+
   const onSubmit = async (data: FieldValues) => {
-    let newItemFeatures: NewItemFeature[] = [];
+    let newItemFeatures: NewFeaturesOnItems[] = [];
 
     Object.entries(data).forEach(([key, value]) => {
       const featureId = +key;
-      const itemInput: NewItemFeature = {
+      const featureCategoryId = featureList.find(
+        (feature) => feature.id === featureId
+      )?.categoryId!;
+      const itemInput: NewFeaturesOnItems = {
         itemId: item.id,
         featureId: featureId,
         value: value,
+        categoryId: featureCategoryId,
       };
       newItemFeatures.push(itemInput);
     });
