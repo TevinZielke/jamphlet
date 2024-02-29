@@ -1,0 +1,21 @@
+.root {
+  text-align: center;
+
+  p {
+    margin-bottom: 10px;
+    text-align: center;
+    // font-size: 14px;
+  }
+
+  .heading {
+    // TODO: @include heading-large;
+
+    text-align: center;
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+    line-height: 1.2;
+    margin: 0 auto 80px;
+    line-height: 1.2;
+    max-width: 80vw;
+  }
+}

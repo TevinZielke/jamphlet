@@ -1,0 +1,31 @@
+@mixin outline($theme) {
+  @if ($theme == 'light') {
+    // outline: 2px solid var(--theme-light-state-focus);
+    outline: 2px solid #000;
+  } @else {
+    // outline: 2px solid var(---theme-dark-state-focus);
+    outline: 2px solid #fff;
+  }
+
+  outline-offset: 2px;
+}
+
+// Read more here: https://www.tpgi.com/focus-visible-and-backwards-compatibility/
+@mixin focus($theme: 'light') {
+  &:focus {
+    @include outline($theme);
+  }
+
+  @supports selector(:focus-visible) {
+    &:focus {
+      /* revert all the above focus styles */
+      outline: revert;
+      outline-offset: revert;
+    }
+
+    &:focus-visible {
+      /* and then reapply the styles here instead */
+      @include outline($theme);
+    }
+  }
+}

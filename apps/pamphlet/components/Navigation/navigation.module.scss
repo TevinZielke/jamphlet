@@ -1,0 +1,105 @@
+@import '../../styles/mixins.scss';
+
+.root {
+  z-index: 10;
+  position: fixed;
+  height: 100dvh;
+  width: 100vw;
+  background: var(--color-foreground);
+  opacity: 0;
+  top: 0;
+  transform: translate3d(100%, 0, 0);
+  transition: opacity 0.5s var(--cubic), transform 0.5s var(--cubic);
+
+  @include m {
+    width: auto;
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    height: auto;
+    top: auto;
+    left: 50%;
+    bottom: 16px;
+    padding: 6px;
+    transform: translate3d(-50%, 100%, 0);
+    background: #00000088;
+  }
+
+  &.show-mobile-menu {
+    transform: translate3d(0, 0, 0);
+
+    @include m {
+      transform: translate3d(-50%, 100%, 0);
+    }
+  }
+
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+
+    @include m {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  @include m {
+    flex-direction: row;
+  }
+}
+
+.item {
+  list-style: none;
+  display: inline-block;
+
+  &.active {
+    .link {
+      background-color: var(--color-text);
+      opacity: 1;
+    }
+  }
+}
+
+.link {
+  color: var(--color-text);
+  display: inline-block;
+  padding: 18px 22px;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+
+  @include m {
+    color: white;
+  }
+
+  &:hover {
+    background-color: var(--color-text);
+  }
+
+  &:not(:last-child) {
+    margin-right: var(--space-xs);
+  }
+}
+
+.burger {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 200;
+  width: 100px;
+  height: 100px;
+  border: 1px solid red;
+  color: black;
+
+  @include m {
+    display: none;
+  }
+}

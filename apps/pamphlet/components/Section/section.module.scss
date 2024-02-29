@@ -1,0 +1,36 @@
+.section {
+  position: relative;
+  background-color: white;
+
+  &--top-xl {
+    padding-top: var(--space-fluid-xl);
+  }
+
+  &--top-l {
+    padding-top: var(--space-l);
+  }
+
+  &--top-m {
+    padding-top: var(--space-m);
+  }
+
+  &--top-s {
+    padding-top: var(--space-s);
+  }
+
+  &--bottom-xl {
+    padding-bottom: var(--space-fluid-xl);
+  }
+
+  &--bottom-l {
+    padding-bottom: var(--space-l);
+  }
+
+  &--bottom-m {
+    padding-bottom: var(--space-m);
+  }
+
+  &--bottom-s {
+    padding-bottom: var(--space-s);
+  }
+}

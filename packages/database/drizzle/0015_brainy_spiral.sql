@@ -1,0 +1,1 @@
+ALTER TABLE "pamphlets" ALTER COLUMN "personalMessage" SET NOT NULL;

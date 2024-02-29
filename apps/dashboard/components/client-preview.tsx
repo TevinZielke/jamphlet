@@ -1,39 +1,27 @@
 "use client";
 
-import { getClientsWithPamphletsByUserId } from "@jamphlet/database";
-import { useQuery } from "@tanstack/react-query";
-import { useClient, useSetClient } from "lib/use-client";
+import { ClientWithPamphlet } from "@jamphlet/database";
+import { useClientAtom } from "lib/use-client";
 import { cn } from "lib/utils";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import Link from "next/link";
+import { UserCheck } from "lucide-react";
 
-// type ClientPreviewProps = {
-//   id: number;
-//   name: string;
-//   email: string;
-//   status: string;
-//   body: string;
-//   lastModified: string;
-// };
+type ClientPreviewProps = {
+  inputData: ClientWithPamphlet;
+};
 
-// TODO: change type
-export function ClientPreview(inputData: any) {
-  const client = inputData.client;
-  const [clientAtom, setClientAtom] = useClient();
+export function ClientPreview({ inputData }: ClientPreviewProps) {
+  const client = inputData;
+  const [clientAtom, setClientAtom] = useClientAtom();
 
-  const testUserId = 2;
-
-  const { data } = useQuery({
-    queryKey: ["clientsWithPamphlets", testUserId],
-    queryFn: () => getClientsWithPamphletsByUserId(testUserId),
-  });
-
-  if (!data) return null;
+  if (!client) return null;
   return (
-    <div>
+    <Link href={`/clients/${client.id}`} className=" w-full py-1">
       <button
         key={client.id}
         className={cn(
-          "flex flex-col items-start w-full gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
+          "flex flex-col items-start w-full gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent ",
           clientAtom === client.id && "bg-muted"
         )}
         onClick={() => setClientAtom(client.id)}
@@ -42,8 +30,8 @@ export function ClientPreview(inputData: any) {
           <div className="flex items-center">
             <div className="flex items-center gap-2">
               <div className="font-semibold">{client.name}</div>
-              {!client.pamphlets.at(0)?.itemsOnPamphlets.at(0)
-                ?.seenByClient && (
+              <UserCheck color="grey" className={cn("h-4 w-4 mb-1")} />
+              {client.pamphlets.at(0)?.itemsOnPamphlets.at(0)?.seenByClient && (
                 <span className="flex h-2 w-2 rounded-full bg-blue-600" />
               )}
             </div>
@@ -66,6 +54,6 @@ export function ClientPreview(inputData: any) {
           {client.pamphlets.at(0)?.personalMessage?.substring(0, 300)}
         </div>
       </button>
-    </div>
+    </Link>
   );
 }

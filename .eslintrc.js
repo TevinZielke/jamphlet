@@ -7,4 +7,12 @@ module.exports = {
   parserOptions: {
     project: true,
   },
+  overrides: [
+    {
+      files: ["*.ts", "*.tsx"],
+      rules: {
+        "no-undef": "off",
+      },
+    },
+  ],
 };

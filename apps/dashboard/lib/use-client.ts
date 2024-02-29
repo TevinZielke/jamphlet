@@ -6,12 +6,12 @@ import { atom, useAtom, useSetAtom } from "jotai";
 //   selected: Client["id"];
 // };
 
-const configAtom = atom(0);
+const clientAtom = atom(0);
 
-export function useClient() {
-  return useAtom(configAtom);
+export function useClientAtom() {
+  return useAtom(clientAtom);
 }
 
-export function useSetClient() {
-  return useSetAtom(configAtom);
+export function useSetClientAtom() {
+  return useSetAtom(clientAtom);
 }

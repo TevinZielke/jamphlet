@@ -1,6 +1,7 @@
 {
   "extends": "@jamphlet/typescript-config/nextjs.json",
   "compilerOptions": {
+    "lib": ["DOM"],
     "baseUrl": ".",
     "paths": {
       "@/components/*": ["components/*"],

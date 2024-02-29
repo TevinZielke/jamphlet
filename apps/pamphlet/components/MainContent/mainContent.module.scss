@@ -1,0 +1,22 @@
+.container {
+  max-width: var(--max-container-width);
+  margin: 0 auto;
+  padding-right: var(--outer-gutter);
+  padding-left: var(--outer-gutter);
+
+  &.extended {
+    max-width: none;
+    padding-right: var(--outer-gutter-extended);
+    padding-left: var(--outer-gutter-extended);
+  }
+
+  & + .container {
+    margin-top: var(--space-fluid-l);
+  }
+}
+
+.full-bleed {
+  padding-right: 0;
+  padding-left: 0;
+  max-width: none;
+}

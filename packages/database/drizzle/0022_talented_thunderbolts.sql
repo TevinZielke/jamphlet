@@ -1,0 +1,1 @@
+ALTER TABLE "item_images" ADD COLUMN "caption" text;

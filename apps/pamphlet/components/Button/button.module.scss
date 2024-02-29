@@ -1,0 +1,20 @@
+// @import '../../styles/button.scss';
+
+.root {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+// .root {
+// TODO: add styles
+//   @include button;
+
+//   &:disabled,
+//   &[disabled] {
+//     cursor: not-allowed;
+//     pointer-events: none;
+//     opacity: 0.75;
+//   }
+// }
