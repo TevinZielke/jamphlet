@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 const fetchSize = 15;
 
 async function getClients() {
-  const projectId = 1;
+  // const projectId = 1;
   const organizationId = 1;
 
   const isLoggedIn = await authenticateUser();
@@ -51,8 +51,9 @@ async function getClients() {
   }
 
   const dbUser = await getUserByKindeId(kindeUser.id);
+  const projectId = dbUser?.currentProjectId;
 
-  if (!dbUser) {
+  if (projectId && !dbUser) {
     const newUser: NewUser = {
       kindeId: kindeUser.id,
       name: kindeUser.given_name + " " + kindeUser.family_name,
@@ -74,6 +75,8 @@ async function getClients() {
       desc: true,
     },
   ];
+
+  if (!projectId) return <p>No project available.</p>;
 
   await queryClient.prefetchInfiniteQuery<ClientApiResponse>({
     queryKey: ["clients", dbUser.id, sorting],

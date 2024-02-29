@@ -13,13 +13,14 @@ import { ProjectForm } from "./project-form";
 
 type ProjectViewProps = {
   projectId: number;
+  projectName: string;
 };
 
 function confirm() {
   // reset item schema
 }
 
-export function ProjectView({ projectId }: ProjectViewProps) {
+export function ProjectView({ projectId, projectName }: ProjectViewProps) {
   const { data: project } = useQuery({
     queryKey: ["project-form-schema", projectId],
     queryFn: () => getProjectFormSchemaAction(projectId),
@@ -43,7 +44,11 @@ export function ProjectView({ projectId }: ProjectViewProps) {
         </div>
         <Separator />
         <div className="flex justify-center p-2">
-          <ProjectForm categories={categories} />
+          <ProjectForm
+            categories={categories}
+            projectId={projectId}
+            projectName={projectName}
+          />
         </div>
       </div>
     </ScrollArea>

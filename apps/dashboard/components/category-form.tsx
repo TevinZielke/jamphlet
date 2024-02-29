@@ -27,11 +27,10 @@ import { Button } from "./ui/button";
 
 type CategoryFormProps = {
   projectId: number;
+  projectName: string;
 };
 
-const projectName = "St. Beaux";
-
-export function CategoryForm({ projectId }: CategoryFormProps) {
+export function CategoryForm({ projectId, projectName }: CategoryFormProps) {
   const form = useForm<z.infer<typeof insertCategorySchema>>({
     resolver: zodResolver(insertCategorySchema),
     defaultValues: {

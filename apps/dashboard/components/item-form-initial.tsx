@@ -34,13 +34,14 @@ import {
   CardTitle,
 } from "./ui/card";
 import { redirect } from "next/navigation";
-import { useItemAtom } from "lib/use-item";
+// import { useItemAtom } from "lib/use-item";
 
 type ItemFormDialogProps = {
   text: string;
+  projectId: number;
 };
 
-export function ItemFormDialog({ text }: ItemFormDialogProps) {
+export function ItemFormDialog({ text, projectId }: ItemFormDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild className=" hover:cursor-pointer">
@@ -53,13 +54,15 @@ export function ItemFormDialog({ text }: ItemFormDialogProps) {
             Add a new item to your list. You can still make changes later on.
           </DialogDescription>
         </DialogHeader>
-        <ItemFormInitial wrapper="dialog" />
+        <ItemFormInitial wrapper="dialog" projectId={projectId} />
       </DialogContent>
     </Dialog>
   );
 }
-
-export function ItemFormCard() {
+type ItemFormCardProps = {
+  projectId: number;
+};
+export function ItemFormCard({ projectId }: ItemFormCardProps) {
   return (
     <Card className="w-[440px]">
       <CardHeader>
@@ -69,7 +72,7 @@ export function ItemFormCard() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ItemFormInitial wrapper="card" />
+        <ItemFormInitial wrapper="card" projectId={projectId} />
       </CardContent>
     </Card>
   );
@@ -77,15 +80,16 @@ export function ItemFormCard() {
 
 type ItemFormProps = {
   wrapper: "dialog" | "card";
+  projectId: number;
 };
 
-export function ItemFormInitial({ wrapper }: ItemFormProps) {
+export function ItemFormInitial({ wrapper, projectId }: ItemFormProps) {
   const form = useForm<z.infer<typeof insertItemSchema>>({
     resolver: zodResolver(insertItemSchema),
     defaultValues: {
       name: "",
       code: "",
-      projectId: 1,
+      projectId: projectId,
     },
     mode: "onChange",
   });

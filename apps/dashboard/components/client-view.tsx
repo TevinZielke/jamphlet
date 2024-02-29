@@ -16,9 +16,10 @@ import { useSelectionAtom } from "lib/use-selection";
 
 type ClientViewProps = {
   clientId: number;
+  projectId: number;
 };
 
-export function ClientView({ clientId }: ClientViewProps) {
+export function ClientView({ clientId, projectId }: ClientViewProps) {
   // const [clientId, setClientId] = useClientAtom();
 
   // const confirm = async () => {
@@ -36,8 +37,6 @@ export function ClientView({ clientId }: ClientViewProps) {
   // };
 
   // const client = data?.find((c) => c.id === clientId);
-
-  const projectId = 1;
 
   const { data: items } = useQuery({
     queryKey: ["items", projectId],
@@ -59,6 +58,7 @@ export function ClientView({ clientId }: ClientViewProps) {
 
   const formDefaultValues: PamphletFormDefaultValues = {
     clientId: clientId,
+    clientName: client.name,
     userId: client?.userId,
     personalMessage: pamphlet?.personalMessage,
   };
@@ -123,7 +123,10 @@ export function ClientView({ clientId }: ClientViewProps) {
 
         <Separator />
         <div className=" p-2">
-          <PamphletForm defaultValues={formDefaultValues} />
+          <PamphletForm
+            defaultValues={formDefaultValues}
+            projectId={projectId}
+          />
         </div>
       </div>
     </ScrollArea>

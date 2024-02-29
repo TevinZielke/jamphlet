@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { authenticateUser, getAuthenticatedUser } from "@jamphlet/auth";
-import { getUserByKindeId } from "@jamphlet/database";
+import { getProjectAction, getUserByKindeId } from "@jamphlet/database";
 
 import { Provider as JotaiProvider } from "jotai";
 import { FileBox, Image, Users } from "lucide-react";
@@ -53,8 +53,14 @@ export default async function ItemsLayout({
   }
 
   const dbUser = await getUserByKindeId(kindeUser.id);
-  if (!dbUser?.id) {
+  if (!dbUser?.id || !dbUser.currentProjectId) {
     throw new Error("Error fetching dbUser.");
+  }
+
+  const project = await getProjectAction(dbUser.currentProjectId);
+
+  if (!project) {
+    throw new Error("Error fetching project.");
   }
 
   return (
@@ -71,7 +77,7 @@ export default async function ItemsLayout({
             className=" flex flex-col"
           >
             <div className=" flex justify-between items-center px-2 py-2">
-              <h1 className="text-xl font-bold py-1">St. Beaux</h1>
+              <h1 className="text-xl font-bold py-1">{project.name}</h1>
             </div>
             <Separator />
             <div className=" flex-auto flex flex-col">

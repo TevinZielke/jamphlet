@@ -24,19 +24,19 @@ import React from "react";
 import { Selection } from "./selection";
 import { Textarea } from "./ui/textarea";
 
-const projectId = 1;
-
 type PamphletFormProps = {
   defaultValues: PamphletFormDefaultValues;
+  projectId: number;
 };
 
 export type PamphletFormDefaultValues = {
   clientId: number;
+  clientName: string;
   userId: number;
   personalMessage: string;
 };
 
-export function PamphletForm({ defaultValues }: PamphletFormProps) {
+export function PamphletForm({ defaultValues, projectId }: PamphletFormProps) {
   const form = useForm<z.infer<typeof insertPamphletSchema>>({
     resolver: zodResolver(insertPamphletSchema),
     defaultValues: defaultValues,
@@ -92,7 +92,11 @@ export function PamphletForm({ defaultValues }: PamphletFormProps) {
             </FormItem>
           )}
         />
-        <Selection projectId={projectId} clientId={defaultValues.clientId} />
+        <Selection
+          projectId={projectId}
+          clientId={defaultValues.clientId}
+          clientName={defaultValues.clientName}
+        />
         <div className=" flex flex-auto justify-end">
           <Button type="submit">Save</Button>
         </div>

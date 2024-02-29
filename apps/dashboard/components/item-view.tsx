@@ -18,6 +18,7 @@ import ItemImageView from "./item-image-view";
 
 type ItemViewProps = {
   itemId: number;
+  projectId: number;
 };
 
 export const fields: ItemFormCategory[] = [
@@ -97,7 +98,7 @@ export const fields: ItemFormCategory[] = [
   },
 ];
 
-export function ItemView({ itemId }: ItemViewProps) {
+export function ItemView({ itemId, projectId }: ItemViewProps) {
   const confirm = async () => {
     // const res = await deleteClient(itemAtom);
     //Toast
@@ -113,8 +114,6 @@ export function ItemView({ itemId }: ItemViewProps) {
   };
 
   // const item = data?.find((c) => c.id === itemAtom);
-
-  const projectId = 1;
 
   const { data: formSchema } = useQuery({
     queryKey: ["project-form-schema", projectId],

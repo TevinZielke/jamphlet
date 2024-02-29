@@ -13,6 +13,7 @@ import {
   invitations,
   InvitationStatus,
 } from "..";
+import { revalidatePath } from "next/cache";
 
 export async function addKindeUser(
   newUser: NewUser,
@@ -66,6 +67,20 @@ export async function addKindeUser(
   //       },
   //     },
   //   });
+}
+
+export async function setCurrentProjectAction(
+  userId: number,
+  projectId: number
+) {
+  const result = await db
+    .update(users)
+    .set({ currentProjectId: projectId })
+    .where(eq(users.id, userId))
+    .returning({ updatedCurrentProjectId: users.currentProjectId });
+
+  revalidatePath("/");
+  return result;
 }
 
 export async function createInvitation(newInvitation: NewInvitation) {

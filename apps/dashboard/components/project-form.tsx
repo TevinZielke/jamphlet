@@ -7,17 +7,21 @@ import { Separator } from "./ui/separator";
 
 type ProjectFormProps = {
   categories: CategoriesWithFeatures;
+  projectId: number;
+  projectName: string;
 };
 
-const projectId = 1;
-
-export function ProjectForm({ categories }: ProjectFormProps) {
+export function ProjectForm({
+  categories,
+  projectId,
+  projectName,
+}: ProjectFormProps) {
   return (
     <div className={cn("w-fit flex flex-col  mb-28")}>
       {categories!.map((category) => {
         return (
           <div className=" p-3" key={category.id}>
-            <Category category={category} />
+            <Category category={category} projectName={projectName} />
           </div>
         );
       })}
@@ -31,7 +35,7 @@ export function ProjectForm({ categories }: ProjectFormProps) {
         <span>Add category</span>
         <Separator />
         <div className={cn(" border rounded-lg w-fit p-2")}>
-          <CategoryForm projectId={projectId} />
+          <CategoryForm projectId={projectId} projectName={projectName} />
         </div>
       </div>
     </div>

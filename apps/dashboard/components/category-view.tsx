@@ -8,11 +8,10 @@ import { Trash2 } from "lucide-react";
 
 type CategoryProps = {
   category: CategoryWithFeatures;
+  projectName: string;
 };
 
-const projectName = "St. Beaux";
-
-export function Category({ category }: CategoryProps) {
+export function Category({ category, projectName }: CategoryProps) {
   const [showAddFeature, setShowAddFeature] = useState(false);
 
   async function handleDelete(categoryId: number) {

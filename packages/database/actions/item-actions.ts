@@ -8,11 +8,13 @@ import {
   NewFeaturesOnItems,
   NewItem,
   NewItemImage,
+  NewItemOnPamphlet,
   db,
   featuresOnItems,
   getItemById,
   itemImages,
   items,
+  itemsOnPamphlets,
 } from "..";
 import { eq } from "drizzle-orm";
 import { ColumnSort, SortingState } from "@tanstack/react-table";
@@ -114,6 +116,21 @@ export async function updateItemFeatures(
 
 export async function addItemImage(newItemImage: NewItemImage) {
   const result = await db.insert(itemImages).values(newItemImage).returning();
+
+  return result;
+}
+
+export async function addItemToPamphletAction(
+  newItemOnPamphlet: NewItemOnPamphlet
+) {
+  const result = await db
+    .insert(itemsOnPamphlets)
+    .values(newItemOnPamphlet)
+    .returning({
+      newItemOnPamphletId: itemsOnPamphlets.itemId,
+    });
+
+  revalidatePath("/clients");
 
   return result;
 }

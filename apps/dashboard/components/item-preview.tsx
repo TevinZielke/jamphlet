@@ -1,6 +1,10 @@
 "use client";
 
-import { ItemPreview } from "@jamphlet/database";
+import {
+  ItemPreview,
+  NewItemOnPamphlet,
+  addItemToPamphletAction,
+} from "@jamphlet/database";
 import { useItemAtom } from "lib/use-item";
 import { cn } from "lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,6 +15,7 @@ import Image from "next/image";
 
 type ItemPreviewProps = {
   inputData: ItemPreview;
+  pamphletId?: number;
 };
 
 export function ItemPreviewSkeleton() {
@@ -29,11 +34,16 @@ export function ItemPreviewSkeleton() {
 }
 
 // TODO: change type
-export function ItemPreviewCard({ inputData }: ItemPreviewProps) {
+export function ItemPreviewCard({ inputData, pamphletId }: ItemPreviewProps) {
   const item = inputData;
   const [itemAtom, setItemAtom] = useItemAtom();
 
   const preview = item.itemImages.find((e) => e.path?.includes("preview"));
+
+  async function handleAddPamphlet(newItemOnPamphlet: NewItemOnPamphlet) {
+    const res = await addItemToPamphletAction(newItemOnPamphlet);
+    console.log("result: ", res);
+  }
 
   return (
     <Link href={`/items/${item.id}`} className=" w-full py-1">
@@ -43,7 +53,18 @@ export function ItemPreviewCard({ inputData }: ItemPreviewProps) {
           "flex flex-col items-start w-full gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
           itemAtom === item.id && "bg-muted"
         )}
-        onClick={() => setItemAtom(item.id)}
+        onClick={() => {
+          // e.preventDefault();
+          if (pamphletId) {
+            const newItemOnPamphlet: NewItemOnPamphlet = {
+              itemId: item.id,
+              pamphletId: pamphletId,
+            };
+            newItemOnPamphlet && handleAddPamphlet(newItemOnPamphlet);
+          } else {
+            setItemAtom(item.id);
+          }
+        }}
       >
         {/* <div className="flex gap-3 w-fulll"> */}
         {/* <div>

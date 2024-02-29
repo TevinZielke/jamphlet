@@ -24,9 +24,10 @@ type SelectionItemProps = {
 type SelectionProps = {
   projectId: number;
   clientId: number;
+  clientName: string;
 };
 
-export function Selection({ clientId }: SelectionProps) {
+export function Selection({ clientId, clientName, projectId }: SelectionProps) {
   const { data: client } = useQuery({
     queryKey: ["client", clientId],
     queryFn: () => getClientAction(clientId),
@@ -40,7 +41,7 @@ export function Selection({ clientId }: SelectionProps) {
     <div className="space-y-2 flex flex-col">
       <div className=" flex justify-between place-items-center">
         <p className="text-sm font-medium">Selection</p>
-        <SelectionFormDialog />
+        <SelectionFormDialog projectId={projectId} clientName={clientName} />
       </div>
       <div className=" border rounded-lg">
         {currentSelection.map((selectionItem, index) => {
