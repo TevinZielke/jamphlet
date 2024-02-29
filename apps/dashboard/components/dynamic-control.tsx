@@ -7,7 +7,9 @@ export const DynamicControl = ({
   featureIdString,
   defaultValue,
   config = {},
+  value,
 }: ItemFormFieldData) => {
+  console.log("value", value);
   const { register } = useFormContext();
 
   switch (type) {
@@ -22,6 +24,10 @@ export const DynamicControl = ({
           type="text"
           {...register(featureIdString, config)}
           defaultValue={defaultValue}
+          value={value}
+          style={{
+            color: value ? "" : "grey",
+          }}
         />
       );
     case "currency": {
@@ -34,6 +40,10 @@ export const DynamicControl = ({
           type="number"
           {...register(featureIdString, config)}
           defaultValue={defaultValue}
+          value={value}
+          style={{
+            color: value ? "" : "grey",
+          }}
         />
       );
     }
@@ -47,6 +57,10 @@ export const DynamicControl = ({
           type="number"
           {...register(featureIdString, config)}
           defaultValue={defaultValue}
+          value={value}
+          style={{
+            color: value ? "" : "grey",
+          }}
         />
       );
     default:

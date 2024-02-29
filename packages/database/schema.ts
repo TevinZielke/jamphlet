@@ -82,7 +82,7 @@ export const projectStructuresRelations = relations(
 
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
-  name: text("name"),
+  name: text("name").notNull(),
   projectId: integer("project_id")
     .notNull()
     .references(() => projects.id),

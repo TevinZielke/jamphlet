@@ -4,16 +4,15 @@ import styles from './stickyText.module.scss';
 import { Container } from '../Container/container';
 
 export type StickyTextProps = {
-  id: number;
   text: string;
   images: any[];
 };
 
-export const StickyText: FC<StickyTextProps> = ({ id, text, images }) => {
+export const StickyText: FC<StickyTextProps> = ({ text, images }) => {
   if (!text || !images) return null;
 
   return (
-    <Container key={id}>
+    <Container>
       <div className={styles.grid}>
         <div className={styles.stickyOuter}>
           <div className={styles.stickyInner}>

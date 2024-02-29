@@ -1,0 +1,1 @@
+ALTER TABLE "categories" ALTER COLUMN "name" SET NOT NULL;

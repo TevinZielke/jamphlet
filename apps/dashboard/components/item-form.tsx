@@ -8,10 +8,13 @@ import { Button } from "./ui/button";
 import { DynamicControl } from "./dynamic-control";
 import { Label } from "./ui/label";
 import { ErrorMessage } from "@hookform/error-message";
-import { NewItemFeature, updateItemFeatures } from "@jamphlet/database";
+import {
+  FeaturesOnItems,
+  NewItemFeature,
+  updateItemFeatures,
+} from "@jamphlet/database";
 import { toast } from "sonner";
 import { cn } from "lib/utils";
-import * as _ from "lodash";
 
 type ControlType = "currency" | "quantity" | "text";
 
@@ -19,6 +22,7 @@ type ItemFormProps = {
   item: {
     id: number;
     name: string;
+    features: FeaturesOnItems[];
   };
   formCategories: ItemFormCategory[];
 };
@@ -40,6 +44,7 @@ export type ItemFormFieldData = {
   fieldName: string;
   defaultValue: string | number;
   config?: RegisterOptions;
+  value?: string | number;
 };
 
 export function ItemForm({ item, formCategories }: ItemFormProps) {
@@ -75,6 +80,9 @@ export function ItemForm({ item, formCategories }: ItemFormProps) {
         <div className={cn("flex flex-col gap-2")}>
           {formCategories.map((formCategory, i) => {
             const category = formCategory.category;
+            const categoryFeatures = item.features.filter(
+              (feature) => feature.categoryId === category.categoryId
+            );
             return (
               <div key={i}>
                 <p className="text-m font-medium">{category.categoryName}</p>
@@ -84,6 +92,11 @@ export function ItemForm({ item, formCategories }: ItemFormProps) {
                   )}
                 >
                   {formCategory.fields.map((field) => {
+                    const itemFieldValue = categoryFeatures.find(
+                      (feature) =>
+                        feature.featureId.toString() === field.featureIdString
+                    )?.value;
+                    field.value = itemFieldValue;
                     return (
                       <div
                         key={field.featureIdString}

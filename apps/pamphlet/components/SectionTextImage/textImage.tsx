@@ -5,7 +5,6 @@ import styles from './textImage.module.scss';
 import classNames from 'classnames';
 
 export type TextImageProps = {
-  id: number;
   image: {
     publicUrl: string;
     alt: string;
@@ -22,7 +21,6 @@ export const TextImage: FC<TextImageProps> = ({
   text,
   title,
   textRightImageLeft = false,
-  id,
 }) => {
   if (!image || !text) return null;
 
@@ -31,7 +29,7 @@ export const TextImage: FC<TextImageProps> = ({
   });
 
   return (
-    <Container width='extended' key={id}>
+    <Container width='extended'>
       <div className={gridClass}>
         <div>
           {title && <h3>{title}</h3>}

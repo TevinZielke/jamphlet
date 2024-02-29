@@ -6,12 +6,11 @@ import { AccordionItem, AccordionRoot } from '../Accordion/accordion';
 import { Category, ItemSelection } from '@jamphlet/database';
 
 export type ComparisonProps = {
-  id: number;
   projectData: any;
   itemData?: ItemSelection;
 };
 
-export const Comparison: FC<ComparisonProps> = ({ projectData, itemData, id }) => {
+export const Comparison: FC<ComparisonProps> = ({ projectData, itemData }) => {
   const itemCategories = projectData;
   const items = itemData?.itemsOnPamphlets;
   if (!itemCategories || !items) return <p>No project data</p>;
@@ -28,7 +27,7 @@ export const Comparison: FC<ComparisonProps> = ({ projectData, itemData, id }) =
   };
 
   return (
-    <div className={styles.root} key={id}>
+    <div className={styles.root}>
       {/** Comparison */}
       <div className={styles['horizontal-wrapper']}>
         {/**

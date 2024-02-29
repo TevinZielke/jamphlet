@@ -63,7 +63,6 @@ export const MainContent: FC<MainContentProps> = ({
       return (
         <div key={i}>
           {React.createElement(Components[component.type] as React.FC<ComponentProp>, {
-            id: i,
             projectData: categories,
             itemData: pamphletData,
             ...component,

@@ -218,6 +218,13 @@
       "when": 1709124338155,
       "tag": "0030_faithful_wiccan",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "5",
+      "when": 1709220237642,
+      "tag": "0031_bored_morlun",
+      "breakpoints": true
     }
   ]
 }

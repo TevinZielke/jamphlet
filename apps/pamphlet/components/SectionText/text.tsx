@@ -4,12 +4,11 @@ import styles from './text.module.scss';
 import classNames from 'classnames';
 
 export type TextProps = {
-  id: number;
   text: string;
   title?: string;
 };
 
-export const Text: FC<TextProps> = ({ id, text, title }) => {
+export const Text: FC<TextProps> = ({ text, title }) => {
   if (!text) return null;
 
   const gridClass = classNames(styles.grid, {
@@ -17,7 +16,7 @@ export const Text: FC<TextProps> = ({ id, text, title }) => {
   });
 
   return (
-    <Container width='extended' key={id}>
+    <Container width='extended'>
       <div className={gridClass}>
         <div>
           {title && <h3>{title}</h3>}

@@ -5,25 +5,14 @@ import styles from './image.module.scss';
 import { ProjectImage } from '@jamphlet/database';
 
 export type SectionImageProps = {
-  id: number;
-  // image: {
-  //   src: string;
-  //   alt: string;
-  //   width: number;
-  //   height: number;
-  // };
   image: any;
 };
-// type SectionImageProps = {
-//   image: any;
-// };
 
-export const SectionImage: FC<SectionImageProps> = ({ id, image }) => {
-  console.log('image', image);
+export const SectionImage: FC<SectionImageProps> = ({ image }) => {
   if (!image) return null;
 
   return (
-    <Container width='extended' key={id}>
+    <Container width='extended'>
       <div className={styles.grid}>
         hallo
         <Image src={image.publicUrl!} alt={image.alt!} width={666} height={333} />

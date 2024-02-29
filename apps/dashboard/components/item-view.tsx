@@ -130,11 +130,12 @@ export function ItemView({ itemId }: ItemViewProps) {
 
   const itemFeatures = item?.featuresOnItems;
 
-  if (!item) return null;
+  if (!item || !itemFeatures) return null;
 
   const inputItem = {
     id: item?.id,
     name: item.name,
+    features: itemFeatures,
   };
 
   const floorplans = item.itemImages.filter(

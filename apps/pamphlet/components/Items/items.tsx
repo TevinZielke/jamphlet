@@ -9,12 +9,11 @@ import classNames from 'classnames';
 import { ItemSelection, ItemsOnPamphlet } from '@jamphlet/database';
 
 export type ItemsProps = {
-  id: number;
   projectData: any;
   itemData?: ItemSelection;
 };
 
-export const Items: FC<ItemsProps> = ({ projectData, itemData, id }) => {
+export const Items: FC<ItemsProps> = ({ projectData, itemData }) => {
   const [visibleItem, setVisibleItem] = useState<number | null>(null);
   const [isItemsNavVisible, setIsItemsNavVisible] = useState<boolean>(false);
   const itemsRef = useRef(null);
@@ -41,7 +40,7 @@ export const Items: FC<ItemsProps> = ({ projectData, itemData, id }) => {
       {/**
        * Items Overview / Anchor Links
        * */}
-      <Container width='extended' key={id}>
+      <Container width='extended'>
         {items?.length > 0 && (
           <ul className={styles.overview}>
             {items.map((item: any, i: number) => (
