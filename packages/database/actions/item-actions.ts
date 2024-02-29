@@ -94,6 +94,7 @@ export type NewItemFeature = {
   itemId: number;
   featureId: number;
   value: string;
+  categoryId: number;
 };
 
 export async function updateItemFeatures(newItemFeatures: NewItemFeature[]) {
