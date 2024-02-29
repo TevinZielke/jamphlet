@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import {
   ItemPreview,
   ItemWithImages,
+  NewFeature,
+  NewFeaturesOnItems,
   NewItem,
   NewItemImage,
   db,
@@ -97,7 +99,9 @@ export type NewItemFeature = {
   categoryId: number;
 };
 
-export async function updateItemFeatures(newItemFeatures: NewItemFeature[]) {
+export async function updateItemFeatures(
+  newItemFeatures: NewFeaturesOnItems[]
+) {
   const updatedItem = await db
     .insert(featuresOnItems)
     .values(newItemFeatures)
