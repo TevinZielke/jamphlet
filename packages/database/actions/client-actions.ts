@@ -84,6 +84,18 @@ export async function addClient(newClient: NewClient) {
   return insertedClient;
 }
 
+export async function updateClientAction(newClient: NewClient) {
+  const updatedClient = await db
+    .update(clients)
+    .set(newClient)
+    .where(eq(clients.id, newClient.id!))
+    .returning({ updatedClient: clients.name });
+
+  revalidatePath("/");
+
+  return updatedClient;
+}
+
 export async function deleteClient(clientId: number) {
   const deletedClient = await db
     .delete(clients)

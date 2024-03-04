@@ -12,7 +12,7 @@ import Image from "next/image";
 import { ImageForm } from "./image-form";
 import { ScrollArea } from "./ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
-import { ItemForm, ItemFormCategory } from "./item-form";
+import { ItemForm, ItemFormCategory, ItemFormFieldData } from "./item-form";
 import { cn } from "lib/utils";
 import ItemImageView from "./item-image-view";
 
@@ -21,82 +21,82 @@ type ItemViewProps = {
   projectId: number;
 };
 
-export const fields: ItemFormCategory[] = [
-  {
-    category: {
-      categoryId: 1,
-      categoryName: "Pricing",
-    },
-    fields: [
-      {
-        featureIdString: "1",
-        fieldName: "pricing",
-        type: "currency",
-        label: "Pricing",
-        defaultValue: 1500000,
-      },
-    ],
-  },
-  {
-    category: {
-      categoryId: 3,
-      categoryName: "Size",
-    },
-    fields: [
-      {
-        featureIdString: "6",
-        fieldName: "sqft",
-        type: "quantity",
-        label: "Square Footage",
-        defaultValue: 5000,
-      },
-    ],
-  },
-  {
-    category: {
-      categoryId: 2,
-      categoryName: "Rooms",
-    },
-    fields: [
-      {
-        featureIdString: "2",
-        fieldName: "bedrooms",
-        type: "quantity",
-        label: "Bedrooms",
-        defaultValue: 2,
-      },
-      {
-        featureIdString: "3",
-        fieldName: "bathrooms",
-        type: "quantity",
-        label: "Bedrooms",
-        defaultValue: 1,
-      },
-      {
-        featureIdString: "7",
-        fieldName: "dining",
-        type: "text",
-        label: "Dining",
-        defaultValue: "Formal dining room",
-      },
-    ],
-  },
-  {
-    category: {
-      categoryId: 4,
-      categoryName: "Exposure",
-    },
-    fields: [
-      {
-        featureIdString: "4",
-        fieldName: "exposure",
-        type: "text",
-        label: "Exposure",
-        defaultValue: "South-West",
-      },
-    ],
-  },
-];
+// export const fields: ItemFormCategory[] = [
+//   {
+//     category: {
+//       categoryId: 1,
+//       categoryName: "Pricing",
+//     },
+//     fields: [
+//       {
+//         featureIdString: "1",
+//         fieldName: "pricing",
+//         type: "currency",
+//         label: "Pricing",
+//         defaultValue: 1500000,
+//       },
+//     ],
+//   },
+//   {
+//     category: {
+//       categoryId: 3,
+//       categoryName: "Size",
+//     },
+//     fields: [
+//       {
+//         featureIdString: "6",
+//         fieldName: "sqft",
+//         type: "quantity",
+//         label: "Square Footage",
+//         defaultValue: 5000,
+//       },
+//     ],
+//   },
+//   {
+//     category: {
+//       categoryId: 2,
+//       categoryName: "Rooms",
+//     },
+//     fields: [
+//       {
+//         featureIdString: "2",
+//         fieldName: "bedrooms",
+//         type: "quantity",
+//         label: "Bedrooms",
+//         defaultValue: 2,
+//       },
+//       {
+//         featureIdString: "3",
+//         fieldName: "bathrooms",
+//         type: "quantity",
+//         label: "Bedrooms",
+//         defaultValue: 1,
+//       },
+//       {
+//         featureIdString: "7",
+//         fieldName: "dining",
+//         type: "text",
+//         label: "Dining",
+//         defaultValue: "Formal dining room",
+//       },
+//     ],
+//   },
+//   {
+//     category: {
+//       categoryId: 4,
+//       categoryName: "Exposure",
+//     },
+//     fields: [
+//       {
+//         featureIdString: "4",
+//         fieldName: "exposure",
+//         type: "text",
+//         label: "Exposure",
+//         defaultValue: "South-West",
+//       },
+//     ],
+//   },
+// ];
 
 export function ItemView({ itemId, projectId }: ItemViewProps) {
   const confirm = async () => {
@@ -120,7 +120,7 @@ export function ItemView({ itemId, projectId }: ItemViewProps) {
     queryFn: () => getProjectFormSchemaAction(projectId),
   });
 
-  // console.log("formSchema: ", formSchema);
+  console.log("formSchema: ", formSchema);
 
   const { data: item } = useQuery({
     queryKey: ["item", itemId],
@@ -129,7 +129,33 @@ export function ItemView({ itemId, projectId }: ItemViewProps) {
 
   const itemFeatures = item?.featuresOnItems;
 
-  if (!item || !itemFeatures) return null;
+  if (!item || !itemFeatures || !formSchema) return null;
+
+  const formFields: ItemFormCategory[] = [];
+
+  formSchema.categories.map((category) => {
+    let categoryFields: ItemFormFieldData[] = [];
+    category.features.map((feature) => {
+      const fieldData: ItemFormFieldData = {
+        featureIdString: feature.id.toString(),
+        label: feature.name,
+        type: feature.type,
+        fieldName: feature.name,
+        defaultValue: feature.value,
+      };
+      categoryFields.push(fieldData);
+    });
+
+    const cat: ItemFormCategory = {
+      category: {
+        categoryId: category.id,
+        categoryName: category.name,
+      },
+      fields: categoryFields,
+    };
+
+    formFields.push(cat);
+  });
 
   const inputItem = {
     id: item?.id,
@@ -154,7 +180,6 @@ export function ItemView({ itemId, projectId }: ItemViewProps) {
           <p>{item?.createdAt?.toLocaleString()}</p>
         </div>
         <div className=" flex gap-2">
-          <Button variant="link">Visit Jamphlet</Button>
           <Button variant="secondary">Edit</Button>
           <DeleteDialog handleConfirm={confirm}>
             <Button variant="destructive">Delete</Button>
@@ -167,7 +192,7 @@ export function ItemView({ itemId, projectId }: ItemViewProps) {
         <div className={cn("flex flex-col gap-2")}>
           <h3 className={cn(" text-xl font-semibold")}>Item Information</h3>
           <div className={cn("flex justify-center")}>
-            <ItemForm formCategories={fields} item={inputItem} />
+            <ItemForm formCategories={formFields} item={inputItem} />
           </div>
         </div>
 
@@ -184,7 +209,6 @@ export function ItemView({ itemId, projectId }: ItemViewProps) {
                 );
               })}
             </div>
-            {/* <div className={cn("w-full border rounded-lg p-2")}> */}
             <div>
               <ImageForm projectId={projectId} itemId={itemId} />
             </div>

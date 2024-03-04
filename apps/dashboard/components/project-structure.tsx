@@ -8,6 +8,7 @@ import {
 } from "@jamphlet/database";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
 
 // type ProjectStructureConfig = {
 //   sections: Section[];
@@ -224,10 +225,27 @@ export function ProjectStructure({ projectId }: ProjectStructureProps) {
     };
     const insertedProjectStrure = await addProjectStructure(structure);
   }
+
   return (
     <div>
       Project Structure
-      <Button onClick={insertProjectStructure}>Add Structure</Button>
+      <div>
+        <p>TODO:</p>
+        <ul>
+          <li>Create UI for Section & Component</li>
+          <li>Re-arrangable sections</li>
+          <li>Re-arrangable components with content form</li>
+        </ul>
+        {projectStructureJSON && (
+          <ScrollArea className=" h-96">
+            <pre className=" text-sm">{projectStructureJSON}</pre>
+          </ScrollArea>
+        )}
+
+        <Button onClick={insertProjectStructure} disabled>
+          Add Structure
+        </Button>
+      </div>
     </div>
   );
 }

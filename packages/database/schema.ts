@@ -67,6 +67,7 @@ export const projectStructures = pgTable("project_structures", {
   json: json("json"),
   projectId: integer("project_id")
     .notNull()
+    .unique()
     .references(() => projects.id),
 });
 
@@ -134,6 +135,7 @@ export const featuresOnItems = pgTable(
   },
   (table) => ({
     pk: primaryKey({
+      name: "featuresOnItemsId",
       columns: [table.featureId, table.itemId],
     }),
   })

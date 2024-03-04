@@ -46,28 +46,29 @@ export function ItemPreviewCard({ inputData, pamphletId }: ItemPreviewProps) {
   }
 
   return (
-    <Link href={`/items/${item.id}`} className=" w-full py-1">
-      <button
-        key={item.id}
-        className={cn(
-          "flex flex-col items-start w-full gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
-          itemAtom === item.id && "bg-muted"
-        )}
-        onClick={() => {
-          // e.preventDefault();
-          if (pamphletId) {
-            const newItemOnPamphlet: NewItemOnPamphlet = {
-              itemId: item.id,
-              pamphletId: pamphletId,
-            };
-            newItemOnPamphlet && handleAddPamphlet(newItemOnPamphlet);
-          } else {
-            setItemAtom(item.id);
-          }
-        }}
-      >
-        {/* <div className="flex gap-3 w-fulll"> */}
-        {/* <div>
+    <button
+      key={item.id}
+      className={cn(
+        "flex flex-col items-start w-full gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent",
+        itemAtom === item.id && "bg-muted"
+      )}
+      onClick={() => {
+        // e.preventDefault();
+
+        console.log("pamphletId: ", pamphletId);
+        if (pamphletId) {
+          const newItemOnPamphlet: NewItemOnPamphlet = {
+            itemId: item.id,
+            pamphletId: pamphletId,
+          };
+          newItemOnPamphlet && handleAddPamphlet(newItemOnPamphlet);
+        } else {
+          setItemAtom(item.id);
+        }
+      }}
+    >
+      {/* <div className="flex gap-3 w-fulll"> */}
+      {/* <div>
             <Image
               className={cn(" rounded-lg")}
               src={preview?.publicUrl!}
@@ -76,30 +77,27 @@ export function ItemPreviewCard({ inputData, pamphletId }: ItemPreviewProps) {
               alt={preview?.alt!}
             />
           </div> */}
-        <div className="flex w-full flex-col gap-1">
-          <div className="flex items-center">
-            <div className="flex items-center gap-2 justify-between">
-              <div className="font-semibold">{item.name}</div>
-            </div>
-            <div
-              className={cn(
-                "ml-auto text-xs",
-                itemAtom === item.id
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              )}
-            >
-              {formatDistanceToNow(new Date(item.lastModified!))}
-            </div>
+      <div className="flex w-full flex-col gap-1">
+        <div className="flex items-center">
+          <div className="flex items-center gap-2 justify-between">
+            <div className="font-semibold">{item.name}</div>
           </div>
-          <div className="text-xs font-medium text-gray-500">{item.code}</div>
+          <div
+            className={cn(
+              "ml-auto text-xs",
+              itemAtom === item.id ? "text-foreground" : "text-muted-foreground"
+            )}
+          >
+            {formatDistanceToNow(new Date(item.lastModified!))}
+          </div>
         </div>
-        {/* </div> */}
+        <div className="text-xs font-medium text-gray-500">{item.code}</div>
+      </div>
+      {/* </div> */}
 
-        {/* <div className="line-clamp-2 text-xs text-muted-foreground">
+      {/* <div className="line-clamp-2 text-xs text-muted-foreground">
           {client.pamphlets.at(0)?.personalMessage?.substring(0, 300)}
         </div> */}
-      </button>
-    </Link>
+    </button>
   );
 }
