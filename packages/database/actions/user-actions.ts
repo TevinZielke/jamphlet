@@ -47,6 +47,7 @@ export async function addKindeUser(
     .insert(usersOnOrganizations)
     .values(NewUsersOnOrganizations)
     .returning();
+
   // .execute();
 
   //   const result = await db.query.users.findFirst({

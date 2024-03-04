@@ -136,7 +136,7 @@ function SelectionForm({ projectId }: SelectionFormProps) {
           pamphletId={client?.pamphlets.at(0)?.id}
         />
       </div>
-      {/* <Separator orientation="vertical" />
+      <Separator orientation="vertical" />
       <div className=" w-[175px]">
         <p className=" font-medium">Current selection</p>
         <div className="pb-6">
@@ -159,7 +159,7 @@ function SelectionForm({ projectId }: SelectionFormProps) {
         ) : (
           <p>Empty</p>
         )}
-      </div> */}
+      </div>
     </div>
   );
 }

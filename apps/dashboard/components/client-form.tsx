@@ -2,10 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Client,
   NewClient,
   addClient,
   addPamphlet,
   insertClientSchema,
+  updateClientAction,
 } from "@jamphlet/database";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -41,25 +43,38 @@ import {
 } from "./ui/card";
 import { redirect } from "next/navigation";
 import { Textarea } from "./ui/textarea";
+import { ReactNode, useEffect, useState } from "react";
+import { useAuthenticatedUser } from "lib/use-authenticated-user";
+import { toast } from "sonner";
 
 type ClientFormDialogProps = {
-  text: string;
+  text?: string;
+  isEditMode?: boolean;
+  clientData?: NewClient;
+  children?: ReactNode;
 };
 
-export function ClientFormDialog({ text }: ClientFormDialogProps) {
+export function ClientFormDialog({
+  text,
+  isEditMode = false,
+  children,
+  clientData,
+}: ClientFormDialogProps) {
+  const titleText = isEditMode ? "Edit client" : "Create client";
   return (
     <Dialog>
       <DialogTrigger asChild className=" hover:cursor-pointer">
-        <Button variant="outline">{text}</Button>
+        {/* <Button variant="outline">{text}</Button> */}
+        {children}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create client</DialogTitle>
+          <DialogTitle>{titleText}</DialogTitle>
           <DialogDescription>
             Add a new client to your list. You can still make changes later on.
           </DialogDescription>
         </DialogHeader>
-        <ClientForm wrapper="dialog" />
+        <ClientForm wrapper="dialog" isEditMode clientData={clientData} />
       </DialogContent>
     </Dialog>
   );
@@ -83,16 +98,43 @@ export function ClientFormCard() {
 
 type ClientFormProps = {
   wrapper: "dialog" | "card";
+  isEditMode?: boolean;
+  clientData?: NewClient;
 };
 
-export function ClientForm({ wrapper }: ClientFormProps) {
+export function ClientForm({
+  wrapper,
+  isEditMode = false,
+  clientData,
+}: ClientFormProps) {
+  // const [userId, setUserId] = useState<number>();
+
+  // useEffect(() => {
+  //   authUserId();
+  // }, []);
+
+  // const authUserId = async () => {
+  //   let userId = -1;
+  //   const clientUserId = clientData?.userId || -1;
+
+  //   try {
+  //     const user = await useAuthenticatedUser();
+  //     if (user?.id) userId = user?.id;
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+
+  //   setUserId(isEditMode ? clientUserId : userId);
+  // };
+
   const form = useForm<z.infer<typeof insertClientSchema>>({
     resolver: zodResolver(insertClientSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      notes: "",
-      userId: 4,
+      id: clientData?.id || undefined,
+      name: clientData?.name || "",
+      email: clientData?.email || "",
+      notes: clientData?.notes || "",
+      userId: clientData?.userId,
     },
     mode: "onChange",
   });
@@ -101,13 +143,23 @@ export function ClientForm({ wrapper }: ClientFormProps) {
 
   const onSubmit = async (values: z.infer<typeof insertClientSchema>) => {
     const newClient: NewClient = values;
-    const insertedClient = await addClient(newClient);
-    const insertedClientId = insertedClient.at(0)?.insertedId;
-    insertedClientId &&
-      addPamphlet(4, insertedClientId).then(() => {
-        setClientAtom(insertedClientId);
-      });
-    redirect(`/clients/${insertedClientId}`);
+
+    if (isEditMode) {
+      const updatedClient = await updateClientAction(newClient);
+      const updatedClientName = updatedClient.at(0)?.updatedClient;
+      updatedClientName &&
+        toast("New feature type added.", {
+          description: `Info for ${updatedClientName} has been updated.`,
+        });
+    } else {
+      const insertedClient = await addClient(newClient);
+      const insertedClientId = insertedClient.at(0)?.insertedId;
+      insertedClientId &&
+        addPamphlet(4, insertedClientId).then(() => {
+          setClientAtom(insertedClientId);
+        });
+      redirect(`/clients/${insertedClientId}`);
+    }
   };
 
   return (

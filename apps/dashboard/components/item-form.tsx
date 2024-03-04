@@ -13,11 +13,13 @@ import {
   NewFeaturesOnItems,
   NewItemFeature,
   updateItemFeatures,
+  upsertFeatureOnItemAction,
 } from "@jamphlet/database";
 import { toast } from "sonner";
 import { cn } from "lib/utils";
+import { reject } from "lodash";
 
-type ControlType = "currency" | "quantity" | "text";
+type ControlType = "currency" | "quantity" | "text" | "boolean";
 
 type ItemFormProps = {
   item: {
@@ -88,6 +90,16 @@ export function ItemForm({ item, formCategories }: ItemFormProps) {
 
   const onSubmit = async (data: FieldValues) => {
     let newItemFeatures: NewFeaturesOnItems[] = [];
+    let upsertPromises: Promise<number>[] = [];
+
+    const upsertPromise = async (
+      input: NewFeaturesOnItems
+    ): Promise<number> => {
+      const result = await upsertFeatureOnItemAction(input);
+      const featureId = result.at(0)?.upsertedFeature;
+      if (!featureId) return -1;
+      return featureId;
+    };
 
     Object.entries(data).forEach(([key, value]) => {
       const featureId = +key;
@@ -100,14 +112,44 @@ export function ItemForm({ item, formCategories }: ItemFormProps) {
         value: value,
         categoryId: featureCategoryId,
       };
-      newItemFeatures.push(itemInput);
+
+      // const upsertedFeature = awaitupsertFeatureOnItemAction(itemInput)
+      // newItemFeatures.push(itemInput);
+      // const upsertPromise = new Promise(async (resolve, reject) => {
+      //   return await upsertFeatureOnItemAction(itemInput);
+      // });
+
+      upsertPromises.push(upsertPromise(itemInput));
     });
 
-    const updatedItem = await updateItemFeatures(newItemFeatures);
-    updatedItem &&
-      toast("Update successful", {
-        description: `Features for ${item.name} are now up to date.`,
+    // TODO
+    Promise.allSettled(upsertPromises)
+      .then((results: any) => {
+        console.log("Promises resolved: ", results);
+        toast("Update successful", {
+          description: `Features for ${item.name} are now up to date.`,
+        });
+      })
+      .catch((error) => {
+        console.error("At least one upsert rejected: ", error);
       });
+
+    // const updatedItem = await updateItemFeatures(newItemFeatures);
+    // let isSuccess = false;
+    // newItemFeatures.map(async (itemFeature) => {
+    //   const upsertedId = await upsertFeatureOnItemAction(itemFeature);
+    //   if (upsertedId) isSuccess = true;
+    // });
+
+    // isSuccess &&
+    //   toast("Update successful", {
+    //     description: `Features for ${item.name} are now up to date.`,
+    //   });
+
+    // updatedItem &&
+    //   toast("Update successful", {
+    //     description: `Features for ${item.name} are now up to date.`,
+    //   });
   };
 
   return (

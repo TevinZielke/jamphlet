@@ -23,8 +23,8 @@ export const DynamicControl = ({
         <Input
           type="text"
           {...register(featureIdString, config)}
-          defaultValue={defaultValue}
-          value={value}
+          defaultValue={value || defaultValue}
+          // value={value}
           style={{
             color: value ? "" : "grey",
           }}
@@ -39,8 +39,8 @@ export const DynamicControl = ({
         <Input
           type="number"
           {...register(featureIdString, config)}
-          defaultValue={defaultValue}
-          value={value}
+          defaultValue={value || defaultValue}
+          // value={value}
           style={{
             color: value ? "" : "grey",
           }}
@@ -56,8 +56,8 @@ export const DynamicControl = ({
         <Input
           type="number"
           {...register(featureIdString, config)}
-          defaultValue={defaultValue}
-          value={value}
+          defaultValue={value || defaultValue}
+          // value={value}
           style={{
             color: value ? "" : "grey",
           }}

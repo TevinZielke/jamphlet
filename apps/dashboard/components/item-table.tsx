@@ -84,6 +84,7 @@ import { Fragment } from "react";
 import { Separator } from "./ui/separator";
 import { ItemFormInitial } from "./item-form-initial";
 import { useItemAtom } from "lib/use-item";
+import Link from "next/link";
 
 const fetchSize = 15;
 
@@ -562,6 +563,7 @@ export function ItemTable({ projectId, pamphletId }: ItemTableProps) {
                   {items.map((virtualRow) => {
                     const row = rows[virtualRow.index] as Row<ItemPreview>;
                     const data: ItemPreview = row.original;
+
                     return (
                       <Fragment key={row.id}>
                         {isFetching ? (
@@ -577,22 +579,20 @@ export function ItemTable({ projectId, pamphletId }: ItemTableProps) {
                               transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                               width: "100%",
                             }}
-                            // onClick={(e) => {
-                            //   e.preventDefault();
-
-                            //   if (pamphletId) {
-                            //     const pamhletItem: NewItemOnPamphlet = {
-                            //       itemId: data.id,
-                            //       pamphletId: pamphletId,
-                            //     };
-                            //     handleAddPamphlet(pamhletItem);
-                            //   }
-                            // }}
                           >
-                            <ItemPreviewCard
-                              inputData={data}
-                              pamphletId={pamphletId}
-                            />
+                            {pamphletId ? (
+                              <ItemPreviewCard
+                                inputData={data}
+                                pamphletId={pamphletId}
+                              />
+                            ) : (
+                              <Link
+                                href={`/items/${data.id}`}
+                                className=" w-full py-1"
+                              >
+                                <ItemPreviewCard inputData={data} />
+                              </Link>
+                            )}
                           </div>
                         )}
                       </Fragment>

@@ -16,7 +16,7 @@ import {
   items,
   itemsOnPamphlets,
 } from "..";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { ColumnSort, SortingState } from "@tanstack/react-table";
 
 export async function addItem(newItem: NewItem) {
@@ -107,11 +107,37 @@ export async function updateItemFeatures(
   const updatedItem = await db
     .insert(featuresOnItems)
     .values(newItemFeatures)
+    .onConflictDoUpdate({
+      target: [featuresOnItems.featureId, featuresOnItems.itemId],
+      set: {
+        // categoryId: sql`excluded.categoryId`,
+        // displayText: sql`excluded.displayText`,
+        // featureId: sql`excluded.featureId`,
+        // isMainFact: sql`excluded.featureId`,
+        // itemId: sql`excluded.itemId`,
+        // value: sql`excluded.value`,
+      },
+    })
     .returning({
       updatedItem: featuresOnItems.itemId,
     });
 
   return updatedItem;
+}
+
+export async function upsertFeatureOnItemAction(
+  newFeatureOnItem: NewFeaturesOnItems
+) {
+  const insertedFeature = await db
+    .insert(featuresOnItems)
+    .values(newFeatureOnItem)
+    .onConflictDoUpdate({
+      target: [featuresOnItems.featureId, featuresOnItems.itemId],
+      set: newFeatureOnItem,
+    })
+    .returning({ upsertedFeature: featuresOnItems.featureId });
+
+  return insertedFeature;
 }
 
 export async function addItemImage(newItemImage: NewItemImage) {

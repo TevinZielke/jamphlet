@@ -50,21 +50,30 @@ async function getClients() {
     throw new Error("Authentication failed for: " + kindeUser);
   }
 
-  const dbUser = await getUserByKindeId(kindeUser.id);
-  const projectId = dbUser?.currentProjectId;
+  let dbUser = await getUserByKindeId(kindeUser.id);
+  const projectId = dbUser?.currentProjectId || 1;
 
   if (projectId && !dbUser) {
     const newUser: NewUser = {
       kindeId: kindeUser.id,
       name: kindeUser.given_name + " " + kindeUser.family_name,
       email: kindeUser.email,
+      currentProjectId: projectId,
     };
-    addKindeUser(newUser, projectId, organizationId);
+    await addKindeUser(newUser, projectId, organizationId);
   }
 
-  if (!dbUser?.id) {
-    throw new Error("Error fetching dbUser.");
-  }
+  // async function insertKindeUser() {
+  //   if (!kindeUser) return null
+
+  //   const newUser: NewUser = {
+  //     kindeId: kindeUser.id,
+  //     name: kindeUser.given_name + " " + kindeUser.family_name,
+  //     email: kindeUser.email!,
+  //     currentProjectId: projectId,
+  //   };
+  //   return await addKindeUser(newUser, projectId, organizationId);
+  // }
 
   // const queryClient = new QueryClient();
   const queryClient = getQueryClient();
@@ -78,10 +87,15 @@ async function getClients() {
 
   if (!projectId) return <p>No project available.</p>;
 
+  if (!dbUser?.id) {
+    // throw new Error("Error fetching dbUser.");
+    return null;
+  }
+
   await queryClient.prefetchInfiniteQuery<ClientApiResponse>({
     queryKey: ["clients", dbUser.id, sorting],
     queryFn: () =>
-      getClientPreviewsByUserIdAction(dbUser.id, 0, fetchSize, sorting),
+      getClientPreviewsByUserIdAction(dbUser?.id!, 0, fetchSize, sorting),
     initialPageParam: 0,
     getNextPageParam: (
       _lastGroup: ClientApiResponse,

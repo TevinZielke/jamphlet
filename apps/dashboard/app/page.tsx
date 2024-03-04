@@ -15,29 +15,38 @@ export default async function Page(): Promise<JSX.Element> {
 
   if (!isLoggedIn) {
     redirect("/api/auth/login");
+  } else {
+    redirect("/clients");
   }
 
-  const kindeUser = await getAuthenticatedUser();
+  // const kindeUser = await getAuthenticatedUser();
 
-  if (!kindeUser || kindeUser == null || !kindeUser.id || !kindeUser.email) {
-    throw new Error("Authentication failed for: " + kindeUser);
-  }
+  // if (!kindeUser || kindeUser == null || !kindeUser.id || !kindeUser.email) {
+  //   throw new Error("Authentication failed for: " + kindeUser);
+  // }
 
-  const dbUser = await getUserByKindeId(kindeUser.id);
-  const projectId = dbUser?.currentProjectId;
+  // const dbUser = await getUserByKindeId(kindeUser.id);
+  // const projectId = dbUser?.currentProjectId || 1;
 
-  if (projectId && !dbUser) {
-    const newUser: NewUser = {
-      kindeId: kindeUser.id,
-      name: kindeUser.given_name + " " + kindeUser.family_name,
-      email: kindeUser.email,
-    };
-    addKindeUser(newUser, projectId, organizationId);
-  }
+  // console.log("kindeUser: ", kindeUser);
 
-  if (!dbUser?.id) {
-    throw new Error("Error fetching dbUser.");
-  }
+  // let newDbUser;
+
+  // if (projectId && !dbUser) {
+  //   const newUser: NewUser = {
+  //     kindeId: kindeUser.id,
+  //     name: kindeUser.given_name + " " + kindeUser.family_name,
+  //     email: kindeUser.email,
+  //     currentProjectId: projectId,
+  //   };
+  //   newDbUser = await addKindeUser(newUser, projectId, organizationId);
+
+  //   newDbUser && console.log("new: ", newDbUser);
+
+  //   if (!newDbUser) {
+  //     throw new Error("Error fetching dbUser.");
+  //   }
+  // }
 
   return <main className={styles.main}>Hello</main>;
 }

@@ -1,5 +1,9 @@
 "use client";
-import { getClientAction, getItemsByProjectIdAction } from "@jamphlet/database";
+import {
+  NewClient,
+  getClientAction,
+  getItemsByProjectIdAction,
+} from "@jamphlet/database";
 
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
@@ -13,6 +17,8 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { CalendarDays } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { useSelectionAtom } from "lib/use-selection";
+import Link from "next/link";
+import { cn } from "lib/utils";
 
 type ClientViewProps = {
   clientId: number;
@@ -55,6 +61,14 @@ export function ClientView({ clientId, projectId }: ClientViewProps) {
   const [selectionAtom, setSelectionAtom] = useSelectionAtom();
   const itemIdArray = pamphlet.itemsOnPamphlets.map(({ itemId }) => itemId);
   // setSelectionAtom(itemIdArray);
+
+  const clientInfo: NewClient = {
+    id: clientId,
+    name: client.name,
+    email: client.email,
+    userId: client.userId,
+    notes: client.notes,
+  };
 
   const formDefaultValues: PamphletFormDefaultValues = {
     clientId: clientId,
@@ -102,18 +116,30 @@ export function ClientView({ clientId, projectId }: ClientViewProps) {
               </HoverCardContent>
             </HoverCard>
             <div>
-              <p>
-                {client?.notes ? (
-                  client.notes
-                ) : (
+              {client?.notes ? (
+                <div className={cn(" border rounded-md p-2")}>
+                  <p className={cn(" text-sm")}>{client.notes}</p>
+                </div>
+              ) : (
+                <ClientFormDialog isEditMode clientData={clientInfo}>
                   <Button variant="outline">Add a note</Button>
-                )}
-              </p>
+                </ClientFormDialog>
+              )}
             </div>
           </div>
           <div className=" flex gap-2">
-            <Button variant="link">Visit Jamphlet</Button>
-            <Button variant="secondary">Edit info</Button>
+            <Button variant="link">
+              <Link
+                href={`http://localhost:3001/${clientId}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Visit Jamphlet
+              </Link>
+            </Button>
+            <ClientFormDialog isEditMode clientData={clientInfo}>
+              <Button variant="secondary">Edit info</Button>
+            </ClientFormDialog>
             <DeleteDialog handleConfirm={confirm}>
               <Button variant="destructive">Delete</Button>
             </DeleteDialog>
